@@ -1,0 +1,30 @@
+Interface http://172.16.0.10/NetPerfMon/images/Interfaces/
+http://172.16.0.10/NetPerfMon/images/small-Up.gif
+
+node status
+http://172.16.0.10/Orion/images/StatusIcons/up-down-noblink.gif
+Nho thi them small
+
+SELECT TOP 1000 Table, Field, IsForAlerting, IsForFiltering, IsForGrouping, IsForReporting, IsForEntityDetail
+FROM Orion.CustomPropertyUsage
+
+SELECT TOP 1000 NodeID, City, Comments, Department, SerialNumber
+FROM Orion.NodesCustomProperties
+
+SELECT TOP 10
+   o.AlertID,
+   o.AlertConfigurations.Name AS [ALERT NAME]
+  ,o.EntityCaption AS [ALERT OBJECT]
+  ,o.EntityDetailsURL AS [_LinkFor_ALERT OBJECT]
+  ,o.RelatedNodeCaption AS [RELATED NODE]
+  ,ToLocal(o.AlertActive.TriggeredDateTime) AS [ALERT TRIGGER TIME]
+  ,o.AlertActive.TriggeredMessage AS [ALERT MESSAGE],
+   o.RelatedNodeId,
+CASE WHEN o.AlertActive.TriggeredDateTime IS NULL THEN NULL ELSE (
+    TOSTRING(FLOOR(MINUTEDIFF(o.AlertActive.TriggeredDateTime,GETUTCDATE())/60.0)) + 'h ' +
+    TOSTRING(MINUTEDIFF(o.AlertActive.TriggeredDateTime,GETUTCDATE())%60) + 'm'
+) END AS [ACTIVE TIME]
+FROM Orion.AlertObjects o
+WHERE o.AlertActive.TriggeredMessage <> ''
+--AND o.AlertConfigurations.Severity = 1
+ORDER by o.AlertActive.TriggeredDateTime DESC

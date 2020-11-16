@@ -1,0 +1,44 @@
+.selected_time{
+	padding: 3px 8px; 
+	border-radius: 4px; 
+	width: 50px; cursor: pointer; 
+	background-color: #007bff; 
+	font-size: 100%;
+	font-weight: 700;
+}
+
+.notselect_time{
+	padding: 3px 8px; 
+	font-size: 100%;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.text-percentage{
+	margin-top: 10px;
+    color: #5f27cd;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.text-name{
+	margin-top: 10px;
+    color: #000000;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.border-box{
+	border: 1px solid #cccccc;
+    padding: 10px 40px;
+    background-color: #fff;
+    text-align:center;
+    padding:50px 0px;
+}
+
+.middle-box{
+	padding: 20px;
+    text-align: center;
+    background: #ccc;
+}
+
