@@ -168,6 +168,8 @@ Route::post('/admin/casvd/allrequests/edit/{refnum}','casvdController@editreques
 //Change
 Route::get('/admin/casvd/allchanges','casvdController@allchanges');
 Route::get('ajaxcasvdallchanges','casvdController@ajaxcasvdallchanges')->name('ajaxcasvdallchanges');
+//Popup
+Route::get('admin/casvd/popup/person','casvdController@popupperson');
 
 //Test route
 Route::get('/test','adminController@test');
