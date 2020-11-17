@@ -31,11 +31,15 @@
                         <body>
                             <tr>
                                 <td class="col-md-3 control-label" style="text-align: left;">
-                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person', 'name','width=600,height=400')">
+                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person', '_blank','width=1000,height=600')">
                                         <b>Requester</b>
                                     </a>
                                 </td>
-                                <td class="col-md-4 control-label" style="text-align: left;"><b>Affected End User</b></td>
+                                <td class="col-md-4 control-label" style="text-align: left;">
+                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person', '_blank','width=1000,height=600')">
+                                        <b>Affected End User</b>
+                                    </a>
+                                </td>
                                 <td class="col-md-3 control-label" style="text-align: left;"><b>Request Area</b></td>
                                 <td class="col-md-1 control-label" style="text-align: left;"><b>Status</b></td>
                                 <td class="col-md-1 control-label" style="text-align: left;"><b>Priority</b></td>
@@ -218,6 +222,25 @@
             alert(err_msg.innerText);
         }
     });
+   
+    $(document).click(function(event) {
+        var text = $(event.target).text();
+        alert(text);
+    });
+
+    // function addEventListenerFunction(id) {
+    //     window.addEventListener("message", function() {
+    //         replaceData(event, id);
+    //     }); 
+    // };
+    
+    // function replaceData(event, id) {
+    //     document.getElementById(id).value=event.data;
+    // };
+
+
+    // document.getElementById("requested_by").addEventListener("click", addEventListenerFunction);
+    // document.getElementById("customer").addEventListener("click", addEventListenerFunction);
 </script>
 
 @endSection

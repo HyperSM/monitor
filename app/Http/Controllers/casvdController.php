@@ -689,7 +689,7 @@ class casvdController extends Controller
         'objectType' => 'cr',
         'whereClause' => "type='R'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 50,
-        'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.last_name', 'assignee.last_name', 'assignee.first_name', 'assignee.middle_name', 'zmain_tech.last_name', 'zmain_tech.first_name', 'zmain_tech.middle_name', 'open_date', 'last_mod_dt', 'sla_violation']
+        'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation']
       );
       $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
 
@@ -712,36 +712,6 @@ class casvdController extends Controller
       $jsondata = json_encode($responseArray);
       // Print xml response to response template
       foreach ($responseArray as $item) {
-        // Init attribute's variable
-        $assignee_lastname = $item->Attributes->Attribute[7]->AttrValue;
-        $assignee_firstname = $item->Attributes->Attribute[8]->AttrValue;
-        $assignee_middlename = $item->Attributes->Attribute[9]->AttrValue;
-        $zmaintech_lastname = $item->Attributes->Attribute[10]->AttrValue;
-        $zmaintech_firstname = $item->Attributes->Attribute[11]->AttrValue;
-        $zmaintech_middlename = $item->Attributes->Attribute[12]->AttrValue;
-
-        // Generate assignee name
-        if ($assignee_firstname != '' and $assignee_middlename != '') {
-          $assignee_name = $assignee_lastname . ', ' . $assignee_firstname . ' ' . $assignee_middlename;
-        } elseif ($assignee_middlename = '' and $assignee_firstname != '') {
-          $assignee_name = $assignee_lastname . ', ' . $assignee_firstname;
-        } elseif ($assignee_middlename != '' and $assignee_firstname = '') {
-          $assignee_name = $assignee_lastname . ', ' . $assignee_middlename;
-        } else {
-          $assignee_name = $assignee_lastname;
-        }
-
-        // Generate zmaintech name
-        if ($zmaintech_firstname != '' and $zmaintech_middlename != '') {
-          $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_firstname . ' ' . $zmaintech_middlename;
-        } elseif ($zmaintech_middlename = '' and $zmaintech_firstname != '') {
-          $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_firstname;
-        } elseif ($zmaintech_middlename != '' and $zmaintech_firstname = '') {
-          $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_middlename;
-        } else {
-          $zmaintech_name = $zmaintech_lastname;
-        }
-
         $tmpstr = $tmpstr .
           '{' .
           '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
@@ -751,11 +721,11 @@ class casvdController extends Controller
           '"Category":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // category
           '"Status":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // status
           '"Group":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // group
-          '"Assigned To":"' . $assignee_name . '", ' . // assignee
-          '"Main Assignee":"' . $zmaintech_name . '", ' . // zmain_tech
-          '"Open Date":"' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[13]->AttrValue)) . '", ' . // open_date
-          '"Last Modified Date":"' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[14]->AttrValue)) . '", ' . // last_mod_dt
-          '"SLA Violation":"' . $item->Attributes->Attribute[15]->AttrValue . '"' . // sla_violation
+          '"Assigned To":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // assignee
+          '"Main Assignee":"' . $item->Attributes->Attribute[8]->AttrValue . '", ' . // zmain_tech
+          '"Open Date":"' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[9]->AttrValue)) . '", ' . // open_date
+          '"Last Modified Date":"' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue)) . '", ' . // last_mod_dt
+          '"SLA Violation":"' . $item->Attributes->Attribute[11]->AttrValue . '"' . // sla_violation
           '},';
       }
       $tmpstr = substr($tmpstr, 0, -1);
@@ -810,44 +780,33 @@ class casvdController extends Controller
         'maxRows' => 1,
         // 'attributes' => []
         'attributes' => [
-          'requested_by.last_name',    // 0. Requester
-          'requested_by.first_name',    // 1.
-          'requested_by.middle_name',  // 2.
-          'customer.last_name',        // 3. Affected End User
-          'customer.first_name',        // 4.
-          'customer.middle_name',      // 5.
-          'category.sym',              // 6. Request Area
-          'status.sym',                // 7. Status
-          'priority.sym',              // 8. Priority
-          'log_agent.last_name',       // 9. Reported By
-          'log_agent.first_name',       // 10.
-          'log_agent.middle_name',     // 11.
-          'group.last_name',           // 12. Group
-          'group.first_name',           // 13.
-          'group.middle_name',         // 14.
-          'assignee.last_name',        // 15. Assignee
-          'assignee.first_name',        // 16.
-          'assignee.middle_name',      // 17.
-          'affected_resource.name',    // 18. Configuration Item
-          'zccaddr',                   // 19. Mail CC
-          'severity.sym',              // 20. Severity
-          'urgency.sym',               // 21. Urgency
-          'impact.sym',                // 22. Impact
-          'active.sym',                // 23. Active?
-          'charge_back_id',            // 24. Charge Back ID
-          'call_back_date',            // 25. Call Back Date
-          'resolution_code.sym',       // 26. Resolution Code
-          'requested_by.phone_number', // 27. Requester Phone
-          'resolution_method.sym',     // 28. Resolution Method
-          'zmain_tech.last_name',      // 29. ZmainTech
-          'zmain_tech.first_name',      // 30.
-          'zmain_tech.middle_name',    // 31.
-          'change.chg_ref_num',        // 32. Change
-          'caused_by_chg.chg_ref_num', // 33. Caused by Change Order
-          'external_system_ticket'     // 34. External System Ticket
+          'requested_by.combo_name',    // 0. Requester
+          'customer.combo_name',        // 1. Affected End User
+          'category.sym',               // 2. Request Area
+          'status.sym',                 // 3. Status
+          'priority.sym',               // 4. Priority
+          'log_agent.combo_name',       // 5. Reported By
+          'group.combo_name',           // 6. Group
+          'assignee.combo_name',        // 7. Assignee
+          'affected_resource.name',     // 8. Configuration Item
+          'zccaddr',                    // 9. Mail CC
+          'severity.sym',               // 10. Severity
+          'urgency.sym',                // 11. Urgency
+          'impact.sym',                 // 12. Impact
+          'active.sym',                 // 13. Active?
+          'charge_back_id',             // 14. Charge Back ID
+          'call_back_date',             // 15. Call Back Date
+          'resolution_code.sym',        // 16. Resolution Code
+          'requested_by.phone_number',  // 17. Requester Phone
+          'resolution_method.sym',      // 18. Resolution Method
+          'zmain_tech.combo_name',      // 19. ZmainTech
+          'change.chg_ref_num',         // 20. Change
+          'caused_by_chg.chg_ref_num',  // 21. Caused by Change Order
+          'external_system_ticket'      // 22. External System Ticket
         ]
       );
       $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
       // Convert XML to object
       $xmlresponse = simplexml_load_string($response);
 
@@ -859,48 +818,31 @@ class casvdController extends Controller
 
       // Print xml response to response template
       foreach ($responseArray as $item) {
-        // Init array of objects need converted name
-        $objs = array(0, 3, 9, 12, 15, 29);
-        // Convert name
-        foreach ($objs as $obj) {
-          $tmparr = explode(".", $item->Attributes->Attribute[$obj]->AttrName);
-          $valname = $tmparr[0];
-          if ($item->Attributes->Attribute[$obj + 1]->AttrValue != '' and $item->Attributes->Attribute[$obj + 2]->AttrValue != '') {
-            ${$valname} = $item->Attributes->Attribute[$obj]->AttrValue . ', ' . $item->Attributes->Attribute[$obj + 1]->AttrValue . ' ' . $item->Attributes->Attribute[$obj + 2]->AttrValue;
-          } elseif ($item->Attributes->Attribute[$obj + 2]->AttrValue = '' and $item->Attributes->Attribute[$obj + 1]->AttrValue != '') {
-            ${$valname} = $item->Attributes->Attribute[$obj]->AttrValue . ', ' . $item->Attributes->Attribute[$obj + 1]->AttrValue;
-          } elseif ($item->Attributes->Attribute[$obj + 2]->AttrValue != '' and $item->Attributes->Attribute[$obj + 1]->AttrValue = '') {
-            ${$valname} = $item->Attributes->Attribute[$obj]->AttrValue . ', ' . $item->Attributes->Attribute[$obj + 2]->AttrValue;
-          } else {
-            ${$valname} = $item->Attributes->Attribute[$obj]->AttrValue;
-          }
-        }
-
         $tmpstr = $tmpstr .
           '{' .
-          '"Requester":"' . $requested_by . '", ' .
-          '"Affected End User":"' . $customer . '", ' .
-          '"Request Area":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' .
-          '"Status":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' .
-          '"Priority":"' . $item->Attributes->Attribute[8]->AttrValue . '", ' .
-          '"Reported By":"' . $log_agent . '", ' .
-          '"Group":"' . $group . '", ' .
-          '"Assignee":"' . $assignee . '", ' .
-          '"Configuration Item":"' . $item->Attributes->Attribute[18]->AttrValue . '", ' .
-          '"Mail CC":"' . $item->Attributes->Attribute[19]->AttrValue . '", ' .
-          '"Severity":"' . $item->Attributes->Attribute[20]->AttrValue . '", ' .
-          '"Urgency":"' . $item->Attributes->Attribute[21]->AttrValue . '", ' .
-          '"Impact":"' . $item->Attributes->Attribute[22]->AttrValue . '", ' .
-          '"Active?":"' . $item->Attributes->Attribute[23]->AttrValue . '", ' .
-          '"Charge Back ID":"' . $item->Attributes->Attribute[24]->AttrValue . '", ' .
-          '"Call Back Date/Time":"' . $item->Attributes->Attribute[25]->AttrValue . '", ' .
-          '"Resolution Code":"' . $item->Attributes->Attribute[26]->AttrValue . '", ' .
-          '"Requester Phone":"' . $item->Attributes->Attribute[27]->AttrValue . '", ' .
-          '"Resolution Method By":"' . $item->Attributes->Attribute[28]->AttrValue . '", ' .
-          '"ZmainTech":"' . $zmain_tech . '", ' .
-          '"Change":"' . $item->Attributes->Attribute[32]->AttrValue . '", ' .
-          '"Caused by Change Order":"' . $item->Attributes->Attribute[33]->AttrValue . '", ' .
-          '"External System Ticket":"' . $item->Attributes->Attribute[34]->AttrValue . '"' .
+          '"Requester":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' .
+          '"Affected End User":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' .
+          '"Request Area":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' .
+          '"Status":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' .
+          '"Priority":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' .
+          '"Reported By":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' .
+          '"Group":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' .
+          '"Assignee":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' .
+          '"Configuration Item":"' . $item->Attributes->Attribute[8]->AttrValue . '", ' .
+          '"Mail CC":"' . $item->Attributes->Attribute[9]->AttrValue . '", ' .
+          '"Severity":"' . $item->Attributes->Attribute[10]->AttrValue . '", ' .
+          '"Urgency":"' . $item->Attributes->Attribute[11]->AttrValue . '", ' .
+          '"Impact":"' . $item->Attributes->Attribute[12]->AttrValue . '", ' .
+          '"Active?":"' . $item->Attributes->Attribute[13]->AttrValue . '", ' .
+          '"Charge Back ID":"' . $item->Attributes->Attribute[14]->AttrValue . '", ' .
+          '"Call Back Date/Time":"' . $item->Attributes->Attribute[15]->AttrValue . '", ' .
+          '"Resolution Code":"' . $item->Attributes->Attribute[16]->AttrValue . '", ' .
+          '"Requester Phone":"' . $item->Attributes->Attribute[17]->AttrValue . '", ' .
+          '"Resolution Method By":"' . $item->Attributes->Attribute[18]->AttrValue . '", ' .
+          '"ZmainTech":"' . $item->Attributes->Attribute[19]->AttrValue . '", ' .
+          '"Change":"' . $item->Attributes->Attribute[20]->AttrValue . '", ' .
+          '"Caused by Change Order":"' . $item->Attributes->Attribute[21]->AttrValue . '", ' .
+          '"External System Ticket":"' . $item->Attributes->Attribute[22]->AttrValue . '"' .
           '},';
       }
 
@@ -908,16 +850,6 @@ class casvdController extends Controller
       // $tmpstr = $tmpstr . ']';
       $tmpstr = json_decode($tmpstr, true);
     };
-
-    //Get Droplist
-    // $arr = $this->SoapLogin();
-    // $client = $arr[0];
-    // $sid = $arr[1];
-    // $dl_requester = $this->droplist_contact($client, $sid,"",$tmpstr["Requester"]);
-    // $dl_category = $this->droplist_category($client, $sid);
-    // $dl_ci = $this->droplist_ci($client, $sid);
-    // $dl_group = $this->droplist_group($client, $sid,$tmpstr["Group"]);
-    // $dl_group = $this->droplist_contact($client, $sid, "", $tmpstr["Group"]);
 
     return view('casvd.editrequest', compact('user', 'err_msg', 'refnum', 'tmpstr'));
   }
@@ -1569,6 +1501,103 @@ class casvdController extends Controller
     }
     // dd($tmpstr);
     // $tmpstr = substr($tmpstr, 0, -1);
+
+    return $tmpstr;
+  }
+
+  /*
+  Section: Popup window - Person
+  */
+  public function popupperson() {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $dm = Crypt::decryptString(session('mymonitor_md'));
+
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    $user = DB::table('tbl_accounts')
+      ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+      ->where([
+        ['tbl_accounts.username', '=', session('mymonitor_userid')]
+      ])->first();
+
+    $tmpstr = $this->allpersons($casvdserver);
+
+    return view('casvd.popupperson', compact('casvdserver', 'user', 'tmpstr'));
+  }
+
+  /*
+  Section: List all person contact
+  */
+  public function allpersons($casvdserver) {
+    $tmpstr = '[';
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $info = $client->__call("login", array($ap_param));
+
+      // Get all Requests
+      $ap_param = array(
+        'sid' => $info->loginReturn,
+        'objectType' => 'cnt',
+        'whereClause' => "last_name='SD Test'",
+        'maxRows' => 50,
+        'attributes' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+      );
+      $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+      // Convert XML to object
+      $xmlresponse = simplexml_load_string($response);
+
+      // Convert SimpleXMLElement object to Array $responseArray
+      $responseArray = array();
+      foreach ($xmlresponse->UDSObject as $node) {
+        $responseArray[] = $node;
+      }
+
+      // Sorting SimpleXMLElement object array
+      function comparator($a, $b)
+      {
+        // sort by ID
+        return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
+      }
+      usort($responseArray, __NAMESPACE__ . '\comparator');
+      $jsondata = json_encode($responseArray);
+
+      // Print xml response to response template
+      foreach ($responseArray as $item) {
+        $tmpstr = $tmpstr .
+          '{' .
+          '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
+          '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // combo_name
+          '"User ID":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // userid
+          '"Area":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // zcnt_area
+          '"Email Address":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // email_address
+          '"Contact Type":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // type.sym
+          '"Access Type":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // access_type.sym
+          '"Workshift":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // schedule.sym
+          '"Status":"' . $item->Attributes->Attribute[8]->AttrValue . '"' . // delete_flag.sym
+          '},';
+      }
+
+      $tmpstr = substr($tmpstr, 0, -1);
+      $tmpstr = $tmpstr . ']';
+      $tmpstr = json_decode($tmpstr);
+
+    }
 
     return $tmpstr;
   }

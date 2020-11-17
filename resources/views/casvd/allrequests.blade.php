@@ -71,8 +71,10 @@
 
 <script>
 	$(document).ready(function(){
-		$('#requeststable').DataTable({
-			aaSorting: [[ 0, "desc" ]]
+		$('#requeststable').dataTable({
+			"aaSorting": [[ 0, "desc" ]],
+			"iDisplayLength": 15,
+			"aLengthMenu": [5, 10, 15, 25, 50, "All"]
 		});
 	});
 </script>
