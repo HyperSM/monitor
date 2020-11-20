@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-	<title>Login | Monitoring System</title>
+	<title>Login | HyperSM</title>
 	<link rel="shortcut icon" href="template/assets/img/logo.png" type="image/x-icon" />
 
 	<!--=== CSS ===-->
@@ -66,7 +66,7 @@
 	<!-- Logo -->
 	<div class="logo">
 		<img src="template/assets/img/logo.png" style="width: 24px;" alt="logo" />
-		<strong>Monitoring System</strong>
+		<strong>HyperSM</strong>
 	</div>
 	<!-- /Logo -->
 
@@ -164,7 +164,7 @@
 
 	<!-- Footer -->
 	<div class="footer">
-		@2020, ducnx4@fpt.com.vn
+		@2020, FIS Service
 	</div>
 	<!-- /Footer -->
 </body>

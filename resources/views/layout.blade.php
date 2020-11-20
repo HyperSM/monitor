@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-	<title>Monitoring System</title>
+	<title>HyperSM</title>
 	<link rel="shortcut icon" href="{{@Config::get('app.url')}}/template/assets/img/logo.png" type="image/x-icon" />
 
 	<!--=== CSS ===-->
@@ -166,7 +166,7 @@
 			<!-- Logo -->
 			<a class="navbar-brand" href="{{@Config::get('app.url')}}/admin/dashboard">
 				<img src="{{@Config::get('app.url')}}/template/assets/img/logo.png" style="width: 24px;" alt="logo" />
-				<strong>MONITOR</strong>
+				<strong>HYPERSM</strong>
 			</a>
 			<!-- /logo -->
 
