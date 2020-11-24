@@ -318,6 +318,12 @@
 								Solarwinds SAM
 								</a>
 							</li>
+							<li>
+								<a href="{{@Config::get('app.url')}}/admin/centreon">
+								<i class="icon-angle-right"></i>
+								Centreon
+								</a>
+							</li>
 						</ul>
 					</li>
 
