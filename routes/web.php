@@ -180,5 +180,13 @@ Route::post('/admin/casvd/popup/person/customer/{id}','casvdController@popuppers
 Route::post('/admin/casvd/popup/ci/{id}','casvdController@popupci');
 
 
+//Centreon
+Route::get('admin/centreon','centreonController@dashboard');
+Route::get('/admin/centreon/serverconfig','centreonController@serverconfig');
+Route::get('/admin/centreon/hosts','centreonController@hosts');
+route::post('/admin/centreon/centreonserver','centreonController@centreonserversubmit');
+route::get('/admin/centreon/hosts/addhost','centreonController@addhost');
+
+
 //Test route
 Route::get('/test','adminController@test');
