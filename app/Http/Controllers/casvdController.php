@@ -98,11 +98,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get top10 incidents
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
         'whereClause' => "type='I' AND status.sym='Open'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 10,
@@ -173,11 +173,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get top10 tickets
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
         'whereClause' => "type='R' AND status.sym='Open'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 10,
@@ -248,11 +248,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get top10 changes
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'chg',
         'whereClause' => "status.sym='Open'",
         'maxRows' => 10,
@@ -514,11 +514,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get all tickets
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
         'whereClause' => "type='I'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 50,
@@ -681,13 +681,13 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get all Requests
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
-        'whereClause' => "type='R'", // type I, R, P : Incident, Request, Problem
+        'whereClause' => "type='R' AND status.sym!='Closed'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 50,
         'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation']
       );
@@ -770,11 +770,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get Request Info
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
         'whereClause' => "type='R' AND ref_num='{$refnum}'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 1,
@@ -802,7 +802,14 @@ class casvdController extends Controller
           'zmain_tech.combo_name',      // 19. ZmainTech
           'change.chg_ref_num',         // 20. Change
           'caused_by_chg.chg_ref_num',  // 21. Caused by Change Order
-          'external_system_ticket'      // 22. External System Ticket
+          'external_system_ticket',     // 22. External System Ticket
+          // ID
+          'requested_by.id',            // 23. Requester ID
+          'customer.id',                // 24. Affected End User ID
+          'category.id',                // 25. Request Area ID
+          'group.id',                   // 26. Group ID
+          'assignee.id',                 // 27. Assignee ID
+          'affected_resource.id',        // 28. Configuration Item ID
         ]
       );
       $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
@@ -842,7 +849,13 @@ class casvdController extends Controller
           '"ZmainTech":"' . $item->Attributes->Attribute[19]->AttrValue . '", ' .
           '"Change":"' . $item->Attributes->Attribute[20]->AttrValue . '", ' .
           '"Caused by Change Order":"' . $item->Attributes->Attribute[21]->AttrValue . '", ' .
-          '"External System Ticket":"' . $item->Attributes->Attribute[22]->AttrValue . '"' .
+          '"External System Ticket":"' . $item->Attributes->Attribute[22]->AttrValue . '", ' .
+          '"Requester ID":"' . $item->Attributes->Attribute[23]->AttrValue . '", ' .
+          '"Affected End User ID":"' . $item->Attributes->Attribute[24]->AttrValue . '" ,' .
+          '"Request Area ID":"' . $item->Attributes->Attribute[25]->AttrValue . '" ,' .
+          '"Group ID":"' . $item->Attributes->Attribute[26]->AttrValue . '" ,' .
+          '"Assignee ID":"' . $item->Attributes->Attribute[27]->AttrValue . '" ,' .
+          '"Configuration Item ID":"' . $item->Attributes->Attribute[28]->AttrValue . '"' .
           '},';
       }
 
@@ -851,7 +864,9 @@ class casvdController extends Controller
       $tmpstr = json_decode($tmpstr, true);
     };
 
-    return view('casvd.editrequest', compact('user', 'err_msg', 'refnum', 'tmpstr'));
+    $droplist_status = $this->droplist('status');
+
+    return view('casvd.editrequest', compact('user', 'err_msg', 'refnum', 'tmpstr','droplist_status'));
   }
 
   /*
@@ -887,11 +902,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get Request Info
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
         'whereClause' => "type='R' AND ref_num='{$refnum}'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 1,
@@ -904,7 +919,7 @@ class casvdController extends Controller
 
       // Post
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectHandle' => $handle,
         'attrVals' => ["zccaddr",Request('zccaddr')],
         'attributes' => []
@@ -954,11 +969,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get all tickets
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'objectType' => 'cr',
         'whereClause' => "type='R'", // type I, R, P : Incident, Request, Problem
         'maxRows' => 50,
@@ -1119,11 +1134,11 @@ class casvdController extends Controller
         'username' => 'sd_test',
         'password' => 'msc@A2020'
       );
-      $info = $client->__call("login", array($ap_param));
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
 
       // Get all tickets
       $ap_param = array(
-        'sid' => $info->loginReturn,
+        'sid' => $sid,
         'sortBy' => 'id',
         'objectType' => 'chg',
         'whereClause' => "",
@@ -1213,6 +1228,754 @@ class casvdController extends Controller
     }
 
     return [$client, $sid];
+  }
+
+  /*
+  Section: Popup window - Person - Search
+  */
+  public function popuppersonsearch($id) {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $droplist_contact_type = $this->droplist('contact_type');
+    $droplist_active = $this->droplist('active');
+    $droplist_access_type = $this->droplist('access_type');
+
+    return view('casvd.popuppersonsearch', compact('id','droplist_contact_type','droplist_active','droplist_access_type'));
+  }
+
+  /*
+  Section: Popup window - Person - Result
+  */
+  public function popupperson($id, Request $request) {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $dm = Crypt::decryptString(session('mymonitor_md'));
+
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+    
+    $request = $request->all();
+
+    $tmpstr = $this->allpersons($casvdserver,$request);
+
+    return view('casvd.popupperson', compact('casvdserver', 'tmpstr', 'id'));
+  }
+
+  /*
+  Page: Popup window - Person
+  Section: List all person contact
+  */
+  public function allpersons($casvdserver,$request) {
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+      
+      $whereParam="";
+
+      if ($request["last_name"]!="") {
+        $temp = "last_name like '%".$request["last_name"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["first_name"]!="") {
+        $temp = "first_name like '%".$request["first_name"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["middle_name"]!="") {
+        $temp = "middle_name like '%".$request["middle_name"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["contact_type"]!="") {
+        $temp = "type.sym = '".$request["contact_type"]."'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["access_type"]!="") {
+        $temp = "access_type.sym like '%".$request["access_type"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["active"]!="") {
+        $temp = "delete_flag.sym = '".$request["active"]."'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["userid"]!="") {
+        $temp = "userid like '%".$request["userid"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["email"]!="") {
+        $temp = "email_address like '%".$request["email"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["location"]!="") {
+        $temp = "location.sym like '%".$request["location"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["telephone"]!="") {
+        $temp = "phone_number like '%".$request["telephone"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+
+      // Get all Requests
+      // Get list handle
+        $ap_param = array(
+          'sid' => $sid,
+          'objectType' => 'cnt',
+          'whereClause' => $whereParam
+        );
+        $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+        $listHandleID = $listHandle->listHandle;
+        $listHandleLength = $listHandle->listLength;
+      
+      $tmpstr = '[';
+      
+      for ($i=0; $i <= (intdiv($listHandleLength,250)); $i++) { 
+        $tmparr = array();
+        if ($i==(intdiv($listHandleLength,250))) {
+          $ap_param = array(
+            'sid' => $sid,
+            'listHandle' => $listHandleID,
+            'startIndex' => $i*250,
+            'endIndex' => $listHandleLength-1,
+            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+          );
+        } else {
+          $ap_param = array(
+            'sid' => $sid,
+            'listHandle' => $listHandleID,
+            'startIndex' => $i*250,
+            'endIndex' => ($i*250+249),
+            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+          );
+        }
+        $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
+        // Convert XML to object
+          $xmlresponse = simplexml_load_string($response);
+        // Convert SimpleXMLElement object to Array $responseArray
+          foreach ($xmlresponse->UDSObject as $node) {
+            $tmparr[] = $node;
+          }
+
+        // Print xml response to response template
+          foreach ($tmparr as $item) {
+            $tmpstr = $tmpstr .
+              '{' .
+              '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
+              '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // combo_name
+              '"User ID":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // userid
+              '"Area":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // zcnt_area
+              '"Email Address":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // email_address
+              '"Contact Type":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // type.sym
+              '"Access Type":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // access_type.sym
+              '"Workshift":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // schedule.sym
+              '"Status":"' . $item->Attributes->Attribute[8]->AttrValue . '"' . // delete_flag.sym
+              '},';
+          }
+      }
+      $tmpstr = substr($tmpstr, 0, -1);
+      $tmpstr = $tmpstr . ']';
+      $tmpstr = preg_replace("/[^\S ]+/", "", $tmpstr);
+      $tmpstr = json_decode($tmpstr);
+
+      // Free List hanlde
+        $ap_param = array(
+          'sid' => $sid,
+          'handles' => $listHandleID,
+        );
+        $client->__call("freeListHandles", array($ap_param));
+    }
+    // dd($tmpstr);
+    return $tmpstr;
+  }
+
+  /*
+  Section: Popup window - Group
+  */
+  public function popupgroup($id) {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $dm = Crypt::decryptString(session('mymonitor_md'));
+
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+    
+    $tmpstr = $this->allgroups($casvdserver);
+
+    return view('casvd.popupgroup', compact('casvdserver', 'tmpstr', 'id'));
+  }
+
+  /*
+  Page: Popup window - Group
+  Section: List all group
+  */
+  public function allgroups($casvdserver) {
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+      // Get all Requests
+      // Get list handle
+        $ap_param = array(
+          'sid' => $sid,
+          'objectType' => 'cnt',
+          'whereClause' => "type.sym='Group' AND delete_flag=0"
+        );
+        $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+        $listHandleID = $listHandle->listHandle;
+        $listHandleLength = $listHandle->listLength;
+      
+      $tmpstr = '[';
+      
+      for ($i=0; $i <= (intdiv($listHandleLength,250)); $i++) { 
+        $tmparr = array();
+        if ($i==(intdiv($listHandleLength,250))) {
+          $ap_param = array(
+            'sid' => $sid,
+            'listHandle' => $listHandleID,
+            'startIndex' => $i*250,
+            'endIndex' => $listHandleLength-1,
+            // 'attributeNames' => ['sym']
+            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','location.name','contact_num','schedule.sym','delete_flag.sym']
+          );
+        } else {
+          $ap_param = array(
+            'sid' => $sid,
+            'listHandle' => $listHandleID,
+            'startIndex' => $i*250,
+            'endIndex' => ($i*250+249),
+            // 'attributeNames' => ['sym']
+            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','location.name','contact_num','schedule.sym','delete_flag.sym']
+          );
+        }
+        $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
+        // dd($response);
+        // Convert XML to object
+          $xmlresponse = simplexml_load_string($response);
+        // Convert SimpleXMLElement object to Array $responseArray
+          foreach ($xmlresponse->UDSObject as $node) {
+            $tmparr[] = $node;
+          }
+        
+        // Print xml response to response template
+          foreach ($tmparr as $item) {
+            $tmpstr = $tmpstr .
+              '{' .
+              '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
+              '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // combo_name
+              '"User ID":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // userid
+              '"Area":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // zcnt_area
+              '"Email Address":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // email_address
+              '"Location":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // type.sym
+              '"Number":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // access_type.sym
+              '"Workshift":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // schedule.sym
+              '"Status":"' . $item->Attributes->Attribute[8]->AttrValue . '"' . // delete_flag.sym
+              '},';
+          }
+      }
+      $tmpstr = substr($tmpstr, 0, -1);
+      $tmpstr = $tmpstr . ']';
+      $tmpstr = preg_replace("/[^\S ]+/", "", $tmpstr);
+      $tmpstr = json_decode($tmpstr);
+
+      // Free List hanlde
+        $ap_param = array(
+          'sid' => $sid,
+          'handles' => $listHandleID,
+        );
+        $client->__call("freeListHandles", array($ap_param));
+    }
+    // dd($tmpstr);
+    return $tmpstr;
+  }
+
+  /*
+  Section: Popup window - Person - Search
+  */
+  public function popupcisearch($id) {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $droplist_contact_type = $this->droplist('contact_type');
+    $droplist_active = $this->droplist('active');
+    $droplist_access_type = $this->droplist('access_type');
+
+    return view('casvd.popupcisearch', compact('id','droplist_contact_type','droplist_active','droplist_access_type'));
+  }
+
+  /*
+  Section: Popup window - Person - Result
+  */
+  public function popupci($id, Request $request) {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $dm = Crypt::decryptString(session('mymonitor_md'));
+
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+    
+    $request = $request->all();
+
+    $tmpstr = $this->allpersons($casvdserver,$request);
+
+    return view('casvd.popupci', compact('casvdserver', 'tmpstr', 'id'));
+  }
+
+  /*
+  Page: Popup window - Person
+  Section: List all person contact
+  */
+  public function allcis($casvdserver,$request) {
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+      
+      $whereParam="";
+
+      if ($request["last_name"]!="") {
+        $temp = "last_name like '%".$request["last_name"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["first_name"]!="") {
+        $temp = "first_name like '%".$request["first_name"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["middle_name"]!="") {
+        $temp = "middle_name like '%".$request["middle_name"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["contact_type"]!="") {
+        $temp = "type.sym = '".$request["contact_type"]."'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["access_type"]!="") {
+        $temp = "access_type.sym like '%".$request["access_type"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["active"]!="") {
+        $temp = "delete_flag.sym = '".$request["active"]."'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["userid"]!="") {
+        $temp = "userid like '%".$request["userid"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["email"]!="") {
+        $temp = "email_address like '%".$request["email"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["location"]!="") {
+        $temp = "location.sym like '%".$request["location"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+      if ($request["telephone"]!="") {
+        $temp = "phone_number like '%".$request["telephone"]."%'";
+        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
+      };
+
+      // Get all Requests
+      // Get list handle
+        $ap_param = array(
+          'sid' => $sid,
+          'objectType' => 'cnt',
+          'whereClause' => $whereParam
+        );
+        $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+        $listHandleID = $listHandle->listHandle;
+        $listHandleLength = $listHandle->listLength;
+      
+      $tmpstr = '[';
+      
+      for ($i=0; $i <= (intdiv($listHandleLength,250)); $i++) { 
+        $tmparr = array();
+        if ($i==(intdiv($listHandleLength,250))) {
+          $ap_param = array(
+            'sid' => $sid,
+            'listHandle' => $listHandleID,
+            'startIndex' => $i*250,
+            'endIndex' => $listHandleLength-1,
+            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+          );
+        } else {
+          $ap_param = array(
+            'sid' => $sid,
+            'listHandle' => $listHandleID,
+            'startIndex' => $i*250,
+            'endIndex' => ($i*250+249),
+            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+          );
+        }
+        $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
+        // Convert XML to object
+          $xmlresponse = simplexml_load_string($response);
+        // Convert SimpleXMLElement object to Array $responseArray
+          foreach ($xmlresponse->UDSObject as $node) {
+            $tmparr[] = $node;
+          }
+
+        // Print xml response to response template
+          foreach ($tmparr as $item) {
+            $tmpstr = $tmpstr .
+              '{' .
+              '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
+              '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // combo_name
+              '"User ID":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // userid
+              '"Area":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // zcnt_area
+              '"Email Address":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // email_address
+              '"Contact Type":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // type.sym
+              '"Access Type":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // access_type.sym
+              '"Workshift":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // schedule.sym
+              '"Status":"' . $item->Attributes->Attribute[8]->AttrValue . '"' . // delete_flag.sym
+              '},';
+          }
+      }
+      $tmpstr = substr($tmpstr, 0, -1);
+      $tmpstr = $tmpstr . ']';
+      $tmpstr = preg_replace("/[^\S ]+/", "", $tmpstr);
+      $tmpstr = json_decode($tmpstr);
+
+      // Free List hanlde
+        $ap_param = array(
+          'sid' => $sid,
+          'handles' => $listHandleID,
+        );
+        $client->__call("freeListHandles", array($ap_param));
+    }
+    // dd($tmpstr);
+    return $tmpstr;
+  }
+
+  /*
+  Section: Function Return Contact Type drop down list
+  */
+  public function droplist_contacttype() {
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+    }
+
+    $tmpstr = '
+      <select name="contact_type" class="select2 full-width-fix required">
+      <option></option>
+      <option value="">None</option>';
+
+    // Get priority dropdown list
+    $ap_param = array(
+      'sid' => $sid,
+      'objectType' => 'ctp',
+      'whereClause' => "",
+      'maxRows' => 50,
+      'attributes' => ['sym']
+    );
+
+    $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+    // Convert XML to object
+    $xmlresponse = simplexml_load_string($response);
+    // Convert SimpleXMLElement object to Array $responseArray
+    $responseArray = array();
+    foreach ($xmlresponse->UDSObject as $node) {
+      $responseArray[] = $node;
+    }
+
+    // Print xml response to response template
+    foreach ($responseArray as $item) {
+      $val = $item->Attributes->Attribute[0]->AttrValue;
+      $tmpstr = $tmpstr .
+        '<option value="' . $val . '">' . $val . '</option>'; // id
+    }
+
+    $tmpstr = $tmpstr . '
+      </select>';
+
+    return $tmpstr;
+  }
+
+  /*
+  Section: Function Return Active drop down list
+  */
+  public function droplist_active() {
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+    }
+
+    $tmpstr = '
+      <select name="active" class="select2 full-width-fix required">
+      <option></option>
+      <option value="">None</option>';
+
+    // Get priority dropdown list
+    $ap_param = array(
+      'sid' => $sid,
+      'objectType' => 'actbool',
+      'whereClause' => "",
+      'maxRows' => 50,
+      'attributes' => ['sym']
+    );
+
+    $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+    // Convert XML to object
+    $xmlresponse = simplexml_load_string($response);
+    // Convert SimpleXMLElement object to Array $responseArray
+    $responseArray = array();
+    foreach ($xmlresponse->UDSObject as $node) {
+      $responseArray[] = $node;
+    }
+
+    // Print xml response to response template
+    foreach ($responseArray as $item) {
+      $val = $item->Attributes->Attribute[0]->AttrValue;
+      $tmpstr = $tmpstr .
+        '<option value="' . $val . '">' . $val . '</option>'; // id
+    }
+
+    $tmpstr = $tmpstr . '
+      </select>';
+
+    return $tmpstr;
+  }
+
+  /*
+  Section: Function Return Contact Type drop down list
+  */
+  public function droplist_accesstype() {
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+    }
+
+    $tmpstr = '
+      <select name="access_type" class="select2 full-width-fix required">
+      <option></option>
+      <option value="">None</option>';
+
+    // Get priority dropdown list
+    $ap_param = array(
+      'sid' => $sid,
+      'objectType' => 'acctyp',
+      'whereClause' => "",
+      'maxRows' => 50,
+      'attributes' => ['sym']
+    );
+
+    $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+    // Convert XML to object
+    $xmlresponse = simplexml_load_string($response);
+    // Convert SimpleXMLElement object to Array $responseArray
+    $responseArray = array();
+    foreach ($xmlresponse->UDSObject as $node) {
+      $responseArray[] = $node;
+    }
+
+    // Print xml response to response template
+    foreach ($responseArray as $item) {
+      $val = $item->Attributes->Attribute[0]->AttrValue;
+      $tmpstr = $tmpstr .
+        '<option value="' . $val . '">' . $val . '</option>'; // id
+    }
+
+    $tmpstr = $tmpstr . '
+      </select>';
+
+    return $tmpstr;
+  }
+
+  /*
+  Section: Function Return Contact Type drop down list
+  */
+  public function droplist($type) {
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+    }
+
+    $tmpobj = '';
+    $tmpattr = array();
+    $tmpwhere = '';
+
+    switch ($type) {
+      case 'status':
+        $tmpobj = 'crs';
+        $tmpattr = ['sym','code'];
+        $tmpwhere = 'cr_flag=1';
+        break;
+      case 'access_type':
+        $tmpobj = 'acctyp';
+        $tmpattr = ['sym'];
+        $tmpwhere = 'delete_flag=0';
+        break;
+      case 'contact_type':
+        $tmpobj = 'ctp';
+        $tmpattr = ['sym'];
+        break;
+      case 'active':
+        $tmpobj = 'actbool';
+        $tmpattr = ['sym'];
+        break;
+    }
+    // dd(in_array("Open",array("Open","Close")));
+    $tmpstr = '[';
+      // <select name='.$type.' class="select2 full-width-fix required">
+      // <option></option>
+      // <option value="">None</option>';
+
+    // Get priority dropdown list
+    $ap_param = array(
+      'sid' => $sid,
+      'objectType' => $tmpobj,
+      'whereClause' => $tmpwhere,
+      'maxRows' => 50,
+      'attributes' => $tmpattr
+    );
+
+    $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+    
+    // Convert XML to object
+    $xmlresponse = simplexml_load_string($response);
+    // Convert SimpleXMLElement object to Array $responseArray
+    $responseArray = array();
+    foreach ($xmlresponse->UDSObject as $node) {
+      $responseArray[] = $node;
+    }
+    // Print xml response to response template
+    // foreach ($responseArray as $item) {
+    //   $val0 = $item->Attributes->Attribute[0]->AttrValue;
+    //   switch ($type) {
+    //     case 'status':
+    //         $valarr = array("Acknowledged","Assigned","In Progress","Open","Rejected");
+    //         if (in_array($val0,$valarr)) {
+    //           $val1 = $item->Attributes->Attribute[1]->AttrValue;
+    //           $tmpstr = $tmpstr .
+    //             '<option value="' . $val1 . '">' . $val0 . '</option>';
+    //         };
+    //         break;
+    //     default:
+    //         $tmpstr = $tmpstr .
+    //           '<option value="' . $val0 . '">' . $val0 . '</option>';
+    //         break;
+    //   }
+    // }
+    
+    // $tmpstr = $tmpstr . '
+    //   </select>';
+
+    
+    switch ($type) {
+          case 'status':
+              $valarr = array("ACK","ASS","WIP","OP","PRBREJ");
+              foreach ($responseArray as $item) {
+                if (in_array($item->Attributes->Attribute[1]->AttrValue,$valarr)) {
+                  $tmpstr = $tmpstr .
+                    '{' .
+                    '"id":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' .
+                    '"value":"' . $item->Attributes->Attribute[0]->AttrValue . '"' .
+                    '},';
+                };
+              };
+              break;
+          default:
+              foreach ($responseArray as $item) {
+                $tmpstr = $tmpstr .
+                  '{' .
+                  '"value":"' . $item->Attributes->Attribute[0]->AttrValue . '"' .
+                  '},';
+              };
+              break;
+      }
+      
+    $tmpstr = substr($tmpstr, 0, -1);
+    $tmpstr = $tmpstr . ']';
+    $tmpstr = json_decode($tmpstr, true);
+    
+    return $tmpstr;
   }
 
   /*
@@ -1440,15 +2203,15 @@ class casvdController extends Controller
       $ap_param = array(
         'sid' => $sid,
         'objectType' => 'cnt',
-        'whereClause' => "",
-        'attributes' => ['last_name', 'first_name', 'middle_name']
+        'whereClause' => ""
+        // 'attributes' => ['last_name', 'first_name', 'middle_name']
       );
     } else {
       $ap_param = array(
         'sid' => $sid,
         'objectType' => 'cnt',
-        'whereClause' => "type.sym='$type'",
-        'attributes' => ['last_name', 'first_name', 'middle_name']
+        'whereClause' => "type.sym='$type'"
+        // 'attributes' => ['last_name', 'first_name', 'middle_name']
       );
     };
     $listHandleID = $client->__call("doQuery", array($ap_param))->doQueryReturn->listHandle;
@@ -1501,103 +2264,6 @@ class casvdController extends Controller
     }
     // dd($tmpstr);
     // $tmpstr = substr($tmpstr, 0, -1);
-
-    return $tmpstr;
-  }
-
-  /*
-  Section: Popup window - Person
-  */
-  public function popupperson() {
-    if (!Session::has('Monitor')) {
-      $url = url('/');
-      return redirect($url);
-    }
-
-    $dm = Crypt::decryptString(session('mymonitor_md'));
-
-    $casvdserver = DB::table('tbl_casvdservers')
-      ->where([
-        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
-      ])->first();
-
-    $user = DB::table('tbl_accounts')
-      ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
-      ->where([
-        ['tbl_accounts.username', '=', session('mymonitor_userid')]
-      ])->first();
-
-    $tmpstr = $this->allpersons($casvdserver);
-
-    return view('casvd.popupperson', compact('casvdserver', 'user', 'tmpstr'));
-  }
-
-  /*
-  Section: List all person contact
-  */
-  public function allpersons($casvdserver) {
-    $tmpstr = '[';
-
-    if ($casvdserver->hostname == '') {
-      return 'N/A';
-    } else {
-      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
-      // Login to CASVD
-      $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
-      );
-      $info = $client->__call("login", array($ap_param));
-
-      // Get all Requests
-      $ap_param = array(
-        'sid' => $info->loginReturn,
-        'objectType' => 'cnt',
-        'whereClause' => "last_name='SD Test'",
-        'maxRows' => 50,
-        'attributes' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
-      );
-      $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
-
-      // Convert XML to object
-      $xmlresponse = simplexml_load_string($response);
-
-      // Convert SimpleXMLElement object to Array $responseArray
-      $responseArray = array();
-      foreach ($xmlresponse->UDSObject as $node) {
-        $responseArray[] = $node;
-      }
-
-      // Sorting SimpleXMLElement object array
-      function comparator($a, $b)
-      {
-        // sort by ID
-        return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
-      }
-      usort($responseArray, __NAMESPACE__ . '\comparator');
-      $jsondata = json_encode($responseArray);
-
-      // Print xml response to response template
-      foreach ($responseArray as $item) {
-        $tmpstr = $tmpstr .
-          '{' .
-          '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
-          '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // combo_name
-          '"User ID":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // userid
-          '"Area":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // zcnt_area
-          '"Email Address":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // email_address
-          '"Contact Type":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // type.sym
-          '"Access Type":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // access_type.sym
-          '"Workshift":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // schedule.sym
-          '"Status":"' . $item->Attributes->Attribute[8]->AttrValue . '"' . // delete_flag.sym
-          '},';
-      }
-
-      $tmpstr = substr($tmpstr, 0, -1);
-      $tmpstr = $tmpstr . ']';
-      $tmpstr = json_decode($tmpstr);
-
-    }
 
     return $tmpstr;
   }

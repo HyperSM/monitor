@@ -4,7 +4,7 @@
 <!-- Page header -->
 <div class="page-header">
 	<div class="page-title">
-		<h2>Contact Search</h2>
+		<h2>Groups</h2>
 	</div>
 </div>
 
@@ -12,7 +12,7 @@
 	<div class="col-md-12">
 		<div class="widget box">
 			<div class="widget-header">
-				<h4><i class="icon-reorder"></i>All Requests</h4>
+				<h4><i class="icon-reorder"></i>All Groups</h4>
 				<div class="toolbar no-padding">
 					<div class="btn-group">
 						<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
@@ -29,8 +29,8 @@
 							<th>User ID</th>
 							<th>Area</th>
 							<th>Email Address</th>
-							<th>Contact Type</th>
-							<th>Access Type</th>
+							<th>Location</th>
+							<th>Number</th>
 							<th>Workshift</th>
 							<th>Status</th>
 						</thead>
@@ -44,8 +44,8 @@
 										echo '<td>'.$item->{'User ID'}.'</td>';
 										echo '<td>'.$item->{'Area'}.'</td>';
 										echo '<td>'.$item->{'Email Address'}.'</td>';
-										echo '<td>'.$item->{'Contact Type'}.'</td>';
-										echo '<td>'.$item->{'Access Type'}.'</td>';
+										echo '<td>'.$item->{'Location'}.'</td>';
+										echo '<td>'.$item->{'Number'}.'</td>';
 										echo '<td>'.$item->{'Workshift'}.'</td>';
 										echo '<td>'.$item->{'Status'}.'</td>';
 										echo '</tr>';

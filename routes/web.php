@@ -170,6 +170,15 @@ Route::get('/admin/casvd/allchanges','casvdController@allchanges');
 Route::get('ajaxcasvdallchanges','casvdController@ajaxcasvdallchanges')->name('ajaxcasvdallchanges');
 //Popup
 Route::get('admin/casvd/popup/person','casvdController@popupperson');
+Route::get('admin/casvd/popup/person/requester/{id}','casvdController@popuppersonsearch');
+Route::get('admin/casvd/popup/person/customer/{id}','casvdController@popuppersonsearch');
+Route::get('admin/casvd/popup/group/{id}','casvdController@popupgroup');
+Route::get('admin/casvd/popup/ci/{id}','casvdController@popupcisearch');
+//Search
+Route::post('/admin/casvd/popup/person/requester/{id}','casvdController@popupperson');
+Route::post('/admin/casvd/popup/person/customer/{id}','casvdController@popupperson');
+Route::post('/admin/casvd/popup/ci/{id}','casvdController@popupci');
+
 
 //Test route
 Route::get('/test','adminController@test');
