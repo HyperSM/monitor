@@ -804,12 +804,14 @@ class casvdController extends Controller
           'caused_by_chg.chg_ref_num',  // 21. Caused by Change Order
           'external_system_ticket',     // 22. External System Ticket
           // ID
-          'requested_by.id',            // 23. Requester ID
-          'customer.id',                // 24. Affected End User ID
-          'category.id',                // 25. Request Area ID
-          'group.id',                   // 26. Group ID
-          'assignee.id',                 // 27. Assignee ID
-          'affected_resource.id',        // 28. Configuration Item ID
+          'requested_by',               // 23. Requester ID
+          'customer',                   // 24. Affected End User ID
+          'category',                   // 25. Request Area ID
+          'group',                      // 26. Group ID
+          'assignee',                   // 27. Assignee ID
+          'affected_resource',          // 28. Configuration Item ID
+          'status',                     // 29. Status Code
+          'severity',                   // 30. Severity ID
         ]
       );
       $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
@@ -855,7 +857,9 @@ class casvdController extends Controller
           '"Request Area ID":"' . $item->Attributes->Attribute[25]->AttrValue . '" ,' .
           '"Group ID":"' . $item->Attributes->Attribute[26]->AttrValue . '" ,' .
           '"Assignee ID":"' . $item->Attributes->Attribute[27]->AttrValue . '" ,' .
-          '"Configuration Item ID":"' . $item->Attributes->Attribute[28]->AttrValue . '"' .
+          '"Configuration Item ID":"' . $item->Attributes->Attribute[28]->AttrValue . '" ,' .
+          '"Status ID":"' . $item->Attributes->Attribute[29]->AttrValue . '" ,' .
+          '"Severity ID":"' . $item->Attributes->Attribute[30]->AttrValue . '"' .
           '},';
       }
 
@@ -863,10 +867,11 @@ class casvdController extends Controller
       // $tmpstr = $tmpstr . ']';
       $tmpstr = json_decode($tmpstr, true);
     };
-
+    
     $droplist_status = $this->droplist('status');
+    $droplist_severity = $this->droplist('severity');
 
-    return view('casvd.editrequest', compact('user', 'err_msg', 'refnum', 'tmpstr','droplist_status'));
+    return view('casvd.editrequest', compact('user', 'err_msg', 'refnum', 'tmpstr','droplist_status','droplist_severity'));
   }
 
   /*
@@ -916,17 +921,17 @@ class casvdController extends Controller
       // Convert XML to object
       $xmlresponse = simplexml_load_string($response);
       $handle = $xmlresponse->UDSObject->Handle;
-
+      // dd(Request('severity'));
       // Post
       $ap_param = array(
         'sid' => $sid,
         'objectHandle' => $handle,
-        'attrVals' => ["zccaddr",Request('zccaddr')],
+        'attrVals' => ['requested_by',Request('requested_by'),'customer',Request('customer'),'category',Request('category'),'status',Request('status'),'zccaddr',Request('zccaddr'),'severity',Request('severity')],
         'attributes' => []
       );
       $client->__call("updateObject", array($ap_param));
     }
-    return $this->allrequests();
+    return $this->editrequest($refnum);
   }
 
   /*
@@ -1521,11 +1526,9 @@ class casvdController extends Controller
       return redirect($url);
     }
 
-    $droplist_contact_type = $this->droplist('contact_type');
     $droplist_active = $this->droplist('active');
-    $droplist_access_type = $this->droplist('access_type');
 
-    return view('casvd.popupcisearch', compact('id','droplist_contact_type','droplist_active','droplist_access_type'));
+    return view('casvd.popupcisearch', compact('id','droplist_active'));
   }
 
   /*
@@ -1546,7 +1549,7 @@ class casvdController extends Controller
     
     $request = $request->all();
 
-    $tmpstr = $this->allpersons($casvdserver,$request);
+    $tmpstr = $this->allcis($casvdserver,$request);
 
     return view('casvd.popupci', compact('casvdserver', 'tmpstr', 'id'));
   }
@@ -1567,46 +1570,22 @@ class casvdController extends Controller
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
       
-      $whereParam="";
+      $whereParam="delete_flag=0";
 
-      if ($request["last_name"]!="") {
-        $temp = "last_name like '%".$request["last_name"]."%'";
+      if ($request["name"]!="") {
+        $temp = "name like '%".$request["name"]."%'";
         $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
       };
-      if ($request["first_name"]!="") {
-        $temp = "first_name like '%".$request["first_name"]."%'";
+      if ($request["class"]!="") {
+        $temp = "class.type like '%".$request["class"]."%'";
         $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
       };
-      if ($request["middle_name"]!="") {
-        $temp = "middle_name like '%".$request["middle_name"]."%'";
-        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
-      };
-      if ($request["contact_type"]!="") {
-        $temp = "type.sym = '".$request["contact_type"]."'";
-        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
-      };
-      if ($request["access_type"]!="") {
-        $temp = "access_type.sym like '%".$request["access_type"]."%'";
+      if ($request["family"]!="") {
+        $temp = "family.sym like '%".$request["family"]."%'";
         $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
       };
       if ($request["active"]!="") {
         $temp = "delete_flag.sym = '".$request["active"]."'";
-        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
-      };
-      if ($request["userid"]!="") {
-        $temp = "userid like '%".$request["userid"]."%'";
-        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
-      };
-      if ($request["email"]!="") {
-        $temp = "email_address like '%".$request["email"]."%'";
-        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
-      };
-      if ($request["location"]!="") {
-        $temp = "location.sym like '%".$request["location"]."%'";
-        $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
-      };
-      if ($request["telephone"]!="") {
-        $temp = "phone_number like '%".$request["telephone"]."%'";
         $whereParam.=($whereParam==""?$temp:(" AND ".$temp));
       };
 
@@ -1614,13 +1593,14 @@ class casvdController extends Controller
       // Get list handle
         $ap_param = array(
           'sid' => $sid,
-          'objectType' => 'cnt',
+          'objectType' => 'nr',
           'whereClause' => $whereParam
         );
         $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
         $listHandleID = $listHandle->listHandle;
         $listHandleLength = $listHandle->listLength;
-      
+      // var_dump($listHandleLength);
+    
       $tmpstr = '[';
       
       for ($i=0; $i <= (intdiv($listHandleLength,250)); $i++) { 
@@ -1631,7 +1611,8 @@ class casvdController extends Controller
             'listHandle' => $listHandleID,
             'startIndex' => $i*250,
             'endIndex' => $listHandleLength-1,
-            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+            'attributeNames' => ['id','name','class.type','family.sym','serial_number','resource_contact.combo_name','location.name','last_mod','asset_num','is_asset.sym','is_ci.sym','delete_flag.sym']
+            // 'attributeNames' => []
           );
         } else {
           $ap_param = array(
@@ -1639,7 +1620,8 @@ class casvdController extends Controller
             'listHandle' => $listHandleID,
             'startIndex' => $i*250,
             'endIndex' => ($i*250+249),
-            'attributeNames' => ['id','combo_name','userid','zcnt_area','email_address','type.sym','access_type.sym','schedule.sym','delete_flag.sym']
+            'attributeNames' => ['id','name','class.type','family.sym','serial_number','resource_contact.combo_name','location.name','last_mod','asset_num','is_asset.sym','is_ci.sym','delete_flag.sym']
+            // 'attributeNames' => []
           );
         }
         $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
@@ -1655,14 +1637,17 @@ class casvdController extends Controller
             $tmpstr = $tmpstr .
               '{' .
               '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
-              '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // combo_name
-              '"User ID":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // userid
-              '"Area":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // zcnt_area
-              '"Email Address":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // email_address
-              '"Contact Type":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // type.sym
-              '"Access Type":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // access_type.sym
-              '"Workshift":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // schedule.sym
-              '"Status":"' . $item->Attributes->Attribute[8]->AttrValue . '"' . // delete_flag.sym
+              '"Name":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // name
+              '"Class":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // class.type
+              '"Family":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // family.sym
+              '"Serial Number":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // serial_number
+              '"Contact":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // resource_contact.combo_name
+              '"Location":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // location.name
+              '"Last Change":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // last_mod
+              '"Asset Number":"' . $item->Attributes->Attribute[8]->AttrValue . '", ' . // asset_num
+              '"Asset":"' . $item->Attributes->Attribute[9]->AttrValue . '", ' . // is_asset.sym
+              '"CI":"' . $item->Attributes->Attribute[10]->AttrValue . '", ' . // is_ci.sym
+              '"Active":"' . $item->Attributes->Attribute[11]->AttrValue . '"' . // delete_flag.sym
               '},';
           }
       }
@@ -1900,6 +1885,14 @@ class casvdController extends Controller
         $tmpobj = 'actbool';
         $tmpattr = ['sym'];
         break;
+      case 'severity':
+        $tmpobj = 'sev';
+        $tmpattr = ['sym','enum'];
+        break;
+      case 'urgency':
+        $tmpobj = 'sev';
+        $tmpattr = ['sym','id'];
+        break;
     }
     // dd(in_array("Open",array("Open","Close")));
     $tmpstr = '[';
@@ -1925,40 +1918,39 @@ class casvdController extends Controller
     foreach ($xmlresponse->UDSObject as $node) {
       $responseArray[] = $node;
     }
-    // Print xml response to response template
-    // foreach ($responseArray as $item) {
-    //   $val0 = $item->Attributes->Attribute[0]->AttrValue;
-    //   switch ($type) {
-    //     case 'status':
-    //         $valarr = array("Acknowledged","Assigned","In Progress","Open","Rejected");
-    //         if (in_array($val0,$valarr)) {
-    //           $val1 = $item->Attributes->Attribute[1]->AttrValue;
-    //           $tmpstr = $tmpstr .
-    //             '<option value="' . $val1 . '">' . $val0 . '</option>';
-    //         };
-    //         break;
-    //     default:
-    //         $tmpstr = $tmpstr .
-    //           '<option value="' . $val0 . '">' . $val0 . '</option>';
-    //         break;
-    //   }
-    // }
-    
-    // $tmpstr = $tmpstr . '
-    //   </select>';
 
+    //comment out
+      // Print xml response to response template
+      // foreach ($responseArray as $item) {
+      //   $val0 = $item->Attributes->Attribute[0]->AttrValue;
+      //   switch ($type) {
+      //     case 'status':
+      //         $valarr = array("Acknowledged","Assigned","In Progress","Open","Rejected");
+      //         if (in_array($val0,$valarr)) {
+      //           $val1 = $item->Attributes->Attribute[1]->AttrValue;
+      //           $tmpstr = $tmpstr .
+      //             '<option value="' . $val1 . '">' . $val0 . '</option>';
+      //         };
+      //         break;
+      //     default:
+      //         $tmpstr = $tmpstr .
+      //           '<option value="' . $val0 . '">' . $val0 . '</option>';
+      //         break;
+      //   }
+      // }
+      
+      // $tmpstr = $tmpstr . '
+      //   </select>';
     
     switch ($type) {
           case 'status':
-              $valarr = array("ACK","ASS","WIP","OP","PRBREJ");
+          case 'severity':
               foreach ($responseArray as $item) {
-                if (in_array($item->Attributes->Attribute[1]->AttrValue,$valarr)) {
                   $tmpstr = $tmpstr .
                     '{' .
                     '"id":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' .
                     '"value":"' . $item->Attributes->Attribute[0]->AttrValue . '"' .
                     '},';
-                };
               };
               break;
           default:
@@ -1970,7 +1962,7 @@ class casvdController extends Controller
               };
               break;
       }
-      
+
     $tmpstr = substr($tmpstr, 0, -1);
     $tmpstr = $tmpstr . ']';
     $tmpstr = json_decode($tmpstr, true);

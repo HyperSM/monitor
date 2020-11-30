@@ -31,28 +31,28 @@
                                         <td class="col-md-1 control-label" style="text-align: left;"><b>Name</b></td>
                                         <td class="col-md-1 control-label" style="text-align: left;"><b>Class</b></td>
                                         <td class="col-md-1 control-label" style="text-align: left;"><b>Family</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Standard CI</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Hostname</b></td>
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Standard CI</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Hostname</b></td> -->
                                     </tr>
                                     <tr>
                                         <td class="col-md-2"><input type="text" name="name" id="name" class="form-control" ></td>
                                         <td class="col-md-2"><input type="text" name="class" id="class" class="form-control" ></td>
                                         <td class="col-md-2"><input type="text" name="family" id="family" class="form-control" ></td>
-                                        <td class="col-md-2"><select type="text" name="standard_ci" id="standard_ci" class="form-control" ></td>
-                                        <td class="col-md-2"><select type="text" name="hostname" id="hostname" class="form-control" ></td>
+                                        <!-- <td class="col-md-2"><input type="text" name="standard_ci" id="standard_ci" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="hostname" id="hostname" class="form-control" ></td> -->
                                     </tr>
                                     <tr>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>MAC Address</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Alt CI ID</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>DNS Name</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Serial Number</b></td>
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>MAC Address</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Alt CI ID</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>DNS Name</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Serial Number</b></td> -->
                                         <td class="col-md-1 control-label" style="text-align: left;"><b>Active</b></td>
                                     </tr>
                                     <tr>
-                                        <td class="col-md-2"><input type="text" name="mac_address" id="mac_address" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="alt_ci_id" id="alt_ci_id" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="dns_name" id="dns_name" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="serial_number" id="serial_number" class="form-control" ></td>
+                                        <!-- <td class="col-md-2"><input type="text" name="mac_address" id="mac_address" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="alt_ci_id" id="alt_ci_id" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="dns_name" id="dns_name" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="serial_number" id="serial_number" class="form-control" ></td> -->
                                         <td class="col-md-2">
                                             <select type="text" name="active" id="active" class="form-control" >
                                                 <option value=""></option>';
@@ -62,28 +62,28 @@
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Contact</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>IP Address</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Location</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Status</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Service Type</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-md-2"><input type="text" name="contact" id="contact" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="ip_address" id="ip_address" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="location" id="location" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="status" id="status" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="service_type" id="service_type" class="form-control" ></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>Asset</b></td>
-                                        <td class="col-md-1 control-label" style="text-align: left;"><b>CI</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-md-2"><input type="text" name="asset" id="asset" class="form-control" ></td>
-                                        <td class="col-md-2"><input type="text" name="ci" id="ci" class="form-control" ></td>
-                                    </tr>
+                                    <!-- <tr> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Contact</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>IP Address</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Location</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Status</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Service Type</b></td> -->
+                                    <!-- </tr> -->
+                                    <!-- <tr> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="contact" id="contact" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="ip_address" id="ip_address" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="location" id="location" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="status" id="status" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="service_type" id="service_type" class="form-control" ></td> -->
+                                    <!-- </tr> -->
+                                    <!-- <tr> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>Asset</b></td> -->
+                                        <!-- <td class="col-md-1 control-label" style="text-align: left;"><b>CI</b></td> -->
+                                    <!-- </tr> -->
+                                    <!-- <tr> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="asset" id="asset" class="form-control" ></td> -->
+                                        <!-- <td class="col-md-2"><input type="text" name="ci" id="ci" class="form-control" ></td> -->
+                                    <!-- </tr> -->
                                     <tr height = 20px></tr>
                                 </body>
                             </table>

@@ -1,5 +1,21 @@
 {
     "cSpell.words": [
-        "casvd"
+        "ajaxcasvdallrequests",
+        "ajaxcasvdallrequests backup",
+        "ajaxcasvddashboardincidents",
+        "allchanges",
+        "backup",
+        "casvd",
+        "editrequest",
+        "editrequestsubmit",
+        "popupperson",
+        "popuppersonsearch",
+        "refnum"
+    ],
+    "cSpell.ignoreWords": [
+        "active",
+        "ajaxcasvdallchanges",
+        "droplist",
+        "droplist active"
     ]
 }

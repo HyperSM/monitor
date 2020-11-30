@@ -51,17 +51,31 @@
                                 <td class="col-md-2"><input value='{{$tmpstr["Requester"]}}' type="text" name="requested_by" id='{{$tmpstr["Requester ID"]}}' class="form-control" ></td>
                                 <td class="col-md-2"><input value='{{$tmpstr["Affected End User"]}}' type="text" name="customer" id='{{$tmpstr["Affected End User ID"]}}' class="form-control" ></td>
                                 <td class="col-md-2"><input value='{{$tmpstr["Request Area"]}}' type="text" name="category" id='{{$tmpstr["Request Area ID"]}}' class="form-control" ></td>
-                                <td class="col-md-3"><select type="text" name="status" id="status" class="form-control" >
-                                    <option value="">--None--</option>';
-                                    @foreach($droplist_status as $item)
-                                        @if($item['value']==$tmpstr["Status"])
-                                            <option value="{{$item['id']}}" selected="selected">{{$item['value']}}</option>
+                                <td class="col-md-3">
+                                    <select type="text" name="status" id="status" class="form-control">
+                                        <option value="">--None--</option>';
+                                        <?php $valarr = array("ACK","ASS","WIP","OP","PRBREJ"); ?>
+                                        @if(in_array($tmpstr["Status ID"],$valarr)==FALSE)
+                                            <option value="{{$tmpstr['Status ID']}}" selected="selected">{{$tmpstr['Status']}}</option>
+                                            @foreach($droplist_status as $item)
+                                                @if(in_array($item['id'],$valarr)==TRUE)
+                                                    <option value="{{$item['id']}}">{{$item['value']}}</option>
+                                                @endif
+                                            @endforeach
                                         @else
-                                            <option value="{{$item['id']}}">{{$item['value']}}</option>
+                                            @foreach($droplist_status as $item)
+                                                @if($item['id']==$tmpstr["Status ID"])
+                                                    <option value="{{$item['id']}}" selected="selected">{{$item['value']}}</option>
+                                                    @$check=0;
+                                                @else
+                                                    <option value="{{$item['id']}}">{{$item['value']}}</option>
+                                                @endif
+                                            @endforeach
                                         @endif
-                                    @endforeach
+                                    </select>
+                          
                                 </td>
-                                <td class="col-md-3"><select type="text" name="priority" id="priority" class="form-control" >
+                                <td class="col-md-3"><select type="text" name="priority" id="priority" class="form-control">
                                     <?php 
                                         $arr = array("0","1","2","3","4","5","6");
                                         $tmp = '';
@@ -133,7 +147,18 @@
                                             <td class="col-md-2 control-label" style="text-align: left;"><b>Active?</b></td>
                                         </tr>
                                         <tr>
-                                            <td class="col-md-2"><input value='{{$tmpstr["Severity"]}}' type="text" name="severity" id="severity" class="form-control" ></td>
+                                            <td class="col-md-2">
+                                                <select type="text" name="severity" id="severity" class="form-control">
+                                                    <option value="">--None--</option>';
+                                                    @foreach($droplist_severity as $item)
+                                                        @if($item['id']==$tmpstr['Severity ID'])
+                                                            <option value='{{$item["id"]}}' selected="selected">{{$item["value"]}}</option>
+                                                        @else
+                                                            <option value='{{$item["id"]}}'>{{$item["value"]}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </td>
                                             <td class="col-md-3"><input value='{{$tmpstr["Urgency"]}}' type="text" name="urgency" id="urgency" class="form-control" ></td>
                                             <td class="col-md-2"><input value='{{$tmpstr["Impact"]}}' type="text" name="impact" id="impact" class="form-control" ></td>
                                             <td class="col-md-2"><input value='{{$tmpstr["Active?"]}}' type="text" name="active id="active" class="form-control" ></td>

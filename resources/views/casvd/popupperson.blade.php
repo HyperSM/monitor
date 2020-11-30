@@ -12,7 +12,7 @@
 	<div class="col-md-12">
 		<div class="widget box">
 			<div class="widget-header">
-				<h4><i class="icon-reorder"></i>All Requests</h4>
+				<h4><i class="icon-reorder"></i>All Results</h4>
 				<div class="toolbar no-padding">
 					<div class="btn-group">
 						<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
