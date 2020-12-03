@@ -12,44 +12,77 @@
 
 <!--=== Statboxes ===-->
 <div class="row row-bg"> <!-- .row-bg -->
-	<div class="col-md-4">
-		<div class="statbox widget box box-shadow">
-			<div class="widget-content">
-				<div class="visual" style="padding: 0px; margin: 0px;">
-					<img src="{{@Config::get('app.url')}}/images/ciscosdwan/vsmart.png" style="width: 50px;">
+	<div class="col-md-12">
+		<div class="widget box" style="display:grid; grid-template-columns: 1fr;">
+			<div class="widget-header" style="display:grid; grid-template-columns: 0px fit-content(800px) 1fr 3fr;">
+				<div class="itemtype" style="margin: auto; margin-left: 50px;">
+					<label for="itemtype">Type:&nbsp&nbsp&nbsp</label>
+					<select name="itemtype" id="itemtype" style="width: 150px;">
+						<option value="all">All</option>
+						<option value="incident">Incident</option>
+						<option value="request">Request</option>
+						<option value="change">Change</option>
+					</select>
 				</div>
-				<div class="title">Total</div>
-				<div class="value" id="vsmartcount">N/A</div>
-				<a id="vs" class="click_devices open-options button more" href="#">Incident <i class="pull-right icon-angle-right"></i></a>
+				<div class="timeframe" style="margin: auto; margin-left: 50px;">
+					<label for="timeframe">Time frame:&nbsp&nbsp&nbsp</label>
+					<select name="timeframe" id="timeframe">
+						<option value="today">Today</option>
+						<option value="5d">Last 5 days</option>
+						<option value="1w">Last 1 week</option>
+						<option value="2w">Last 2 week</option>
+						<option value="1m">Last 1 month</option>
+						<option value="all">All</option>
+						<option value="custom">--Custom--</option>
+					</select>
+				</div>
+				<div class="daterange" style="margin: auto; margin-left: 50px;">
+					<label for="daterange">Date range:&nbsp&nbsp&nbsp</label>
+				</div>
 			</div>
-		</div> <!-- /.smallstat -->
-	</div> <!-- /.col-md-2 -->
+			<div class="widget-content" style="display: inline-block; white-space: nowrap">
+				<div class="col-md-4">
+					<div class="statbox widget box box-shadow" style="margin: 0;">
+						<div class="widget-content">
+							<div class="visual" style="padding: 0px; margin: 0px;">
+								<img src="{{@Config::get('app.url')}}/images/ciscosdwan/vsmart.png" style="width: 50px;">
+							</div>
+							<div class="title">Total</div>
+							<div class="value" id="vsmartcount">N/A</div>
+							<a id="vs" class="click_devices open-options button more" href="#">Incident <i class="pull-right icon-angle-right"></i></a>
+						</div>
+					</div> <!-- /.smallstat -->
+				</div> <!-- /.col-md-2 -->
 
-	<div class="col-md-4">
-		<div class="statbox widget box box-shadow">
-			<div class="widget-content">
-				<div class="visual" style="padding: 0px; margin: 0px;">
-					<img src="{{@Config::get('app.url')}}/images/ciscosdwan/wanedge.png" style="width: 50px;">
-				</div>
-				<div class="title">Total</div>
-				<div class="value" id="wanedgecount">N/A</div>
-				<a id="ve" class="click_devices open-options button more" href="#">Request <i class="pull-right icon-angle-right"></i></a>
-			</div>
-		</div> <!-- /.smallstat -->
-	</div> <!-- /.col-md-2 -->
+				<div class="col-md-4">
+					<div class="statbox widget box box-shadow" style="margin: 0;">
+						<div class="widget-content">
+							<div class="visual" style="padding: 0px; margin: 0px;">
+								<img src="{{@Config::get('app.url')}}/images/ciscosdwan/wanedge.png" style="width: 50px;">
+							</div>
+							<div class="title">Total</div>
+							<div class="value" id="wanedgecount">N/A</div>
+							<a id="ve" class="click_devices open-options button more" href="#">Request <i class="pull-right icon-angle-right"></i></a>
+						</div>
+					</div> <!-- /.smallstat -->
+				</div> <!-- /.col-md-2 -->
 
-	<div class="col-md-4 hidden-xs">
-		<div class="statbox widget box box-shadow">
-			<div class="widget-content">
-				<div class="visual" style="padding: 0px; margin: 0px;">
-					<img src="{{@Config::get('app.url')}}/images/ciscosdwan/vbond.png" style="width: 50px;">
-				</div>
-				<div class="title">Total</div>
-				<div class="value" id="vbondcount">N/A</div>
-				<a id="vb" class="click_devices open-options button more" href="#">Change <i class="pull-right icon-angle-right"></i></a>
+				<div class="col-md-4 hidden-xs">
+					<div class="statbox widget box box-shadow" style="margin: 0;">
+						<div class="widget-content">
+							<div class="visual" style="padding: 0px; margin: 0px;">
+								<img src="{{@Config::get('app.url')}}/images/ciscosdwan/vbond.png" style="width: 50px;">
+							</div>
+							<div class="title">Total</div>
+							<div class="value" id="vbondcount">N/A</div>
+							<a id="vb" class="click_devices open-options button more" href="#">Change <i class="pull-right icon-angle-right"></i></a>
+						</div>
+					</div> <!-- /.smallstat -->
+				</div> <!-- /.col-md-2 -->
 			</div>
-		</div> <!-- /.smallstat -->
-	</div> <!-- /.col-md-2 -->
+		</div>
+	</div>
+	
 
 </div> <!-- /.row -->
 <!-- /Statboxes -->
