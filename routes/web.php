@@ -153,6 +153,9 @@ Route::post('/admin/casvd/casvdserver','casvdController@casvdserversubmit');
 Route::get('ajaxcasvddashboardincidents','casvdController@ajaxcasvddashboardincidents')->name('ajaxcasvddashboardincidents');
 Route::get('ajaxcasvddashboardrequests','casvdController@ajaxcasvddashboardrequests')->name('ajaxcasvddashboardrequests');
 Route::get('ajaxcasvddashboardchanges','casvdController@ajaxcasvddashboardchanges')->name('ajaxcasvddashboardchanges');
+Route::get('ajaxcasvddashboardtotalincidents/{timeframe}','casvdController@ajaxcasvddashboardtotalincidents')->name('ajaxcasvddashboardtotalincidents');
+Route::get('ajaxcasvddashboardtotalrequests','casvdController@ajaxcasvddashboardtotalrequests')->name('ajaxcasvddashboardtotalrequests');
+Route::get('ajaxcasvddashboardtotalchanges','casvdController@ajaxcasvddashboardtotalchanges')->name('ajaxcasvddashboardtotalchanges');
 Route::get('/admin/casvd/getrefreshrate','casvdController@getrefreshrate');
 Route::post('/admin/casvd/setrefreshrate','casvdController@setrefreshrate');
 //Incident
