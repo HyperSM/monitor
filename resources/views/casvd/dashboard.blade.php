@@ -105,7 +105,7 @@
 <div class="row row-bg" style="display: flex; justify-content: space-around;">
 	<div class="col-md-3">
 		<div class="statbox widget box box-shadow">
-			<div class="widget-header" style="display: grid; grid-template-columns: 60px 1fr;">
+			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 1fr;">
 				<span style="grid-column: 1/2;"><b>INCIDENT</b></span>
 				<div id="incidentrange" style="cursor: pointer; grid-column: 2/3; text-align: right;">
 					<span></span> &nbsp;
@@ -114,7 +114,7 @@
 				</div>
 			</div>
 			<div class="widget-content">
-				<div class="visual" style="padding: 0px; margin: 0px;">
+				<div class="visual" style="padding: 0px; margin: 0px; margin-left: 8px;">
 					<img src="{{@Config::get('app.url')}}/images/casvd/incident.png" style="width: 50px;">
 				</div>
 				<div class="title">Total</div>
@@ -124,7 +124,7 @@
 	</div>
 	<div class="col-md-3">
 		<div class="statbox widget box box-shadow">
-			<div class="widget-header" style="display: grid; grid-template-columns: 60px 1fr;">
+			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 1fr;">
 				<span style="grid-column: 1/2;"><b>REQUEST</b></span>
 				<div id="requestrange" style="cursor: pointer; grid-column: 2/3; text-align: right;">
 					<span id="requestrangespan"></span> &nbsp;
@@ -133,7 +133,7 @@
 				</div>
 			</div>
 			<div class="widget-content">
-				<div class="visual" style="padding: 0px; margin: 0px;">
+				<div class="visual" style="padding: 0px; margin: 0px; margin-left: 7px;">
 					<img src="{{@Config::get('app.url')}}/images/casvd/request.png" style="width: 50px;">
 				</div>
 				<div class="title">Total</div>
@@ -143,17 +143,16 @@
 	</div>
 	<div class="col-md-3">
 		<div class="statbox widget box box-shadow">
-			<div class="widget-header" style="display: grid; grid-template-columns: 60px 1fr 1fr;">
+			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 1fr;">
 				<span style="grid-column: 1/2;"><b>CHANGE</b></span>
-				<div id="changerange" style="cursor: pointer; grid-column: 2/4; text-align: right;">
-					<!-- <span></span> &nbsp; -->
-					<input type="text" class="form-control" style="border: none; outline: none; background: transparent;" disabled="disabled"></input>
+				<div id="changerange" style="cursor: pointer; grid-column: 2/3; text-align: right;">
+					<span id="changerangespan"></span> &nbsp;
 					<i class="fa fa-calendar"></i>&nbsp;
 					<i class="fa fa-caret-down"></i>
 				</div>
 			</div>
 			<div class="widget-content">
-				<div class="visual" style="padding: 0px; margin: 0px;">
+				<div class="visual" style="padding: 0px; margin: 0px; margin-left: 4px;">
 					<img src="{{@Config::get('app.url')}}/images/casvd/change.png" style="width: 50px;">
 				</div>
 				<div class="title">Total</div>
@@ -232,6 +231,10 @@
 <!-- /Top10 -->
 
 <script>
+	var incidentIntervalID;
+	var requestIntervalID;
+	var changeIntervalID;
+
 	setInterval(function () {
 		var ajaxcasvddashboardincidents = '<?php echo URL::route('ajaxcasvddashboardincidents') ?>';
 		$('#ajaxcasvddashboardincidents').load(ajaxcasvddashboardincidents).fadeIn("slow");
@@ -253,85 +256,138 @@
 		var ajaxcasvddashboardchanges = '<?php echo URL::route('ajaxcasvddashboardchanges') ?>';
 		$('#ajaxcasvddashboardchanges').load(ajaxcasvddashboardchanges).fadeIn("slow");
 
+		// var start= moment().unix();
+		// var end= moment().unix();
+
+		// var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
+		// ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
+		// $('#incidentcount').load(ajaxcasvddashboardtotalincidents).fadeIn("slow");
+
+		// var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
+		// ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
+		// $('#requestcount').load(ajaxcasvddashboardtotalrequests).fadeIn("slow");
+
+		// var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
+		// ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
+		// $('#changecount').load(ajaxcasvddashboardtotalchanges).fadeIn("slow");
+	});
+
+	// Date range picker + refresh ajaxGetTotal
+	$(function() {
+		var start = moment().startOf('day');
+		var end = moment().startOf('day');
+
+		$('#incidentrange').daterangepicker(
+			{
+				startDate: start,
+				endDate: end,
+				alwaysShowCalendars: true,
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				}
+			}, 
+		
+			function (start, end) {
+				$('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+				ajaxGetTotal('incident',start.unix(),end.unix());
+			}
+		);
+
+		$('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+		ajaxGetTotal('incident',start.unix(),end.unix());
 	});
 
 	$(function() {
-		var start = moment().subtract(29, 'days');
-		var end = moment();
+		var start = moment().startOf('day');
+		var end = moment().startOf('day');
 
-		function cb(start, end) {
-			$('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-		}
+		$('#requestrange').daterangepicker(
+			{
+				startDate: start,
+				endDate: end,
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				}
+			}, 
+		
+			function (start, end) {
+				$('#requestrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+				ajaxGetTotal('request',start.unix(),end.unix());
+			}
+		);
 
-		$('#incidentrange').daterangepicker({
-		startDate: start,
-		endDate: end,
-		ranges: {
-			'Today': [moment(), moment()],
-			'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-			'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			'This Month': [moment().startOf('month'), moment().endOf('month')],
-			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-		}
-		}, cb);
-
-		cb(start, end);
-	});
-
-	$(function() {
-		var start = moment().subtract(29, 'days');
-		var end = moment();
-
-		function cb(start, end) {
 		$('#requestrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-		}
-
-		$('#requestrange').daterangepicker({
-		startDate: start,
-		endDate: end,
-		ranges: {
-			'Today': [moment(), moment()],
-			'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-			'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			'This Month': [moment().startOf('month'), moment().endOf('month')],
-			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-		}
-		}, cb);
-
-		cb(start, end);
+		ajaxGetTotal('request',start.unix(),end.unix());
 	});
 
 	$(function() {
-		var start = moment().subtract(29, 'days');
-		var end = moment();
+		var start = moment().startOf('day');
+		var end = moment().startOf('day');
 
-		function cb(start, end) {
-			$('#changerange input').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-			// var el = document.getElementById("changerangediv");
-			// el.value = (start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-		}
+		$('#changerange').daterangepicker(
+			{
+				startDate: start,
+				endDate: end,
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				}
+			}, 
+		
+			function (start, end) {
+				$('#changerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+				ajaxGetTotal('change',start.unix(),end.unix());
+			}
+		);
 
-		$('#changerange').daterangepicker({
-		startDate: start,
-		endDate: end,
-		ranges: {
-			'Today': [moment(), moment()],
-			'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-			'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			'This Month': [moment().startOf('month'), moment().endOf('month')],
-			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-		}
-		}, cb);
-
-		cb(start, end);
+		$('#changerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+		ajaxGetTotal('change',start.unix(),end.unix());
 	});
 
-	function changerangeFunction() {
-		alert("test");
-	}
+	function ajaxGetTotal (type, start, end) {
+		refreshrate = {{ $refreshrate }};
+
+		switch (type) {
+			case "incident":
+				clearInterval(incidentIntervalID);
+				incidentIntervalID = setInterval(function () {
+					var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
+					ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
+					$('#incidentcount').load(ajaxcasvddashboardtotalincidents).fadeIn("slow");
+				}, refreshrate);
+				break;
+			case "request":
+				clearInterval(requestIntervalID);
+				requestIntervalID = setInterval(function () {
+					var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
+					ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
+					$('#requestcount').load(ajaxcasvddashboardtotalrequests).fadeIn("slow");
+				}, refreshrate);
+				break;
+			case "change":
+				clearInterval(changeIntervalID);
+				changeIntervalID = setInterval(function () {
+					var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
+					ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
+					$('#changecount').load(ajaxcasvddashboardtotalchanges).fadeIn("slow");
+				}, refreshrate);
+				break;
+		}
+	};
 
 </script>
 

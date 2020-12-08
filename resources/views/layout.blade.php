@@ -119,12 +119,6 @@
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/pickadate/picker.date.js"></script>
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/pickadate/picker.time.js"></script>
 
-	<!-- daterangepicker -->
-	<!-- <script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/daterangepicker-master/jquery.min.js"></script> -->
-	<!-- <script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/daterangepicker-master/moment.min.js"></script>
-	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/daterangepicker-master/daterangepicker.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="{{@Config::get('app.url')}}/template/plugins/daterangepicker-master/daterangepicker.css" /> -->
-
 	<!-- Circle Dials -->
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/knob/jquery.knob.js"></script>
 

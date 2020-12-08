@@ -69,9 +69,9 @@ class casvdController extends Controller
 
   /*
   Page: Dashboard
-  Section: Function Return total incidents to ajax call back
+  Section: Function Return total changes to ajax call back
   */
-  public function ajaxcasvddashboardtotalincidents($timeframe) {
+  public function ajaxcasvddashboardtotalincidents($start, $end) {
     $casvdserver = DB::table('tbl_casvdservers')
       ->where([
         ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
@@ -87,43 +87,96 @@ class casvdController extends Controller
         'password' => 'msc@A2020'
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
-
-      switch ($timeframe) {
-        case 'today':
-          
-          break;
-
-        case '5d':
-          
-          break;
-
-        case '1w':
-          
-          break;
-
-        case '2w':
-          
-          break;
-
-        case '1m':
-          
-          break;
-
-        case 'all':
-          
-          break;
-
-        case 'custom':
-          
-          break;
-      }
-      
-      $whereParam="type='I'";
+      $whereParam="type = 'I' AND open_date >= ".$start."AND open_date <= ".$end;
 
       // Get list handle
         $ap_param = array(
           'sid' => $sid,
           'objectType' => 'cr',
+          'whereClause' => $whereParam
+        );
+        $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+        $listHandleID = $listHandle->listHandle;
+        $listHandleLength = $listHandle->listLength;
+      
+      // Free List hanlde
+        $ap_param = array(
+          'sid' => $sid,
+          'handles' => $listHandleID,
+        );
+        $client->__call("freeListHandles", array($ap_param));
+    }
+    return $listHandleLength;
+  }
+
+  /*
+  Page: Dashboard
+  Section: Function Return total changes to ajax call back
+  */
+  public function ajaxcasvddashboardtotalrequests($start, $end) {
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+      $whereParam="type = 'R' AND open_date >= ".$start."AND open_date <= ".$end;
+
+      // Get list handle
+        $ap_param = array(
+          'sid' => $sid,
+          'objectType' => 'cr',
+          'whereClause' => $whereParam
+        );
+        $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+        $listHandleID = $listHandle->listHandle;
+        $listHandleLength = $listHandle->listLength;
+      
+      // Free List hanlde
+        $ap_param = array(
+          'sid' => $sid,
+          'handles' => $listHandleID,
+        );
+        $client->__call("freeListHandles", array($ap_param));
+    }
+    return $listHandleLength;
+  }
+
+  /*
+  Page: Dashboard
+  Section: Function Return total changes to ajax call back
+  */
+  public function ajaxcasvddashboardtotalchanges($start, $end) {
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => 'sd_test',
+        'password' => 'msc@A2020'
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+      $whereParam="open_date >= ".$start."AND open_date <= ".$end;
+
+      // Get list handle
+        $ap_param = array(
+          'sid' => $sid,
+          'objectType' => 'chg',
           'whereClause' => $whereParam
         );
         $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
