@@ -2,6 +2,26 @@
 @section('content')
 @include('casvd.menu')
 
+<style>
+	.count-box {
+		display: grid;
+		grid-template-columns: fit-content(100px) 1fr fit-content(100px);
+		grid-template-rows: 1fr 2fr;
+	}
+	.count-box .visual {
+		grid-column: 1/2;
+		grid-row: 1/3;
+	}
+	.count-box .title {
+		grid-column: 2/4;
+		grid-row: 1/2;
+	}
+	.count-box .value {
+		grid-column: 3/4;
+		grid-row: 2/3;
+		margin-left: 10px;
+	}
+</style>
 
 <!-- Page header -->
 <div class="page-header">
@@ -12,100 +32,10 @@
 </div>
 
 <!--=== Statboxes ===-->
-<!-- <div class="row row-bg">
-	<div class="col-md-12">
-		<div class="widget box" style="display:grid; grid-template-columns: 1fr;">
-			<div class="widget-header" style="display:grid; grid-template-columns: 0px fit-content(800px) fit-content(800px) fit-content(800px) fit-content(300px);">
-				<div class="itemtype" style="margin: auto; margin-left: 15px;">
-					<label for="itemtype" style="margin: 0;">Type:&nbsp&nbsp&nbsp</label>
-					<select class="itemtype_sel" name="itemtype" id="itemtype" style="width: 150px;">
-						<option value="all">All</option>
-						<option value="incident">Incident</option>
-						<option value="request">Request</option>
-						<option value="change">Change</option>
-					</select>
-				</div>
-				<div class="timeframe" style="margin: auto 50px;">
-					<label for="timeframe" style="margin: 0;">Time frame:&nbsp&nbsp&nbsp</label>
-					<select class="timeframe_sel" name="timeframe" id="timeframe" style="width: 150px;" onchange="seltimeframe(this.value)">
-						<option value="today" selected="selected">Today</option>
-						<option value="5d">Last 5 days</option>
-						<option value="1w">Last 1 week</option>
-						<option value="2w">Last 2 week</option>
-						<option value="1m">Last 1 month</option>
-						<option value="all">All</option>
-						<option value="custom">--Custom--</option>
-					</select>
-				</div>
-				<div class="daterange" style="margin: auto 50px; display: none;">
-					<label for="daterange" style="margin: 0;">Date range:&nbsp&nbsp&nbsp</label>
-					<label for="daterange_from" style="margin: 0;">from &nbsp&nbsp</label>
-					<input type="date" id="daterange_from" name="daterange_from" style="height: 25px; margin-top:5px;">
-					<label for="daterange_to" style="margin: 0; margin-left:5px;">to &nbsp&nbsp</label>
-					<input type="date" id="daterange_to" name="daterange_to" style="height: 25px; margin-top:5px;">
-				</div>
-				<div class="daterange_btn">
-					<button class="btn btn-primary" style="padding: 2px 13px; margin-bottom: 2px; margin-left: 50px;" onclick="settimeframe()">Set</button>
-				</div>
-			</div>
-			<div class="widget-content" style="display: inline-block; white-space: nowrap">
-				<div class="col-md-4">
-					<div class="statbox widget box box-shadow" style="margin: 0;">
-						<div class="widget-header" style="text-align:center; padding: 0;">
-							<h4 style="margin:0;">Incident</h4>
-						</div>
-						<div class="widget-content" style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;">
-							<div style="padding: 0px; margin: 0px; grid-row: 1/3; grid-column: 1/2;">
-								<h3><b>Total</b></h3>
-							</div>
-							<div class="title" style="grid-row: 1/2; grid-column: 2/3;">Total</div>
-							<div class="value" id="incidentcount" style="grid-row: 2/3; grid-column: 2/3;">N/A</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-4">
-					<div class="statbox widget box box-shadow" style="margin: 0;">
-						<div class="widget-header" style="text-align:center; padding: 0;">
-							<h4 style="margin:0;">Request</h4>
-						</div>
-						<div class="widget-content" style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;">
-							<div style="padding: 0px; margin: 0px; grid-row: 1/3; grid-column: 1/2;">
-								<h3><b>Total</b></h3>
-							</div>
-							<div class="title" style="grid-row: 1/2; grid-column: 2/3;">Total</div>
-							<div class="value" id="requestcount" style="grid-row: 2/3; grid-column: 2/3;">N/A</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-4 hidden-xs">
-					<div class="statbox widget box box-shadow" style="margin: 0;">
-						<div class="widget-header" style="text-align:center; padding: 0;">
-							<h4 style="margin:0;">Change</h4>
-						</div>
-						<div class="widget-content" style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;">
-							<div style="padding: 0px; margin: 0px; grid-row: 1/3; grid-column: 1/2;">
-								<h3><b>Total</b></h3>
-							</div>
-							<div class="title" style="grid-row: 1/2; grid-column: 2/3;">Total</div>
-							<div class="value" id="changecount" style="grid-row: 2/3; grid-column: 2/3;">N/A</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-
-</div> -->
-<!-- /Statboxes -->
-
-<!--=== Statboxes ===-->
 <div class="row row-bg" style="display: flex; justify-content: space-around;">
 	<div class="col-md-3">
 		<div class="statbox widget box box-shadow">
-			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 1fr;">
+			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 2fr;">
 				<span style="grid-column: 1/2;"><b>INCIDENT</b></span>
 				<div id="incidentrange" style="cursor: pointer; grid-column: 2/3; text-align: right;">
 					<span></span> &nbsp;
@@ -113,18 +43,21 @@
 					<i class="fa fa-caret-down"></i>
 				</div>
 			</div>
-			<div class="widget-content">
+			<div class="widget-content count-box">
 				<div class="visual" style="padding: 0px; margin: 0px; margin-left: 8px;">
 					<img src="{{@Config::get('app.url')}}/images/casvd/incident.png" style="width: 50px;">
 				</div>
 				<div class="title">Total</div>
+				<div class="loading-gif-incident" style="text-align: right; grid-column: 2/3; grid-row: 2/3;">
+					<img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+				</div>
 				<div class="value" id="incidentcount">N/A</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-3">
 		<div class="statbox widget box box-shadow">
-			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 1fr;">
+			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 2fr;">
 				<span style="grid-column: 1/2;"><b>REQUEST</b></span>
 				<div id="requestrange" style="cursor: pointer; grid-column: 2/3; text-align: right;">
 					<span id="requestrangespan"></span> &nbsp;
@@ -132,18 +65,21 @@
 					<i class="fa fa-caret-down"></i>
 				</div>
 			</div>
-			<div class="widget-content">
+			<div class="widget-content count-box">
 				<div class="visual" style="padding: 0px; margin: 0px; margin-left: 7px;">
 					<img src="{{@Config::get('app.url')}}/images/casvd/request.png" style="width: 50px;">
 				</div>
 				<div class="title">Total</div>
+				<div class="loading-gif-request" style="text-align: right; grid-column: 2/3; grid-row: 2/3;">
+					<img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+				</div>
 				<div class="value" id="requestcount">N/A</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-3">
 		<div class="statbox widget box box-shadow">
-			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 1fr;">
+			<div class="widget-header" style="display: grid; grid-template-columns: 1fr 2fr;">
 				<span style="grid-column: 1/2;"><b>CHANGE</b></span>
 				<div id="changerange" style="cursor: pointer; grid-column: 2/3; text-align: right;">
 					<span id="changerangespan"></span> &nbsp;
@@ -151,11 +87,14 @@
 					<i class="fa fa-caret-down"></i>
 				</div>
 			</div>
-			<div class="widget-content">
+			<div class="widget-content count-box">
 				<div class="visual" style="padding: 0px; margin: 0px; margin-left: 4px;">
 					<img src="{{@Config::get('app.url')}}/images/casvd/change.png" style="width: 50px;">
 				</div>
 				<div class="title">Total</div>
+				<div class="loading-gif-change" style="text-align: right; grid-column: 2/3; grid-row: 2/3;">
+					<img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+				</div>
 				<div class="value" id="changecount">N/A</div>
 			</div>
 		</div>
@@ -247,6 +186,8 @@
 	}, {{ $refreshrate }});
 
 	$(document).ready(function () {
+		
+
 		var ajaxcasvddashboardincidents = '<?php echo URL::route('ajaxcasvddashboardincidents') ?>';
 		$('#ajaxcasvddashboardincidents').load(ajaxcasvddashboardincidents).fadeIn("slow");
 
@@ -256,20 +197,26 @@
 		var ajaxcasvddashboardchanges = '<?php echo URL::route('ajaxcasvddashboardchanges') ?>';
 		$('#ajaxcasvddashboardchanges').load(ajaxcasvddashboardchanges).fadeIn("slow");
 
-		// var start= moment().unix();
-		// var end= moment().unix();
+		var start= moment().unix();
+		var end= moment().unix();
 
-		// var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
-		// ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
-		// $('#incidentcount').load(ajaxcasvddashboardtotalincidents).fadeIn("slow");
+		var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
+		ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
+		$('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {
+			$('.loading-gif-incident').hide();
+		}).fadeIn("slow");
 
-		// var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
-		// ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
-		// $('#requestcount').load(ajaxcasvddashboardtotalrequests).fadeIn("slow");
+		var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
+		ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
+		$('#requestcount').load(ajaxcasvddashboardtotalrequests, function() {
+			$('.loading-gif-request').hide();
+		}).fadeIn("slow");
 
-		// var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
-		// ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
-		// $('#changecount').load(ajaxcasvddashboardtotalchanges).fadeIn("slow");
+		var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
+		ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
+		$('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
+			$('.loading-gif-change').hide();
+		}).fadeIn("slow");
 	});
 
 	// Date range picker + refresh ajaxGetTotal
@@ -367,7 +314,10 @@
 				incidentIntervalID = setInterval(function () {
 					var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
 					ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
-					$('#incidentcount').load(ajaxcasvddashboardtotalincidents).fadeIn("slow");
+					$('.loading-gif-incident').show();
+					$('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {
+						$('.loading-gif-incident').hide();
+					}).fadeIn("slow");
 				}, refreshrate);
 				break;
 			case "request":
@@ -375,7 +325,10 @@
 				requestIntervalID = setInterval(function () {
 					var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
 					ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
-					$('#requestcount').load(ajaxcasvddashboardtotalrequests).fadeIn("slow");
+					$('.loading-gif-request').show();
+					$('#requestcount').load(ajaxcasvddashboardtotalrequests, function() {
+						$('.loading-gif-request').hide();
+					}).fadeIn("slow");
 				}, refreshrate);
 				break;
 			case "change":
@@ -383,7 +336,10 @@
 				changeIntervalID = setInterval(function () {
 					var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
 					ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
-					$('#changecount').load(ajaxcasvddashboardtotalchanges).fadeIn("slow");
+					$('.loading-gif-change').show();
+					$('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
+						$('.loading-gif-change').hide();
+					}).fadeIn("slow");
 				}, refreshrate);
 				break;
 		}

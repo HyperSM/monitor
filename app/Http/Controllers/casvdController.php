@@ -76,15 +76,17 @@ class casvdController extends Controller
       ->where([
         ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
       ])->first();
-
+    
     if ($casvdserver->hostname == '') {
       return 'N/A';
     } else {
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
+        // 'username' => $casvdserver->user,
+        // 'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
       $whereParam="type = 'I' AND open_date >= ".$start."AND open_date <= ".$end;
@@ -125,8 +127,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
       $whereParam="type = 'R' AND open_date >= ".$start."AND open_date <= ".$end;
@@ -167,8 +169,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
       $whereParam="open_date >= ".$start."AND open_date <= ".$end;
@@ -215,14 +217,14 @@ class casvdController extends Controller
         ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
       ])->first();
 
-    if ($casvdserver->hostname == '') {
+      if ($casvdserver->hostname == '') {
       return 'N/A';
     } else {
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -296,8 +298,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -371,8 +373,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -637,8 +639,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -804,8 +806,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -893,8 +895,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -1030,8 +1032,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -1097,8 +1099,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -1262,8 +1264,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -1345,8 +1347,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
     }
@@ -1411,8 +1413,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
       
@@ -1563,8 +1565,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
 
@@ -1691,8 +1693,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
       
@@ -1808,8 +1810,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
     }
@@ -1866,8 +1868,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
     }
@@ -1924,8 +1926,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
     }
@@ -1982,8 +1984,8 @@ class casvdController extends Controller
       $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
       // Login to CASVD
       $ap_param = array(
-        'username' => 'sd_test',
-        'password' => 'msc@A2020'
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
       );
       $sid = $client->__call("login", array($ap_param))->loginReturn;
     }
