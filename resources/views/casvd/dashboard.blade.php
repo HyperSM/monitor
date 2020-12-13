@@ -102,6 +102,19 @@
 </div>
 <!-- /Statboxes -->
 
+<div class="row">
+	<div class="widget box">
+		<div class="widget-header">
+			<h4>Monthly Tickets - Chart</h4>
+		</div>
+		<div style="height: 10px;">
+		</div>
+		<div class="widget-content no-padding" align="center">
+			<div id="chart_multiple" class="chart" style="width:95%;"></div>
+		</div>
+	</div>
+</div>
+
 <!--=== Top10 ===-->
 <div class="row">
 	<!-- Top10 Incidents -->
@@ -186,8 +199,6 @@
 	}, {{ $refreshrate }});
 
 	$(document).ready(function () {
-		
-
 		var ajaxcasvddashboardincidents = '<?php echo URL::route('ajaxcasvddashboardincidents') ?>';
 		$('#ajaxcasvddashboardincidents').load(ajaxcasvddashboardincidents).fadeIn("slow");
 
@@ -217,6 +228,19 @@
 		$('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
 			$('.loading-gif-change').hide();
 		}).fadeIn("slow");
+
+		var ajaxcasvddashboardticketchart = '<?php echo URL::route('ajaxcasvddashboardticketchart') ?>';
+		console.log(ajaxcasvddashboardticketchart);
+		$.ajax({
+			type: "GET",
+			url: ajaxcasvddashboardticketchart,
+			success: function(data) {
+				console.log(data);
+			}
+		});
+		// var ajaxcasvddashboardticketchart = '<?php echo URL::route('ajaxcasvddashboardticketchart') ?>';
+		// var test = $.ajax.load(ajaxcasvddashboardticketchart).fadeIn("slow");
+		// console.write(test);
 	});
 
 	// Date range picker + refresh ajaxGetTotal
@@ -345,6 +369,44 @@
 		}
 	};
 
+	// Highchart
+	Highcharts.chart('chart_multiple', {
+		chart: {
+			type: 'line'
+		},
+		title: {
+			text: 'Monthly Tickets'
+		},
+		xAxis: {
+			categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+		},
+		yAxis: {
+			title: {
+				text: 'Tickets'
+			}
+		},
+		plotOptions: {
+			line: {
+				dataLabels: {
+				enabled: true
+				},
+				enableMouseTracking: false
+			}
+		},
+		series: [{
+			color: App.getLayoutColorCode('red'),
+			name: 'Incident',
+			data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+		}, {
+			color: App.getLayoutColorCode('purple'),
+			name: 'Request',
+			data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+		}, {
+			color: App.getLayoutColorCode('ocean'),
+			name: 'Change',
+			data: [1,2,3,4,5,7,8,9,3,4,2]
+		}]
+		});
 </script>
 
 @endsection

@@ -197,6 +197,53 @@ class casvdController extends Controller
 
   /*
   Page: Dashboard
+  Section: Function Return total changes to ajax call back
+  */
+  // public function ajaxcasvddashboardticketchart() {
+  //   dd("test");
+  //   $casvdserver = DB::table('tbl_casvdservers')
+  //     ->where([
+  //       ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+  //     ])->first();
+
+  //   if ($casvdserver->hostname == '') {
+  //     return 'N/A';
+  //   } else {
+  //     $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+  //     // Login to CASVD
+  //     $ap_param = array(
+  //       'username' => $casvdserver->user,
+  //       'password' => $casvdserver->password
+  //     );
+  //     $sid = $client->__call("login", array($ap_param))->loginReturn;
+  //     $whereParam="open_date >= ".$start."AND open_date <= ".$end;
+
+  //     // Get list handle
+  //       $ap_param = array(
+  //         'sid' => $sid,
+  //         'objectType' => 'chg',
+  //         'whereClause' => $whereParam
+  //       );
+  //       $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+  //       $listHandleID = $listHandle->listHandle;
+  //       $listHandleLength = $listHandle->listLength;
+      
+  //     // Free List hanlde
+  //       $ap_param = array(
+  //         'sid' => $sid,
+  //         'handles' => $listHandleID,
+  //       );
+  //       $client->__call("freeListHandles", array($ap_param));
+  //   }
+  //   return $listHandleLength;
+  // }
+
+  public function ajaxcasvddashboardticketchart() {
+    echo "test1";
+  }
+
+  /*
+  Page: Dashboard
   Section: Function Return top 10 open incidents to ajax call back
   */
   public function ajaxcasvddashboardincidents() {
@@ -560,7 +607,7 @@ class casvdController extends Controller
   /*
   Page: Dashboard -> AllIncidents
   */
-  public function allincidents() {
+  public function allincidents_old() {
     if (!Session::has('Monitor')) {
       $url = url('/');
       return redirect($url);
@@ -755,6 +802,113 @@ class casvdController extends Controller
     $dl_group = $this->droplist_group($client, $sid);
 
     return view('casvd.addincident', compact('user', 'err_msg', 'dl_priority', 'dl_category', 'dl_ci', 'dl_group'));
+  }
+
+  /*
+  Page: Dashboard -> AllRequests
+  */
+  public function allincidents() {
+    if (!Session::has('Monitor')) {
+      $url = url('/');
+      return redirect($url);
+    }
+
+    $casvdserver = DB::table('tbl_casvdservers')
+      ->where([
+        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first();
+
+    $user = DB::table('tbl_accounts')
+      ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+      ->where([
+        ['tbl_accounts.username', '=', session('mymonitor_userid')]
+      ])->first();
+
+    // Get refreshrate
+    $refreshrate = DB::table('tbl_refreshrate')
+      ->leftJoin('tbl_accounts', 'tbl_refreshrate.userid', '=', 'tbl_accounts.userid')
+      ->where([
+        ['tbl_accounts.username', '=', session('mymonitor_userid')]
+      ])->first();
+    if (empty($refreshrate)) {
+      $refreshrate = 5000;
+      // Insert refreshrate to DB
+      DB::table('tbl_refreshrate')
+        ->insert(
+          [
+            'userid' => $user->userid,
+            'product' => 'casvd',
+            'refreshrate' => $refreshrate
+          ]
+        );
+    } else {
+      $refreshrate = $refreshrate->refreshrate;
+    }
+
+    $tmpstr = '[';
+
+    if ($casvdserver->hostname == '') {
+      return 'N/A';
+    } else {
+      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+      // Login to CASVD
+      $ap_param = array(
+        'username' => $casvdserver->user,
+        'password' => $casvdserver->password
+      );
+      $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+      // Get all Requests
+      $ap_param = array(
+        'sid' => $sid,
+        'objectType' => 'cr',
+        'whereClause' => "type='I' AND status.sym!='Closed'", // type I, R, P : Incident, Request, Problem
+        'maxRows' => 50,
+        'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation']
+      );
+      $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+      // Convert XML to object
+      $xmlresponse = simplexml_load_string($response);
+
+      // Convert SimpleXMLElement object to Array $responseArray
+      $responseArray = array();
+      foreach ($xmlresponse->UDSObject as $node) {
+        $responseArray[] = $node;
+      }
+
+      // Sorting SimpleXMLElement object array
+      function comparator($a, $b)
+      {
+        // sort by ID
+        return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
+      }
+      usort($responseArray, __NAMESPACE__ . '\comparator');
+      $jsondata = json_encode($responseArray);
+      // Print xml response to response template
+      foreach ($responseArray as $item) {
+        $tmpstr = $tmpstr .
+          '{' .
+          '"ID":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' . // id
+          '"Request#":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' . // ref_num
+          '"Summary":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' . // summary
+          '"Priority":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' . // priority
+          '"Category":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' . // category
+          '"Status":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' . // status
+          '"Group":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' . // group
+          '"Assigned To":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' . // assignee
+          '"Main Assignee":"' . $item->Attributes->Attribute[8]->AttrValue . '", ' . // zmain_tech
+          '"Open Date":"' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[9]->AttrValue)) . '", ' . // open_date
+          '"Last Modified Date":"' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue)) . '", ' . // last_mod_dt
+          '"SLA Violation":"' . $item->Attributes->Attribute[11]->AttrValue . '"' . // sla_violation
+          '},';
+      }
+      $tmpstr = substr($tmpstr, 0, -1);
+      $tmpstr = $tmpstr . ']';
+      $tmpstr = json_decode($tmpstr);
+    }
+
+    return view('casvd.allrequests', compact('casvdserver', 'user', 'refreshrate', 'tmpstr'));
   }
 
   /*
@@ -1060,129 +1214,6 @@ class casvdController extends Controller
       $client->__call("updateObject", array($ap_param));
     }
     return $this->editrequest($refnum);
-  }
-
-  /*
-  Page: Dashboard -> All Incidents
-  Section: Function Return all incidents to ajax call back
-  */
-  public function ajaxcasvdallrequests_backup() {
-    // Response template
-    $tmpstr =
-      '<table class="table table-hover table-condensed datatable" id="ajaxcasvdallrequeststable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Request#</th>
-                <th>Summary</th>
-                <th>Priority</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Group</th>
-                <th>Assigned To</th>
-                <th>Main Assignee</th>
-                <th>Open Date</th>
-                <th>Last Modified Date</th>
-                <th>SLA Violation</th>
-            </tr>
-        </thead>
-        <tbody>';
-
-    $casvdserver = DB::table('tbl_casvdservers')
-      ->where([
-        ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
-      ])->first();
-
-    if ($casvdserver->hostname == '') {
-      return 'N/A';
-    } else {
-      $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
-      // Login to CASVD
-      $ap_param = array(
-        'username' => $casvdserver->user,
-        'password' => $casvdserver->password
-      );
-      $sid = $client->__call("login", array($ap_param))->loginReturn;
-
-      // Get all tickets
-      $ap_param = array(
-        'sid' => $sid,
-        'objectType' => 'cr',
-        'whereClause' => "type='R'", // type I, R, P : Incident, Request, Problem
-        'maxRows' => 50,
-        'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.last_name', 'assignee.last_name', 'assignee.first_name', 'assignee.middle_name', 'zmain_tech.last_name', 'zmain_tech.first_name', 'zmain_tech.middle_name', 'open_date', 'last_mod_dt', 'sla_violation']
-      );
-      $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
-
-      // Convert XML to object
-      $xmlresponse = simplexml_load_string($response);
-      // Convert SimpleXMLElement object to Array $responseArray
-      $responseArray = array();
-      foreach ($xmlresponse->UDSObject as $node) {
-        $responseArray[] = $node;
-      }
-
-      // Sorting SimpleXMLElement object array
-      function comparator($a, $b)
-      {
-        // sort by ID
-        return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
-      }
-      usort($responseArray, __NAMESPACE__ . '\comparator');
-
-      // Print xml response to response template
-      foreach ($responseArray as $item) {
-        // Init attribute's variable
-        $assignee_lastname = $item->Attributes->Attribute[7]->AttrValue;
-        $assignee_firstname = $item->Attributes->Attribute[8]->AttrValue;
-        $assignee_middlename = $item->Attributes->Attribute[9]->AttrValue;
-        $zmaintech_lastname = $item->Attributes->Attribute[10]->AttrValue;
-        $zmaintech_firstname = $item->Attributes->Attribute[11]->AttrValue;
-        $zmaintech_middlename = $item->Attributes->Attribute[12]->AttrValue;
-
-        // Generate assignee name
-        if ($assignee_firstname != '' and $assignee_middlename != '') {
-          $assignee_name = $assignee_lastname . ', ' . $assignee_firstname . ' ' . $assignee_middlename;
-        } elseif ($assignee_middlename = '' and $assignee_firstname != '') {
-          $assignee_name = $assignee_lastname . ', ' . $assignee_firstname;
-        } elseif ($assignee_middlename != '' and $assignee_firstname = '') {
-          $assignee_name = $assignee_lastname . ', ' . $assignee_middlename;
-        } else {
-          $assignee_name = $assignee_lastname;
-        }
-
-        // Generate zmaintech name
-        if ($zmaintech_firstname != '' and $zmaintech_middlename != '') {
-          $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_firstname . ' ' . $zmaintech_middlename;
-        } elseif ($zmaintech_middlename = '' and $zmaintech_firstname != '') {
-          $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_firstname;
-        } elseif ($zmaintech_middlename != '' and $zmaintech_firstname = '') {
-          $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_middlename;
-        } else {
-          $zmaintech_name = $zmaintech_lastname;
-        }
-
-        $tmpstr = $tmpstr .
-          '<tr>
-                  <td style="vertical-align: middle;">' . $item->Attributes->Attribute[0]->AttrValue . '</a></td>' . // id
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[1]->AttrValue . '</a></td>' . // ref_num
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[2]->AttrValue . '</a></td>' . // summary
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[3]->AttrValue . '</a></td>' . // priority
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[4]->AttrValue . '</a></td>' . // category
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[5]->AttrValue . '</a></td>' . // status
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[6]->AttrValue . '</a></td>' . // group
-          '<td style="vertical-align: middle;">' . $assignee_name . '</a></td>' . // assignee
-          '<td style="vertical-align: middle;">' . $zmaintech_name . '</a></td>' . // zmain_tech
-          '<td style="vertical-align: middle;">' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[13]->AttrValue)) . '</a></td>' . // open_date
-          '<td style="vertical-align: middle;">' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[14]->AttrValue)) . '</a></td>' . // last_mod_dt
-          '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[15]->AttrValue . '</a></td>' . // sla_violation
-          '</tr>';
-      }
-      $tmpstr = $tmpstr . '
-            </tbody>
-        </table>';
-      echo $tmpstr;
-    }
   }
 
   /*
