@@ -23,7 +23,6 @@
 
 			<div class="widget-content" style="vertical-align: middle;">
 				<div class="ct-control-status" style="overflow-x: overlay; border:none;" align="center">
-					<!-- <div id="ajaxcasvdallincidents"></div> -->
 					<table class="table table-striped table-bordered table-hover" id="requeststable">
 						<thead>
 							<th>ID</th>
@@ -41,9 +40,6 @@
 						</thead>
 						<tbody>
 							<?php 
-								// $alink = @Config::get('app.url');
-								// $atag = '<a href="'.@Config::get('app.url').'/admin/dashboard/users/ena/{{$item->userid}}" class="bs-tooltip" title="Enable">';
-								// dd($atag);
 								foreach ($tmpstr as $item) {
 									echo '<tr>';
 									echo '<td>'.$item->{'ID'}.'</td>';
