@@ -6,13 +6,15 @@
 
 <div class="page-header">
     <div class="">
-        <h3>Add Host</h3>
+        <h3>Edit Host</h3>
     </div>
 </div>
 
+
 <div class="row">
-    <form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/admin/centreon/hosts/addhostsubmit"
+    <form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/admin/centreon/hosts/edit"
         method="POST">
+        <input type="hidden" name="hidden_hostname" value="{{$host->name}}">
         <div class="col-md-12">
             <div class="widget box">
                 <div class="widget-header">
@@ -23,29 +25,25 @@
                     @csrf
                     <div class="form-group">
                         <label class="col-md-5 control-label">Host name:</label>
-                        <div class="col-md-4"><input type="text" name="hostname" id="hostname" class="form-control"
-                                required></div>
+                        <div class="col-md-4"><input type="text" name="name"  class="form-control" value="{{$host->name}}"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-md-5 control-label">Alias</label>
-                        <div class="col-md-4"><input type="text" name="alias" class="form-control" required></div>
+                        <div class="col-md-4"><input type="text" name="alias" class="form-control" value="{{$host->alias}}"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-md-5 control-label">IP Address / DNS:</label>
-                        <div class="col-md-4"><input type="text" name="address" class="form-control" required></div>
+                        <div class="col-md-4"><input type="text" name="address" class="form-control" value="{{$host->address}}"></div>
                     </div>
-
 
                     <div class="form-group align-center">
                         <label class="col-md-5 control-label">Monitored from:</label>
                         <div class="row">
                             <div class="col-md-4">
                                 <select class="form-control" name="poller">
-                                    @foreach($pollers as $poller)
-                                        <option value="{{$poller->name}}">{{$poller->name}}</option>
-                                    @endforeach
+                                    <option value="Central">Central</option>
                                 </select>
                             </div>
                         </div>
@@ -69,6 +67,7 @@
                         <button type="button" id="btn_cancel" class="back btn btn-default">Cancel</button>
 
                     </div>
+
                 </div>
             </div>
 
