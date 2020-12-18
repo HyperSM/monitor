@@ -696,7 +696,7 @@ class casvdController extends Controller
       $refreshrate = $refreshrate->refreshrate;
     }
 
-    $tmpstr = '[';
+    // $tmpstr = '[';
 
     if ($casvdserver->hostname == '') {
       return 'N/A';
@@ -713,8 +713,8 @@ class casvdController extends Controller
       $ap_param = array(
         'sid' => $sid,
         'objectType' => 'cr',
-        'whereClause' => "type='I' AND status.sym!='Closed' AND id=784899", // type I, R, P : Incident, Request, Problem
-        'maxRows' => 1,
+        'whereClause' => "type='I' AND status.sym!='Closed'", // type I, R, P : Incident, Request, Problem
+        'maxRows' => 50,
         'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym','affected_resource.name', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation']
       );
       $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
@@ -727,39 +727,28 @@ class casvdController extends Controller
       foreach ($xmlresponse->UDSObject as $node) {
         $responseArray[] = $node;
       }
-      // Sorting SimpleXMLElement object array
-      function comparator($a, $b)
-      {
-        // sort by ID
-        return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
-      }
-      usort($responseArray, __NAMESPACE__ . '\comparator');
+      
+      $tmpstr = array();
+
       // Print xml response to response template
       foreach ($responseArray as $item) {
-        $tmpstr = $tmpstr .
-          "{" .
-          "'ID':'" . $item->Attributes->Attribute[0]->AttrValue . "', " . // id
-          "'Request#':'" . $item->Attributes->Attribute[1]->AttrValue . "', " . // ref_num
-          "'Summary':'" . $item->Attributes->Attribute[2]->AttrValue . "', " . // summary
-          "'Priority':'" . $item->Attributes->Attribute[3]->AttrValue . "', " . // priority
-          "'Category':'" . $item->Attributes->Attribute[4]->AttrValue . "', " . // category
-          "'CI':'" . $item->Attributes->Attribute[5]->AttrValue . "', " . // affected_resource
-          "'Status':'" . $item->Attributes->Attribute[6]->AttrValue . "', " . // status
-          "'Group':'" . $item->Attributes->Attribute[7]->AttrValue . "', " . // group
-          "'Assigned To':'" . $item->Attributes->Attribute[8]->AttrValue . "', " . // assignee
-          "'Main Assignee':'" . $item->Attributes->Attribute[9]->AttrValue . "', " . // zmain_tech
-          "'Open Date':'" . date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue)) . "', " . // open_date
-          "'Last Modified Date':'" . date("d-m-Y g:i a", intval($item->Attributes->Attribute[11]->AttrValue)) . "', " . // last_mod_dt
-          "'SLA Violation':'" . $item->Attributes->Attribute[12]->AttrValue . "'" . // sla_violation
-          '},';
+          $temparr = array();
+          $temparr['ID'] = $item->Attributes->Attribute[0]->AttrValue;
+          $temparr['Request#'] = $item->Attributes->Attribute[1]->AttrValue;
+          $temparr['Summary'] = $item->Attributes->Attribute[2]->AttrValue;
+          $temparr['Priority'] = $item->Attributes->Attribute[3]->AttrValue;
+          $temparr['Category'] = $item->Attributes->Attribute[4]->AttrValue;
+          $temparr['CI'] = $item->Attributes->Attribute[5]->AttrValue;
+          $temparr['Status'] = $item->Attributes->Attribute[6]->AttrValue;
+          $temparr['Group'] = $item->Attributes->Attribute[7]->AttrValue;
+          $temparr['Assigned To'] = $item->Attributes->Attribute[8]->AttrValue;
+          $temparr['Main Assignee'] = $item->Attributes->Attribute[9]->AttrValue;
+          $temparr['Open Date'] = date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue));
+          $temparr['Last Modified Date'] = date("d-m-Y g:i a", intval($item->Attributes->Attribute[11]->AttrValue));
+          $temparr['SLA Violation'] = $item->Attributes->Attribute[12]->AttrValue;
+          array_push($tmpstr,$temparr);
       }
-      $tmpstr = substr($tmpstr, 0, -1);
-      $tmpstr = $tmpstr . ']';
-      $tmpstr = preg_replace("/[^\S]+/", "", $tmpstr); // Remove special character before decode
-      dd($tmpstr);
-      $tmpstr = json_decode($tmpstr);
     }
-    dd($tmpstr);
 
     return view('casvd.allincidents', compact('casvdserver', 'user', 'refreshrate', 'tmpstr'));
   }
