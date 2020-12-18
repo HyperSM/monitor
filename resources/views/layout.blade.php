@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 	<title>HyperSM</title>
 	<link rel="shortcut icon" href="{{@Config::get('app.url')}}/template/assets/img/logo.png" type="image/x-icon" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 	<!--=== CSS ===-->
 
 	<!-- Bootstrap -->
@@ -107,10 +107,14 @@
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/flot/jquery.flot.pie.js"></script>
 
 	<!-- DataTables -->
-	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/tabletools/TableTools.min.js"></script> <!-- optional -->
+	{{--<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/jquery.dataTables.min.js"></script>--}}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
+
+    <script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/tabletools/TableTools.min.js"></script> <!-- optional -->
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/colvis/ColVis.min.js"></script> <!-- optional -->
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/DT_bootstrap.js"></script>
+
+
 
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
 
@@ -138,13 +142,13 @@
 
 	<script>
 	$(document).ready(function(){
-		"use strict";
+        "use strict";
 
-		App.init(); // Init layout and core plugins
-		Plugins.init(); // Init all plugins
-		FormComponents.init(); // Init all form-specific plugins
+        App.init(); // Init layout and core plugins
+        Plugins.init(); // Init all plugins
+        FormComponents.init(); // Init all form-specific plugins
 
-	});
+    });
 	</script>
 
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/assets/js/custom.js"></script>

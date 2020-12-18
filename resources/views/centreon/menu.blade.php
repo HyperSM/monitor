@@ -35,19 +35,28 @@
         </li>
 			</ul>
 		</li>
+
+    <!-- Monitoring menu -->
+    <li class="dropdown">
+        <a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Monitoring</span><i class="icon-angle-down left-padding"></i></a>
+        <ul class="dropdown-menu pull-right">
+            <li><a href="{{@Config::get('app.url')}}/admin/centreon/monitoring" title=""></i>Status</a></li>
+            <li><a href="{{@Config::get('app.url')}}/admin/centreon/monitoring" title=""></i>Details</a></li>
+        </ul>
+    </li>
     <!-- Host menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Hosts</span><i class="icon-angle-down left-padding"></i></a>
       <ul class="dropdown-menu pull-right">
       <li><a href="{{@Config::get('app.url')}}/admin/centreon/hosts" title=""></i>Hosts</a></li>
-			<li><a href="{{@Config::get('app.url')}}/admin/centreon/" title=""></i>Host Groups</a></li>
+			<li><a href="{{@Config::get('app.url')}}/admin/centreon/hostgroup" title=""></i>Host Groups</a></li>
 			</ul>
 		</li>
 
     <!-- Service menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Services</span><i class="icon-angle-down left-padding"></i></a>
       <ul class="dropdown-menu pull-right">
-      <li><a href="{{@Config::get('app.url')}}/admin/centreon/" title=""></i>Service by Host</a></li>
-			<li><a href="{{@Config::get('app.url')}}/admin/centreon/" title=""></i>Service Groups</a></li>
+      <li><a href="{{@Config::get('app.url')}}/admin/centreon/service" title=""></i>Service by Host</a></li>
+			<li><a href="{{@Config::get('app.url')}}/admin/centreon/srvgroup" title=""></i>Service Groups</a></li>
 			</ul>
 		</li>
 
@@ -57,7 +66,9 @@
 			<li><a href="{{@Config::get('app.url')}}/admin/centreon/serverconfig" title=""></i>Centreon Server</a></li>
 			</ul>
 		</li>
+
 	</ul>
+
 </div>
 
 <script>
@@ -82,7 +93,7 @@
     jQuery.ajax({
            headers: {
            },
-           url: "{{ url('/admin/casvd/getrefreshrate') }}",
+           url: "{{ url('/admin/centreon/getrefreshrate') }}",
            method: 'get',
            success: function(result,response){
             refreshrate.value = result;
@@ -98,7 +109,7 @@
     jQuery.ajax({
            headers: {
            },
-           url: "{{ url('/admin/casvd/setrefreshrate') }}",
+           url: "{{ url('/admin/centreon/setrefreshrate') }}",
            method: 'post',
            data: {
               _token: '{{ csrf_token() }}',

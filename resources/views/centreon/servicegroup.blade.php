@@ -4,7 +4,7 @@
 <!-- Page header -->
 <div class="page-header">
     <div class="page-title">
-        <h3>Hosts</h3>
+        <h3>Service Group</h3>
 
     </div>
 </div>
@@ -14,9 +14,9 @@
     <div class="col-md-12">
         <div class="widget box">
             <div class="widget-header">
-                <h4><i class="icon-reorder"></i>List Hosts </h4>&nbsp;&nbsp;
+                <h4><i class="icon-reorder"></i>List Service Group </h4>&nbsp;&nbsp;
                 <span id="addnew">
-                    <a style="text-decoration: none;" href="{{@Config::get('app.url')}}/admin/centreon/hosts/addhost"><i
+                    <a style="text-decoration: none;" href="{{@Config::get('app.url')}}/admin/centreon/srvgroup/add"><i
                             class="icon-plus"></i> Add New </a>
                 </span>
                 <div class="toolbar no-padding">
@@ -30,29 +30,18 @@
                     data-display-length="25" id="hosts">
                     <thead>
                         <tr>
-
                             <th data-class="expand">Name</th>
                             <th> Alias</th>
-                            <th>IP Address / DNS</th>
-                            <th>Status</th>
                             <th style="text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($hosts as $host)
+                        @foreach($servicegroup as $srv)
                                 <tr>
-                                    <td><a href="{{@Config::get('app.url')}}/admin/centreon/hosts/edit/{{$host->id}}">{{$host->name}}</a></td>
-                                    <td>{{$host->alias}}</td>
-                                    <td>{{$host->address}}</td>
-
-                                    @if($host->activate == 1)
-                                        <td><span class="label label-success">ENABLE</span></td>
-                                    @else
-                                        <td><span class="label label-danger">DISABLED</span></td>
-                                    @endif
+                                    <td><a href="{{@Config::get('app.url')}}/admin/centreon/srvgroup/edit/{{$srv->id}}">{{$srv->name}}</a></td>
+                                    <td>{{$srv->alias}}</td>
                                     <td style="text-align: center;">
-                                      {{--  <a href="{{@Config::get('app.url')}}/admin/centreon/hosts/edit/{{$host->id}}" id="edit" class="bs-tooltip mr-1" title="Edit" style="text-decoration: none;"><i class="icon-edit"></i></a>--}}
-                                        <a href="{{@Config::get('app.url')}}/admin/centreon/hosts/delete/{{$host->name}}" class="bs-tooltip mr-1" title="Delete" style="text-decoration: none;"><i class="icon-trash"></i></a>
+                                        <a href="{{@Config::get('app.url')}}/admin/centreon/srvgroup/delete/{{$srv->name}}" id="edit" class="bs-tooltip mr-1" title="Delete" style="text-decoration: none;"><i class="icon-trash"></i></a>
                                     </td>
 
                                 </tr>

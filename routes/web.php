@@ -174,10 +174,47 @@ Route::get('admin/casvd/popup/person','casvdController@popupperson');
 //Centreon
 Route::get('admin/centreon','centreonController@dashboard');
 Route::get('/admin/centreon/serverconfig','centreonController@serverconfig');
-Route::get('/admin/centreon/hosts','centreonController@hosts');
 route::post('/admin/centreon/centreonserver','centreonController@centreonserversubmit');
+Route::get('/admin/centreon/getrefreshrate','centreonController@getrefreshrate');
+Route::post('/admin/centreon/setrefreshrate','centreonController@setrefreshrate');
+Route::post('ajaxgetservicebyhost','centreonController@ajaxgetservicebyhost')->name('ajaxgetservicebyhost');
+Route::post('ajaxgetinfohost','centreonController@ajaxgetinfohost')->name('ajaxgetinfohost');
+// host
+Route::get('/admin/centreon/hosts','centreonController@hosts');
 route::get('/admin/centreon/hosts/addhost','centreonController@addhost');
-
+route::post('/admin/centreon/hosts/addhostsubmit','centreonController@addhostsubmit');
+route::get('/admin/centreon/hosts/delete/{name}','centreonController@deletehost');
+route::post('/admin/centreon/hosts/delete/{name}','centreonController@deletehostsubmit');
+route::get('/admin/centreon/hosts/edit/{id}','centreonController@edithost');
+route::post('/admin/centreon/hosts/edit','centreonController@edithostsubmit');
+// host group
+Route::get('/admin/centreon/hostgroup','centreonController@hostgroup');
+route::get('/admin/centreon/hostgroup/add','centreonController@addhostgroup');
+route::post('/admin/centreon/hostgroup/add','centreonController@addhostgroupsubmit');
+route::get('/admin/centreon/hostgroup/edit/{id}','centreonController@edithostgroup');
+route::post('/admin/centreon/hostgroup/edit','centreonController@edithostgroupsubmit');
+route::get('/admin/centreon/hostgroup/delete/{name}','centreonController@deletehostgroup');
+route::post('/admin/centreon/hostgroup/delete/{name}','centreonController@deletehostgroupsubmit');
+//service group
+Route::get('/admin/centreon/srvgroup','centreonController@srvgroup');
+Route::get('/admin/centreon/srvgroup/add','centreonController@addservicegroup');
+Route::post('/admin/centreon/srvgroup/addsubmit','centreonController@addservicegroupsubmit');
+Route::get('/admin/centreon/srvgroup/delete/{name}','centreonController@deleteservicegroup');
+Route::post('/admin/centreon/srvgroup/delete/{name}','centreonController@deleteservicegroupsubmit');
+Route::get('/admin/centreon/srvgroup/edit/{id}','centreonController@editservicegroup');
+Route::post('/admin/centreon/srvgroup/edit','centreonController@editservicegroupsubmit');
+// service by host
+Route::get('/admin/centreon/service','centreonController@services');
+Route::get('/admin/centreon/service/add','centreonController@addservice');
+Route::post('/admin/centreon/service/add','centreonController@addservicesubmit');
+route::get('/admin/centreon/service/delete/host/{host}/service/{service}','centreonController@deleteservice');
+route::post('/admin/centreon/service/delete','centreonController@deleteservicesubmit');
+Route::get('/admin/centreon/service/edit/{id}','centreonController@editservice');
+Route::post('/admin/centreon/service/edit','centreonController@editservicesubmit');
+// monitoring
+Route::get('/admin/centreon/monitoring','centreonController@monitoring');
+Route::get('ajaxmonitors','centreonController@ajaxmonitors')->name('ajaxmonitors');
+Route::post('ajaxgetdetailhost','centreonController@ajaxgetdetailhost')->name('ajaxgetdetailhost');
 
 //Test route
 Route::get('/test','adminController@test');

@@ -333,18 +333,18 @@ var Plugins = function() {
 						bAutoWidth: false,
 						fnPreDrawCallback: function () {
 							// Initialize the responsive datatables helper once.
-							if (!responsiveHelper) {
-								responsiveHelper = new ResponsiveDatatablesHelper(this, breakpointDefinition);
-							}
+							// if (!responsiveHelper) {
+							// 	responsiveHelper = new ResponsiveDatatablesHelper(this, breakpointDefinition);
+							// }
 						},
 						fnRowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-							responsiveHelper.createExpandIcon(nRow);
+							//responsiveHelper.createExpandIcon(nRow);
 						},
 						fnDrawCallback: function (oSettings) {
 							// Extending function
 							old_fnDrawCallback.apply(this, oSettings);
 
-							responsiveHelper.respond();
+							//responsiveHelper.respond();
 						}
 					});
 				}
