@@ -13,17 +13,54 @@
 	<div class="col-md-12">
 		<div class="widget box">
 			<div class="widget-header">
-				<h4><i class="icon-reorder"></i>Top 10 open incidents</h4>
+				<h4><i class="icon-reorder"></i>All Incidents</h4>
 				<div class="toolbar no-padding">
 					<div class="btn-group">
 						<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
 					</div>
 				</div>
 			</div>
+
 			<div class="widget-content" style="vertical-align: middle;">
 				<div class="ct-control-status" style="overflow-x: overlay; border:none;" align="center">
-					<!-- <div id="mytree"></div> -->
-					<div id="ajaxcasvdallincidents"></div>
+					<table class="table table-striped table-bordered table-hover" id="incidentstable">
+						<thead>
+							<th>ID</th>
+							<th>Request#</th>
+							<th>Summary</th>
+							<th>Priority</th>
+							<th>Category</th>
+							<th>CI</th>
+							<th>Status</th>
+							<th>Group</th>
+							<th>Assigned To</th>
+							<th>Main Assignee</th>
+							<th>Open Date</th>
+							<th>Last Modified Date</th>
+							<th>SLA Violation</th>
+						</thead>
+						<tbody>
+							<?php 
+								foreach ($tmpstr as $item) {
+									echo '<tr>';
+									echo '<td>'.$item->{'ID'}.'</td>';
+									echo '<td><a href="'.@Config::get('app.url').'/admin/casvd/allrequests/edit/'.$item->{'Request#'}.'">'.$item->{'Request#'}.'</a></td>';
+									echo '<td>'.$item->{'Summary'}.'</td>';
+									echo '<td>'.$item->{'Priority'}.'</td>';
+									echo '<td>'.$item->{'Category'}.'</td>';
+									echo '<td>'.$item->{'CI'}.'</td>';
+									echo '<td>'.$item->{'Status'}.'</td>';
+									echo '<td>'.$item->{'Group'}.'</td>';
+									echo '<td>'.$item->{'Assigned To'}.'</td>';
+									echo '<td>'.$item->{'Main Assignee'}.'</td>';
+									echo '<td>'.$item->{'Open Date'}.'</td>';
+									echo '<td>'.$item->{'Last Modified Date'}.'</td>';
+									echo '<td>'.$item->{'SLA Violation'}.'</td>';
+									echo '</tr>';
+								}
+							?>
+					</table>
+					
 				</div>
 			</div>
 		</div>
@@ -31,20 +68,13 @@
 </div>
 
 <script>
-		// Set interval
-		setInterval(function(){
-				var ajaxcasvdallincidents = '<?php echo URL::route('ajaxcasvdallincidents') ?>';
-				$('#ajaxcasvdallincidents').load(ajaxcasvdallincidents).fadeIn("slow");
-		},{{$refreshrate}});
-		// Refresh ajax
-		$( document ).ready(function() {
-		    var ajaxcasvdallincidents = '<?php echo URL::route('ajaxcasvdallincidents') ?>';
-		    $('#ajaxcasvdallincidents').load(ajaxcasvdallincidents).fadeIn("slow");
-
-				$('#ajaxcasvdallincidentstable').DataTable( {
-					"order": [[ 0, "desc" ]]
-				} );
+	$(document).ready(function(){
+		$('#requeststable').dataTable({
+			"aaSorting": [[ 0, "desc" ]],
+			"iDisplayLength": 15,
+			"aLengthMenu": [5, 10, 15, 25, 50, "All"]
 		});
+	});
 </script>
 
 @endsection

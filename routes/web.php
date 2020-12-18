@@ -153,6 +153,10 @@ Route::post('/admin/casvd/casvdserver','casvdController@casvdserversubmit');
 Route::get('ajaxcasvddashboardincidents','casvdController@ajaxcasvddashboardincidents')->name('ajaxcasvddashboardincidents');
 Route::get('ajaxcasvddashboardrequests','casvdController@ajaxcasvddashboardrequests')->name('ajaxcasvddashboardrequests');
 Route::get('ajaxcasvddashboardchanges','casvdController@ajaxcasvddashboardchanges')->name('ajaxcasvddashboardchanges');
+Route::get('ajaxcasvddashboardtotalincidents/{start}/{end}','casvdController@ajaxcasvddashboardtotalincidents')->name('ajaxcasvddashboardtotalincidents');
+Route::get('ajaxcasvddashboardtotalrequests/{start}/{end}','casvdController@ajaxcasvddashboardtotalrequests')->name('ajaxcasvddashboardtotalrequests');
+Route::get('ajaxcasvddashboardtotalchanges/{start}/{end}','casvdController@ajaxcasvddashboardtotalchanges')->name('ajaxcasvddashboardtotalchanges');
+Route::get('ajaxcasvddashboardticketchart','casvdController@ajaxcasvddashboardticketchart')->name('ajaxcasvddashboardticketchart');
 Route::get('/admin/casvd/getrefreshrate','casvdController@getrefreshrate');
 Route::post('/admin/casvd/setrefreshrate','casvdController@setrefreshrate');
 //Incident
@@ -170,6 +174,15 @@ Route::get('/admin/casvd/allchanges','casvdController@allchanges');
 Route::get('ajaxcasvdallchanges','casvdController@ajaxcasvdallchanges')->name('ajaxcasvdallchanges');
 //Popup
 Route::get('admin/casvd/popup/person','casvdController@popupperson');
+Route::get('admin/casvd/popup/person/requester/{id}','casvdController@popuppersonsearch');
+Route::get('admin/casvd/popup/person/customer/{id}','casvdController@popuppersonsearch');
+Route::get('admin/casvd/popup/group/{id}','casvdController@popupgroup');
+Route::get('admin/casvd/popup/ci/{id}','casvdController@popupcisearch');
+//Search
+Route::post('/admin/casvd/popup/person/requester/{id}','casvdController@popupperson');
+Route::post('/admin/casvd/popup/person/customer/{id}','casvdController@popupperson');
+Route::post('/admin/casvd/popup/ci/{id}','casvdController@popupci');
+
 
 //Centreon
 Route::get('admin/centreon','centreonController@dashboard');

@@ -17,7 +17,6 @@
 
 <!-- Init -->
 
-
 <div class="col-md-12">
     <div class="widget box">
         <div class="widget-header">
@@ -31,40 +30,52 @@
                         <body>
                             <tr>
                                 <td class="col-md-3 control-label" style="text-align: left;">
-                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person', '_blank','width=1000,height=600')">
+                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person/requester" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person/requester/{{$tmpstr["Requester ID"]}}', '_blank','width=1100,height=600')">
                                         <b>Requester</b>
                                     </a>
                                 </td>
                                 <td class="col-md-4 control-label" style="text-align: left;">
-                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person', '_blank','width=1000,height=600')">
+                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/person/customer" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/person/customer/{{$tmpstr["Affected End User ID"]}}', '_blank','width=1100,height=600')">
                                         <b>Affected End User</b>
                                     </a>
                                 </td>
-                                <td class="col-md-3 control-label" style="text-align: left;"><b>Request Area</b></td>
-                                <td class="col-md-1 control-label" style="text-align: left;"><b>Status</b></td>
+                                <td class="col-md-3 control-label" style="text-align: left;">
+                                    <a href="{{@Config::get('app.url')}}/admin/casvd/popup/category" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/category/{{$tmpstr["Request Area ID"]}}', '_blank','width=1100,height=600')">
+                                        <b>Request Area</b>
+                                    </a>
+                                </td>
+                                <td class="col-md-2 control-label" style="text-align: left;"><b>Status</b></td>
                                 <td class="col-md-1 control-label" style="text-align: left;"><b>Priority</b></td>
                             </tr>
                             <tr>
-                                <td class="col-md-2"><input value='{{$tmpstr["Requester"]}}' type="text" name="requested_by" id="requested_by" class="form-control" ></td>
-                                <td class="col-md-2"><input value='{{$tmpstr["Affected End User"]}}' type="text" name="customer" id="customer" class="form-control" ></td>
-                                <td class="col-md-2"><input value='{{$tmpstr["Request Area"]}}' type="text" name="category" id="category" class="form-control" ></td>
-                                <td class="col-md-3"><select type="text" name="status" id="status" class="form-control" >
-                                    <?php 
-                                        $arr = array("Acknowledged","Assigned","In Progress","Open","Rejected");
-                                        $tmp = '';
-                                        foreach ($arr as $item) {
-                                            if (strcmp($item, $tmpstr["Status"]) == 0) {
-                                                $tmp = $tmp . '<option value="'.$item.'" selected="selected">'.$item.'</option>';
-                                            } elseif (strcmp($item, "Acknowledged") == 0) {
-                                                $tmp = $tmp . '<option value="'.$item.'">Acknowledged (Default)</option>';
-                                            } else {
-                                                $tmp = $tmp . '<option value="'.$item.'">'.$item.'</option>';
-                                            }
-                                        }
-                                        echo $tmp;
-                                    ?>
-                                </selected></td>
-                                <td class="col-md-3"><select type="text" name="priority" id="priority" class="form-control" >
+                                <td class="col-md-2"><input value='{{$tmpstr["Requester"]}}' type="text" name="requested_by" id='{{$tmpstr["Requester ID"]}}' class="form-control" ></td>
+                                <td class="col-md-2"><input value='{{$tmpstr["Affected End User"]}}' type="text" name="customer" id='{{$tmpstr["Affected End User ID"]}}' class="form-control" ></td>
+                                <td class="col-md-2"><input value='{{$tmpstr["Request Area"]}}' type="text" name="category" id='{{$tmpstr["Request Area ID"]}}' class="form-control" ></td>
+                                <td class="col-md-3">
+                                    <select type="text" name="status" id="status" class="form-control">
+                                        <option value="">--None--</option>';
+                                        <?php $valarr = array("ACK","ASS","WIP","OP","PRBREJ"); ?>
+                                        @if(in_array($tmpstr["Status ID"],$valarr)==FALSE)
+                                            <option value="{{$tmpstr['Status ID']}}" selected="selected">{{$tmpstr['Status']}}</option>
+                                            @foreach($droplist_status as $item)
+                                                @if(in_array($item['id'],$valarr)==TRUE)
+                                                    <option value="{{$item['id']}}">{{$item['value']}}</option>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            @foreach($droplist_status as $item)
+                                                @if($item['id']==$tmpstr["Status ID"])
+                                                    <option value="{{$item['id']}}" selected="selected">{{$item['value']}}</option>
+                                                    @$check=0;
+                                                @else
+                                                    <option value="{{$item['id']}}">{{$item['value']}}</option>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </select>
+                          
+                                </td>
+                                <td class="col-md-3"><select type="text" name="priority" id="priority" class="form-control">
                                     <?php 
                                         $arr = array("0","1","2","3","4","5","6");
                                         $tmp = '';
@@ -99,15 +110,27 @@
                                     <body>
                                         <tr>
                                             <td class="col-md-2 control-label" style="text-align: left;"><b>Reported By</b></td>
-                                            <td class="col-md-3 control-label" style="text-align: left;"><b>Group</b></td>
-                                            <td class="col-md-2 control-label" style="text-align: left;"><b>Assignee</b></td>
-                                            <td class="col-md-2 control-label" style="text-align: left;"><b>Configuration Item</b></td>
+                                            <td class="col-md-3 control-label" style="text-align: left;">
+                                                <a href="{{@Config::get('app.url')}}/admin/casvd/popup/group" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/group/{{$tmpstr["Group ID"]}}', '_blank','width=1100,height=600')">
+                                                    <b>Group</b>
+                                                </a>
+                                            </td>
+                                            <td class="col-md-2 control-label" style="text-align: left;">
+                                                <a href="{{@Config::get('app.url')}}/admin/casvd/popup/assignee" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/assignee/{{$tmpstr["Assignee ID"]}}', '_blank','width=1100,height=600')">
+                                                    <b>Assignee</b>
+                                                </a>
+                                            </td>
+                                            <td class="col-md-2 control-label" style="text-align: left;">
+                                                <a href="{{@Config::get('app.url')}}/admin/casvd/popup/ci" target="popup" onclick="window.open('{{@Config::get('app.url')}}/admin/casvd/popup/ci/{{$tmpstr["Configuration Item ID"]}}', '_blank','width=1100,height=600')">
+                                                    <b>Configuration Item</b>
+                                                </a>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td class="col-md-2"><input value='{{$tmpstr["Reported By"]}}' type="text" name="log_agent" id="log_agent" class="form-control" ></td>
-                                            <td class="col-md-2"><input value='{{$tmpstr["Group"]}}' type="text" name="group" id="group" class="form-control" ></td>
-                                            <td class="col-md-2"><input value='{{$tmpstr["Assignee"]}}' type="text" name="assignee" id="assignee" class="form-control" ></td>
-                                            <td class="col-md-2"><input value='{{$tmpstr["Configuration Item"]}}' type="text" name="affected_resource" id="affected_resource" class="form-control" ></td> 
+                                            <td class="col-md-2"><input value='{{$tmpstr["Reported By"]}}' type="text" name="log_agent" id="log_agent" class="form-control" readonly></td>
+                                            <td class="col-md-2"><input value='{{$tmpstr["Group"]}}' type="text" name="group" id='{{$tmpstr["Group ID"]}}' class="form-control" ></td>
+                                            <td class="col-md-2"><input value='{{$tmpstr["Assignee"]}}' type="text" name="assignee" id='{{$tmpstr["Assignee ID"]}}' class="form-control" ></td>
+                                            <td class="col-md-2"><input value='{{$tmpstr["Configuration Item"]}}' type="text" name="affected_resource" id='{{$tmpstr["Configuration Item ID"]}}' class="form-control" ></td> 
                                         </tr>
                                         <tr><td>&nbsp;</td></tr>
                                         <tr>
@@ -124,7 +147,18 @@
                                             <td class="col-md-2 control-label" style="text-align: left;"><b>Active?</b></td>
                                         </tr>
                                         <tr>
-                                            <td class="col-md-2"><input value='{{$tmpstr["Severity"]}}' type="text" name="severity" id="severity" class="form-control" ></td>
+                                            <td class="col-md-2">
+                                                <select type="text" name="severity" id="severity" class="form-control">
+                                                    <option value="">--None--</option>';
+                                                    @foreach($droplist_severity as $item)
+                                                        @if($item['id']==$tmpstr['Severity ID'])
+                                                            <option value='{{$item["id"]}}' selected="selected">{{$item["value"]}}</option>
+                                                        @else
+                                                            <option value='{{$item["id"]}}'>{{$item["value"]}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </td>
                                             <td class="col-md-3"><input value='{{$tmpstr["Urgency"]}}' type="text" name="urgency" id="urgency" class="form-control" ></td>
                                             <td class="col-md-2"><input value='{{$tmpstr["Impact"]}}' type="text" name="impact" id="impact" class="form-control" ></td>
                                             <td class="col-md-2"><input value='{{$tmpstr["Active?"]}}' type="text" name="active id="active" class="form-control" ></td>
@@ -205,8 +239,8 @@
                     </div>
                 </div>
                 <div class="form-actions align-center">
-                    <button type="button" id="btn_cancel" class="back btn btn-primary">Cancel</button>
                     <input type="submit" id="btn_submit" value="Submit" class="btn btn-primary">
+                    <button type="button" id="btn_cancel" class="back btn btn-primary">Cancel</button>
                 </div>
             </form>
         </div>     
@@ -222,25 +256,6 @@
             alert(err_msg.innerText);
         }
     });
-   
-    $(document).click(function(event) {
-        var text = $(event.target).text();
-        alert(text);
-    });
-
-    // function addEventListenerFunction(id) {
-    //     window.addEventListener("message", function() {
-    //         replaceData(event, id);
-    //     }); 
-    // };
-    
-    // function replaceData(event, id) {
-    //     document.getElementById(id).value=event.data;
-    // };
-
-
-    // document.getElementById("requested_by").addEventListener("click", addEventListenerFunction);
-    // document.getElementById("customer").addEventListener("click", addEventListenerFunction);
 </script>
 
 @endSection
