@@ -1,6 +1,17 @@
 @extends('/layout')
 @section('content')
 @include('centreon.menu')
+
+<style type="text/css">
+    .circle{
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        margin-top:30px
+    }
+</style>
 <!-- Page header -->
 <div class="page-header">
 	<div class="page-title">
@@ -13,21 +24,6 @@
                 @endforeach
             </select>
         </div>
-        <div >
-          {{--  <table>
-                <tr>
-                    <td>From</td>
-                    <td>
-                        <div class="datefrom"></div>
-                    </td>
-                    <td>To</td>
-                    <td>
-                        <div class="dateto"></div>
-                    </td>
-                </tr>
-
-            </table>--}}
-        </div>
 
 	</div>
 </div>
@@ -39,6 +35,9 @@
         <div class="widget box">
             <div class="widget-header"></div>
             <div class="widget-content">
+                <div class="circle">
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif">
+                </div>
                 <div id="chart_pie" class="chart"></div>
             </div>
         </div>
@@ -85,7 +84,6 @@
                         <th> Critical</th>
                         <th> Unknown</th>
                         <th> Scheduled downtime</th>
-
                     </tr>
                     </thead>
                    <tbody>
@@ -99,13 +97,14 @@
 
     <script>
         $(document).ready(function(){
+            $('.circle').show();
             $('select').change(function () {
                 var val = $(this).find(":selected").text();
                 //console.log(val);
                 getservices();
             });
 
-            function drawchart(data){
+            function drawchart(data,flag){
                 //var d_pie = [10,20,70];
                 var d_pie = data;
                 d_pie[2] = { label: "UP", data: Math.floor(d_pie[0]*100)+1 };
@@ -150,6 +149,14 @@
                     data: {
                         name: hostname,
                         _token: '{{ csrf_token() }}'
+                    },
+                    beforeSend(){
+                        var strCircle = "<div  class='circle'>";
+                        strCircle    +=    "<img src='{{@Config::get('app.url')}}/images/casvd/loading.gif' style='width: 30px;height: 30px;margin:0 auto'>"
+                        strCircle    += "</div>";
+                        $('#chart_pie').html(strCircle);
+                        $('#hosttbl tbody').html(strCircle);
+                        $('#services tbody').html(strCircle);
                     },
                     success: function (result, status, xhr) {
                         var rs = result.services;

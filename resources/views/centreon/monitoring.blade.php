@@ -21,8 +21,8 @@
                     </div>
                 </div>
             </div>
-            <div class="widget-content no-padding">
-                <table class="table table-striped table-bordered table-hover table-checkable table-responsive "
+            <div class="widget-content no-padding" id="divMonitor">
+                <table class="table table-striped table-bordered table-hover table-checkable table-responsive display"
                     data-display-length="25" id="monitor">
                     <thead>
                         <tr>
@@ -35,8 +35,8 @@
                             <th>Status information</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    {{--
+                   {{-- <tbody>
+
                         @foreach($monitors as $monitor)
                                 <tr>
                                     <td>
@@ -70,9 +70,9 @@
                                     @endif
                                     <td>{{$monitor->output}}</td>
                                 </tr>
-                        @endforeach--}}
+                        @endforeach
 
-                    </tbody>
+                    </tbody>--}}
                 </table>
             </div>
         </div>
@@ -98,13 +98,15 @@
         visibility: visible;
     }
 
-  /*  td.details-control {
-        background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center center;
-        cursor: pointer;
+    .circle{
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        margin-top:45px
     }
-    tr.shown td.details-control {
-        background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
-    }*/
+
 </style>
 
 
@@ -116,75 +118,67 @@ $(document).ready(function() {
     }, refresherate);
 
     var loadpage = function () {
+        var table = $('.display');
+
         jQuery.ajax({
             headers: {},
             url: '<?php echo URL::route("ajaxmonitors") ?>',
-            method: 'get',
+            method: 'GET',
+            beforeSend(){
+                var strCircle = "<div  class='circle'>";
+                strCircle    +=    "<img src='{{@Config::get('app.url')}}/images/casvd/loading.gif' style='width: 30px;height: 30px;margin:0 auto'>"
+                strCircle    += "</div>";
+                $('.display tbody').html(strCircle);
+            },
             data: {},
             success: function (result, status, xhr) {
+                //console.log(result);
 
-                $('#monitor tbody').html(result);
+                $.each(result, function (a, b) {
+                    var classname = "",status = "";
+                    var row = "";
+                    row += "<tr><td>"+b.name+"</td>";
+                    row += "<td>"+  b.description + "</td>";
+                    var output = b.output.toString().toLowerCase();
+                   // console.log(output);
+                    if(output.includes("warning")){
+                        classname = "label label-warning";
+                        status = "WARNING";
+                    }
+                    else if(output.includes("critical")){
+                        classname = "label label-danger";
+                        status = "CRITICAL";
+                    }
+                    else if(output.includes("unknown")){
+                        classname = "label label-default";
+                        status = "UNKNOWN";
+                    }
+                    else if(output.includes("pending")){
+                        classname = "label label-default";
+                        status = "PENDING";
+                    }
+                    else{
+                        classname = "label label-success";
+                        status = "OK";
+                    }
+                    row += "<td><span class='"+ classname +"'>" + status + "</td>";
+                    row += "<td>" + b.last_hard_state_change + "</td>" ;
+                    row += "<td>" + b.host_last_check + "</td>" ;
+                    row +="<td>" + b.tries + "</td>" ;
+                    row += "<td>" + b.output + "</td></tr>";
+                    table.append(row);
+                });
+                $('.circle').remove();
+                $('.display').DataTable();
             },
             error: function (xhr, textStatus, errorThrown) {
             }
         });
+
     }
 
     loadpage();
 
-    var table = $('#monitor').DataTable({
-        select: true
-    });
-
-   /* $('#monitor tbody').on('mouseover', 'td.aaa', function() {
-        $('.tooltiptext').css('display','block');
-    }).on('mouseout', 'td', function() {
-        $('.tooltiptext').css('display','none');
-    });*/
-
-/*    $('#monitor tbody').on('click', 'td.details-control', function () {
-
-        var $selectedid = $(this).data('id');
-        var tr = $(this).closest('tr');
-        var row = table.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Open this row
-            //row.child( format(row.data()) ).show();
-            row.child( format() ).show();
-            tr.addClass('shown');
-        }
-    });*/
-
-
-  /*  function format(){
-        jQuery.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                '_token': '{{ csrf_token() }}'
-            },
-            url: '<?php echo URL::route("ajaxgetdetailhost") ?>',
-            method: 'POST',
-            data: {
-                id: $selectedid,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function (result, status, xhr) {
-                console.log(result);
-
-                // Open this row
-                row.child(result).show();
-                tr.addClass('shown');
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.log(errorThrown)
-            }
-        });
-    }*/
 
 });
 </script>

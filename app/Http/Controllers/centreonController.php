@@ -22,6 +22,10 @@ class centreonController extends Controller
 {
     public function dashboard()
     {
+        if (!Session::has('Monitor') || !Session::has('mymonitor_md')) {
+            $url = url('/');
+            return redirect($url);
+        }
         $dm = Crypt::decryptString(session('mymonitor_md'));
         $domain = DB::table('tbl_domains')
             ->where([
@@ -110,6 +114,7 @@ class centreonController extends Controller
         $authen_key = "";
         $client = new \GuzzleHttp\Client(['cookies' => true]);
         try {
+
             $res = $client->request("POST", $centreonserver->hostname . "/centreon/api/index.php?action=authenticate", [
                 'form_params' => [
                     'username' => $centreonserver->user,
@@ -117,17 +122,25 @@ class centreonController extends Controller
                 ],
                 //"verify" => false
             ]);
+/*            $res = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=authenticate", [
+                'form_params' => [
+                    'username' => "hypersm",
+                    'password' => "fiss@123"
+                ],
+                //"verify" => false
+            ]);*/
+
 
             $authen_key = json_decode($res->getBody())->authToken;
+
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
         $json = [
             "action" => "show",
             "object" => "host"
         ];
-
         if ($authen_key != "") {
             $res = $client->request("POST", $centreonserver->hostname . "/centreon/api/index.php?action=action&object=centreon_clapi", [
                 "headers" => [
@@ -141,9 +154,10 @@ class centreonController extends Controller
             $hosts = json_decode($res->getBody());
             $hosts = $hosts->result;
             //dd($hosts);
+            return view('centreon.hosts', compact('user', 'hosts'));
         }
 
-        return view('centreon.hosts', compact('user', 'hosts'));
+
     }
 
     public function serverconfig()
@@ -239,7 +253,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $json = [
@@ -300,7 +314,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "Not Authorized";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $hostname = Request("hostname");
@@ -440,7 +454,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "UnAuthorized";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $param = Request('name');
@@ -523,7 +537,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -592,7 +606,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "UnAuthorized";
+            return view('centreon.errorpage',compact('user'));
         }
 
         if ($authen_key != "") {
@@ -774,7 +788,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $json = [
@@ -853,7 +867,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "UnAuthorized";
+            return view('centreon.errorpage',compact('user'));
         }
 
 
@@ -935,7 +949,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "Error";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $param = Request('name');
@@ -1011,7 +1025,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $json = [
@@ -1079,7 +1093,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "UnAuthorized";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $name = Request('hostgroupname');
@@ -1159,7 +1173,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
 
         $json = [
@@ -1600,7 +1614,7 @@ class centreonController extends Controller
             $authen_key = json_decode($res->getBody())->authToken;
 
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -1678,7 +1692,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
 
         // linked to host
@@ -1772,7 +1786,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -1971,7 +1985,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $err_msg = "UnAuthorized";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -2051,7 +2065,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -2172,7 +2186,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -2405,7 +2419,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -2444,7 +2458,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
         // load host
@@ -2458,76 +2472,19 @@ class centreonController extends Controller
             ]);
 
             $monitors = json_decode($res->getBody());
+            foreach($monitors as $monitor) {
+                $last_hard_state_change = $this->secondsToTime($monitor->last_hard_state_change);
+                $last_check = $this->secondsToTime($monitor-> last_check);
+                $monitor->last_hard_state_change = $last_hard_state_change['days'] ."D ".$last_hard_state_change['days'] ."H";
+                $monitor->host_last_check = $last_check['minutes'] ."M ".$last_check['seconds'] ."S";
+                if($monitor -> check_attempt != "" && $monitor->max_check_attempts != "")
+                    $monitor->tries = $monitor ->check_attempt."/". $monitor->max_check_attempts;
+                else
+                    $monitor->tries = "";
+            }
         }
+        return response()->json($monitors);
 
-        // generate result
-        foreach($monitors as $monitor) {
-            $last_hard_state_change = $this->secondsToTime($monitor->last_hard_state_change);
-            $last_check = $this->secondsToTime($monitor-> last_check);
-            $monitor->last_hard_state_change = $last_hard_state_change['days'] ."D ".$last_hard_state_change['days'] ."H";
-            $monitor->host_last_check = $last_check['minutes'] ."M ".$last_check['seconds'] ."S";
-
-            $html.= "<tr>";
-            $html.=     "<td class='aaa' >";
-            $html.=         "<p data-id='$monitor->host_id' >".$monitor->name."</p>";
-            /*            //region info item
-            //            $html.=         "<div class='tooltiptext' style='display: none' >";
-            //            $html.= "<table cellpadding='5' cellspacing='0' border='0' style='padding-left:50px;'>";
-            //            $html.=     "<tr>";
-            //            $html.=         "<td>Host Name:</td>";
-            //            $html.=         "<td>".$monitor->host_name."</td>";
-            //            $html.=     "</tr>";
-            //
-            //            $html.=     "<tr>";
-            //            $html.=         "<td>Alias:</td>";
-            //            $html.=         "<td>".$monitor->host_alias."</td>";
-            //            $html.=     "</tr>";
-            //
-            //            $html.=     "<tr>";
-            //            $html.=         "<td>Address:</td>";
-            //            $html.=         "<td>".$monitor->host_address."</td>";
-            //            $html.=     "</tr>";
-            //
-            //            $html.=     "<tr>";
-            //            $html.=         "<td>Host Status:</td>";
-            //            $html.=         "<td>";
-            //            if($monitor->host_state == 1)
-            //                $html.= "UP";
-            //            else
-            //                $html.= "DOWN" ;
-            //            $html.=         "</td>";
-            //            $html.=     "</tr>";
-            //            $html.="</table>";
-            //            $html.=         "</div>";
-            //            //endregion*/
-            $html.=     "</td>";
-            $html.= "<td>".$monitor->description ."</td>";
-            $html.= "<td>";
-            if(strpos($monitor->output,'WARNING') !== false)
-                $html.=  "<span class='label label-warning' > WARNING</span >";
-            elseif(strpos($monitor->output,'CRITICAL') !== false)
-                $html.= "<span class='label label-danger'>CRITICAL</span>";
-            elseif(strpos($monitor->output,'UNKNOWN') !== false)
-                $html.= "<span class='label label-default' > UNKNOWN</span >";
-            elseif(strpos($monitor->output,'PENDING') !== false)
-                $html.= "<span class='label label-default'>PENDING</span>";
-            else
-                $html.= "<span class='label label-success' > OK</span >";
-            $html.= "</td>";
-
-            $html.= "<td>".$monitor->last_hard_state_change ."</td>";
-            $html.= "<td>".$last_check['minutes']."M".$last_check['seconds']."S"."</td>";
-/*            $html.= "<td></td>";*/
-
-            $html.= "<td>";
-            if($monitor -> check_attempt != "" && $monitor->max_check_attempts != "")
-                $html.= $monitor ->check_attempt."/". $monitor->max_check_attempts;
-            $html.="</td>";
-            $html.= "<td>".$monitor->output."</td>";
-
-            $html .="</tr >";
-        }
-        echo $html;
     }
 
     function  ajaxgetdetailhost(Request $request){
@@ -2559,7 +2516,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
@@ -2649,7 +2606,7 @@ class centreonController extends Controller
 
             $authen_key = json_decode($res->getBody())->authToken;
         } catch (RequestException $e) {
-            $authen_key = "";
+            return view('centreon.errorpage',compact('user'));
         }
         //endregion
 
