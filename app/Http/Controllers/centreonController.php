@@ -20,7 +20,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 class centreonController extends Controller
 {
-    public function dashboard()
+    public function dashboard() 
     {
         $dm = Crypt::decryptString(session('mymonitor_md'));
         $domain = DB::table('tbl_domains')

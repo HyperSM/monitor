@@ -80,17 +80,11 @@ class homeController extends Controller
             }
             //End of có user trong db
         }
-
-                
-
-        
-
     }
 
 
     //logout
     public function doLogout(){
-
         Session()->flush();
         return redirect('/');
     }

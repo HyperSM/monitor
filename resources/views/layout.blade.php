@@ -108,9 +108,9 @@
 
 	<!-- DataTables -->
 	{{--<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/jquery.dataTables.min.js"></script>--}}
-    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
 
-    <script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/tabletools/TableTools.min.js"></script> <!-- optional -->
+	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/tabletools/TableTools.min.js"></script> <!-- optional -->
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/colvis/ColVis.min.js"></script> <!-- optional -->
 	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/datatables/DT_bootstrap.js"></script>
 
@@ -301,12 +301,7 @@
 							DATABASE
 						</a>
 						<ul class="sub-menu">
-							<li>
-								<a href="#">
-								<i class="icon-angle-right"></i>
-								Solarwinds DPA
-								</a>
-							</li>
+							<li></li>
 						</ul>
 					</li>
 
@@ -316,12 +311,6 @@
 							APPLICATION
 						</a>
 						<ul class="sub-menu">
-							<li>
-								<a href="#">
-								<i class="icon-angle-right"></i>
-								Solarwinds SAM
-								</a>
-							</li>
 							<li>
 								<a href="{{@Config::get('app.url')}}/admin/centreon">
 								<i class="icon-angle-right"></i>
@@ -371,12 +360,12 @@
 							CONFIGURATION
 						</a>
 						<ul class="sub-menu">
-							<li>
+							<!-- <li>
 								<a href="#">
 								<i class="icon-angle-right"></i>
 								Something
 								</a>
-							</li>
+							</li> -->
 						</ul>
 					</li>
 
@@ -386,12 +375,12 @@
 							STATISTICS
 						</a>
 						<ul class="sub-menu">
-							<li>
+							<!-- <li>
 								<a href="#">
 								<i class="icon-angle-right"></i>
 								Something
 								</a>
-							</li>
+							</li> -->
 						</ul>
 					</li>
 				</ul>
