@@ -22,7 +22,7 @@
 			</div>
 
 			<div class="widget-content" style="vertical-align: middle;">
-				<div class="ct-control-status" style="overflow-x: overlay; border:none;" align="center">
+				<div class="ct-control-status" style="overflow-x: hidden; border:none;" align="center">
 					<table class="table table-striped table-bordered table-hover" id="requeststable">
 						<thead>
 							<th>ID</th>
@@ -40,20 +40,20 @@
 						</thead>
 						<tbody>
 							<?php 
-								foreach ($tmpstr as $item) {
+								foreach ($result as $item) {
 									echo '<tr>';
-									echo '<td>'.$item->{'ID'}.'</td>';
-									echo '<td><a href="'.@Config::get('app.url').'/admin/casvd/allrequests/edit/'.$item->{'Request#'}.'">'.$item->{'Request#'}.'</a></td>';
-									echo '<td>'.$item->{'Summary'}.'</td>';
-									echo '<td>'.$item->{'Priority'}.'</td>';
-									echo '<td>'.$item->{'Category'}.'</td>';
-									echo '<td>'.$item->{'Status'}.'</td>';
-									echo '<td>'.$item->{'Group'}.'</td>';
-									echo '<td>'.$item->{'Assigned To'}.'</td>';
-									echo '<td>'.$item->{'Main Assignee'}.'</td>';
-									echo '<td>'.$item->{'Open Date'}.'</td>';
-									echo '<td>'.$item->{'Last Modified Date'}.'</td>';
-									echo '<td>'.$item->{'SLA Violation'}.'</td>';
+									echo '<td>'.$item['ID'].'</td>';
+									echo '<td><a href="'.@Config::get('app.url').'/admin/casvd/allrequests/edit/'.$item['Request#'].'">'.$item['Request#'].'</a></td>';
+									echo '<td>'.$item['Summary'].'</td>';
+									echo '<td>'.$item['Priority'].'</td>';
+									echo '<td>'.$item['Category'].'</td>';
+									echo '<td>'.$item['Status'].'</td>';
+									echo '<td>'.$item['Group'].'</td>';
+									echo '<td>'.$item['Assigned To'].'</td>';
+									echo '<td>'.$item['Main Assignee'].'</td>';
+									echo '<td>'.$item['Open Date'].'</td>';
+									echo '<td>'.$item['Last Modified Date'].'</td>';
+									echo '<td>'.$item['SLA Violation'].'</td>';
 									echo '</tr>';
 								}
 							?>
@@ -69,7 +69,7 @@
 	$(document).ready(function(){
 		$('#requeststable').dataTable({
 			"aaSorting": [[ 0, "desc" ]],
-			"iDisplayLength": 15,
+			"iDisplayLength": 10,
 			"aLengthMenu": [5, 10, 15, 25, 50, "All"]
 		});
 	});

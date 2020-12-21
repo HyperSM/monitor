@@ -58,7 +58,12 @@ class adminController extends Controller
         ['domainid','=',$dm]
       ])->get();
 
-      return view('admin.users',compact('user','users','err_msg'));
+      if ($user->accountconfig == '1') {
+        return view('admin.users',compact('user','users','err_msg'));
+      } else {
+        $url = url('/') . '/admin/dashboard';
+        return redirect($url);
+      }
     }
 
     public function adduser() {
@@ -76,8 +81,13 @@ class adminController extends Controller
       ])->first();
 
       $err_msg ='';
-
-      return view('admin.adduser',compact('user','err_msg'));
+      
+      if ($user->accountconfig == '1') {
+        return view('admin.adduser',compact('user','err_msg'));
+      } else {
+        $url = url('/') . '/admin/dashboard';
+        return redirect($url);
+      }
     }
 
     public function addusersubmit() {
@@ -115,6 +125,11 @@ class adminController extends Controller
                 'password' => md5(Request('password')),
                 'active'   => $active
             ]);
+        if (isset($_POST['accountconfig'])) {
+          $accountconfig=1;
+        } else {
+          $accountconfig=0;
+        }
         if (isset($_POST['slwnpmconfig'])) {
           $slwnpmconfig=1;
         } else {
@@ -135,13 +150,38 @@ class adminController extends Controller
         } else {
           $casvdconfig=0;
         }
+        if (isset($_POST['centreonuse'])) {
+          $centreonuse=1;
+        } else {
+          $centreonuse=0;
+        }
+        if (isset($_POST['centreonconfig'])) {
+          $centreonconfig=1;
+        } else {
+          $centreonconfig=0;
+        }
+        if (isset($_POST['ciscosdwanuse'])) {
+          $ciscosdwanuse=1;
+        } else {
+          $ciscosdwanuse=0;
+        }
+        if (isset($_POST['ciscosdwanconfig'])) {
+          $ciscosdwanconfig=1;
+        } else {
+          $ciscosdwanconfig=0;
+        }
         DB::table('tbl_rights')
             ->insertGetId([
                 'userid'       => $id,
+                'accountconfig' => $accountconfig,
                 'slwnpmconfig' => $slwnpmconfig,
                 'slwnpmuse'    => $slwnpmuse,
                 'casvdconfig'    => $casvdconfig,
-                'casvduse'       => $casvduse
+                'casvduse'       => $casvduse,
+                'centreonconfig'    => $centreonconfig,
+                'centreonuse'       => $centreonuse,
+                'ciscosdwanconfig'    => $ciscosdwanconfig,
+                'ciscosdwanuse'       => $ciscosdwanuse
             ]);
         return $this->users();
       }else{
@@ -247,8 +287,13 @@ class adminController extends Controller
       ->where([
         ['userid','=',Request('userid')]
       ])->first();
-
-      return view('admin.edituser',compact('user','selecteduser','selecteduserrights','err_msg'));
+      
+      if ($user->accountconfig == '1') {
+        return view('admin.edituser',compact('user','selecteduser','selecteduserrights','err_msg'));
+      } else {
+        $url = url('/') . '/admin/dashboard';
+        return redirect($url);
+      }
     }
 
     public function editusersubmit($userid) {
@@ -271,6 +316,11 @@ class adminController extends Controller
       } else {
         $active=0;
       }
+      if (isset($_POST['accountconfig'])) {
+        $accountconfig=1;
+      } else {
+        $accountconfig=0;
+      }
       if (isset($_POST['slwnpmconfig'])) {
         $slwnpmconfig=1;
       } else {
@@ -291,6 +341,26 @@ class adminController extends Controller
       } else {
         $casvdconfig=0;
       }
+      if (isset($_POST['centreonuse'])) {
+        $centreonuse=1;
+      } else {
+        $centreonuse=0;
+      }
+      if (isset($_POST['centreonconfig'])) {
+        $centreonconfig=1;
+      } else {
+        $centreonconfig=0;
+      }
+      if (isset($_POST['ciscosdwanuse'])) {
+        $ciscosdwanuse=1;
+      } else {
+        $ciscosdwanuse=0;
+      }
+      if (isset($_POST['ciscosdwanconfig'])) {
+        $ciscosdwanconfig=1;
+      } else {
+        $ciscosdwanconfig=0;
+      }
 
       DB::table('tbl_accounts')
           ->where('userid',Request('userid'))
@@ -304,10 +374,15 @@ class adminController extends Controller
       DB::table('tbl_rights')
           ->where('userid',Request('userid'))
           ->update([
+              'accountconfig' => $accountconfig,
               'slwnpmconfig' => $slwnpmconfig,
               'slwnpmuse'    => $slwnpmuse,
               'casvdconfig'  => $casvdconfig,
-              'casvduse'     => $casvduse
+              'casvduse'     => $casvduse,
+              'centreonuse'     => $centreonuse,
+              'centreonconfig'     => $centreonconfig,
+              'ciscosdwanuse'     => $ciscosdwanuse,
+              'ciscosdwanconfig'     => $ciscosdwanconfig
           ]);
 
       return $this->users();
@@ -334,7 +409,12 @@ class adminController extends Controller
         ['userid','=',Request('userid')]
       ])->first();
 
-      return view('admin.deleteuser',compact('user','selecteduser','err_msg'));
+      if ($user->accountconfig == '1') {
+        return view('admin.deleteuser',compact('user','selecteduser','err_msg'));
+      } else {
+        $url = url('/') . '/admin/dashboard';
+        return redirect($url);
+      }
     }
 
     public function deleteusersubmit($userid) {
@@ -372,14 +452,5 @@ class adminController extends Controller
         $err_msg ='Wrong username! User was not deleted.';
         return view('admin.deleteuser',compact('user','selecteduser','err_msg'));
       }
-    }
-
-    public function test() {
-      $user = DB::table('tbl_accounts')
-      ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
-      ->where([
-          ['tbl_accounts.username', '=', session('mymonitor_userid')]
-      ])->first();
-      return view('test',compact('user'));
     }
 }
