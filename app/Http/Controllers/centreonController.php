@@ -20,7 +20,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 class centreonController extends Controller
 {
-    public function dashboard() 
+    public function dashboard()
     {
         if (!Session::has('Monitor') || !Session::has('mymonitor_md')) {
             $url = url('/');
@@ -47,10 +47,10 @@ class centreonController extends Controller
         $authen_key = "";
         $client = new \GuzzleHttp\Client(['cookies' => true]);
         try {
-            $res = $client->request("POST",  "http://10.33.3.113/centreon/api/index.php?action=authenticate", [
+            $res = $client->request("POST",  $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
                 'form_params' => [
-                    'username' => "hypersm",
-                    'password' => "fiss@123"
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
                 ],
                 //"verify" => false
             ]);
@@ -61,7 +61,7 @@ class centreonController extends Controller
         }
         //endregion
         if ($authen_key != "") {
-            $res = $client->request("GET", "http://10.33.3.113/centreon/api/index.php?object=centreon_realtime_services&action=list", [
+            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_services&action=list", [
                 "headers" => [
                     "Content-Type" => "application/json",
                     "centreon-auth-token" => $authen_key
@@ -75,6 +75,8 @@ class centreonController extends Controller
             }
           //  dd($hosts);
         }
+
+
         $refreshrate = $this->getrefreshrate();
         return view('centreon.dashboard', compact('domain', 'user','hosts','refreshrate'));
     }
@@ -122,14 +124,6 @@ class centreonController extends Controller
                 ],
                 //"verify" => false
             ]);
-/*            $res = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=authenticate", [
-                'form_params' => [
-                    'username' => "hypersm",
-                    'password' => "fiss@123"
-                ],
-                //"verify" => false
-            ]);*/
-
 
             $authen_key = json_decode($res->getBody())->authToken;
 
@@ -2409,10 +2403,10 @@ class centreonController extends Controller
         $authen_key = "";
         $client = new \GuzzleHttp\Client(['cookies' => true]);
         try {
-            $res = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=authenticate", [
+            $res = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
                 'form_params' => [
-                    'username' => "hypersm",
-                    'password' => "fiss@123"
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
                 ],
                 //"verify" => false
             ]);
@@ -2448,10 +2442,10 @@ class centreonController extends Controller
         $authen_key = "";
         $client = new \GuzzleHttp\Client(['cookies' => true]);
         try {
-            $res = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=authenticate", [
+            $res = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
                 'form_params' => [
-                    'username' => "hypersm",
-                    'password' => "fiss@123"
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
                 ],
                 //"verify" => false
             ]);
@@ -2463,7 +2457,7 @@ class centreonController extends Controller
         //endregion
         // load host
         if ($authen_key != "") {
-                $res = $client->request("GET", "http://10.33.3.113/centreon/api/index.php?object=centreon_realtime_services&action=list", [
+                $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_services&action=list", [
                 "headers" => [
                     "Content-Type" => "application/json",
                     "centreon-auth-token" => $authen_key
@@ -2589,18 +2583,13 @@ class centreonController extends Controller
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
-
         $authen_key = "";
-        $hostname = $centreonserver->hostname;
-        $username = "hypersm";
-        $password = "fiss@123";
         $client = new \GuzzleHttp\Client(['cookies' => true]);
-
         try {
-            $res = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=authenticate", [
+            $res = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
                 'form_params' => [
-                    'username' => $username,
-                    'password' => $password
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
                 ]
             ]);
 
@@ -2615,7 +2604,7 @@ class centreonController extends Controller
         $services = array();
         if ($authen_key != "") {
             if(!empty($request->name)) {
-                $res = $client->request("GET", "http://10.33.3.113/centreon/api/index.php?object=centreon_realtime_services&action=list&fields=host_name,host_state,output,description,host_last_check,scheduled_downtime_depth&searchHost=" . $request->name, [
+                $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_services&action=list&fields=host_name,host_state,output,description,host_last_check,scheduled_downtime_depth&searchHost=" . $request->name, [
                     "headers" => [
                         "Content-Type" => "application/json",
                         "centreon-auth-token" => $authen_key
@@ -2623,9 +2612,10 @@ class centreonController extends Controller
                 ]);
                 $services = json_decode($res->getBody());
 
+
                 foreach ($services as $service){
                     //region get service downtime
-                    $rs = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=action&object=centreon_clapi", [
+                   $rs = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=action&object=centreon_clapi", [
                         "headers" => [
                             "Content-Type" => "application/json",
                             "centreon-auth-token" => $authen_key
@@ -2646,8 +2636,8 @@ class centreonController extends Controller
                     }
                     //endregion
 
-                    //region get host downtime
-                    $rs_host = $client->request("POST", "http://10.33.3.113/centreon/api/index.php?action=action&object=centreon_clapi", [
+                   //region get host downtime
+                    $rs_host = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=action&object=centreon_clapi", [
                         "headers" => [
                             "Content-Type" => "application/json",
                             "centreon-auth-token" => $authen_key
