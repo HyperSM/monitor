@@ -311,12 +311,14 @@
 							APPLICATION
 						</a>
 						<ul class="sub-menu">
+                            @if ($user->centreonuse==1)
 							<li>
 								<a href="{{@Config::get('app.url')}}/admin/centreon">
 								<i class="icon-angle-right"></i>
 								Centreon
 								</a>
 							</li>
+                            @endif
 						</ul>
 					</li>
 
