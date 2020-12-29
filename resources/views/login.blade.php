@@ -28,9 +28,12 @@
 	<!--[if IE 8]>
 		<link href="assets/css/ie8.css" rel="stylesheet" type="text/css" />
 	<![endif]-->
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 
 	<!--=== JavaScript ===-->
+	
+	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/assets/js/libs/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="{{@Config::get('app.url')}}/template/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>
 
 	<script type="template/text/javascript" src="assets/js/libs/jquery-1.10.2.min.js"></script>
 

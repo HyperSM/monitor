@@ -221,7 +221,7 @@
 </div>
 <!--=== /Top10 ===-->
 
-<div id="ajaxchartdata" style="display: none;"></div>
+<div id="ajaxchartdata" style="display: none !important;"></div>
 
 <script>
 	// Init interval id for Counting widget
@@ -341,7 +341,7 @@
 						data: changeArr
 					}]
 				});
-			}).fadeIn("slow");
+			});
 		}, 60000)
 
 	$(document).ready(function () {
@@ -476,7 +476,7 @@
 					data: changeArr
 				}]
 			});
-		}).fadeIn("slow");
+		});
 	});
 
 	// Init Date range picker + refresh ajaxGetTotal
