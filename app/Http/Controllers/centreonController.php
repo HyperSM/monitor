@@ -61,7 +61,7 @@ class centreonController extends Controller
         }
         //endregion
         if ($authen_key != "") {
-            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_services&action=list", [
+            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
                 "headers" => [
                     "Content-Type" => "application/json",
                     "centreon-auth-token" => $authen_key
