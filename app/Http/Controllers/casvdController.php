@@ -303,7 +303,7 @@ class casvdController extends Controller
      */
     public function ajaxcasvddashboardincidents()
     {
-		// Response template
+        // Response template
         $tmpstr =
             '<table class="table table-hover table-condensed" width="100%"">
         <thead>
@@ -360,7 +360,7 @@ class casvdController extends Controller
             // Print xml response to response template
             foreach ($responseArray as $item) {
                 $tmpstr = $tmpstr .
-                '<tr>
+                    '<tr>
                   <td style="vertical-align: middle;">' . $item->Attributes->Attribute[0]->AttrValue . '</a></td>
                   <td style="vertical-align: middle;">' . $item->Attributes->Attribute[1]->AttrValue . '</a></td>
                   <td style="vertical-align: middle;">' . $item->Attributes->Attribute[2]->AttrValue . '</a></td>
@@ -713,58 +713,8 @@ class casvdController extends Controller
 
             if ($casvdserver->hostname == '') {
                 return 'N/A';
-            } else {
-                $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
-                // Login to CASVD
-                $ap_param = array(
-                    'username' => $casvdserver->user,
-                    'password' => $casvdserver->password,
-                );
-                $sid = $client->__call("login", array($ap_param))->loginReturn;
-
-                // Get all Requests
-                $ap_param = array(
-                    'sid' => $sid,
-                    'objectType' => 'cr',
-                    'whereClause' => "type='I' AND status.sym!='Closed'", // type I, R, P : Incident, Request, Problem
-                    'maxRows' => 50,
-                    'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'affected_resource.name', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation'],
-                );
-                $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
-
-                // Convert XML to object
-                $xmlresponse = simplexml_load_string($response);
-
-                // Convert SimpleXMLElement object to Array $responseArray
-                $responseArray = array();
-                foreach ($xmlresponse->UDSObject as $node) {
-                    $responseArray[] = $node;
-                }
-
-                $result = array();
-
-                // Print xml response to response template
-                foreach ($responseArray as $item) {
-                    $temparr = array();
-
-                    $temparr['ID'] = $item->Attributes->Attribute[0]->AttrValue;
-                    $temparr['Request#'] = $item->Attributes->Attribute[1]->AttrValue;
-                    $temparr['Summary'] = $item->Attributes->Attribute[2]->AttrValue;
-                    $temparr['Priority'] = $item->Attributes->Attribute[3]->AttrValue;
-                    $temparr['Category'] = $item->Attributes->Attribute[4]->AttrValue;
-                    $temparr['CI'] = $item->Attributes->Attribute[5]->AttrValue;
-                    $temparr['Status'] = $item->Attributes->Attribute[6]->AttrValue;
-                    $temparr['Group'] = $item->Attributes->Attribute[7]->AttrValue;
-                    $temparr['Assigned To'] = $item->Attributes->Attribute[8]->AttrValue;
-                    $temparr['Main Assignee'] = $item->Attributes->Attribute[9]->AttrValue;
-                    $temparr['Open Date'] = date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue));
-                    $temparr['Last Modified Date'] = date("d-m-Y g:i a", intval($item->Attributes->Attribute[11]->AttrValue));
-                    $temparr['SLA Violation'] = $item->Attributes->Attribute[12]->AttrValue;
-
-                    array_push($result, $temparr);
-                }
             }
-            return view('casvd.allincidents', compact('casvdserver', 'user', 'refreshrate', 'result'));
+            return view('casvd.allincidents', compact('casvdserver', 'user', 'refreshrate'));
         } else {
             $url = url('/') . '/admin/dashboard';
             return redirect($url);
@@ -775,35 +725,14 @@ class casvdController extends Controller
     Page: Dashboard -> All Incidents
     Section: Function Return all incidents to ajax call back
      */
-    public function ajaxcasvdallincidents()
+    public function ajaxcasvdallincidents(Request $request)
     {
-        // Response template
-        $tmpstr =
-            '<table class="table table-hover table-condensed datatable" id="ajaxcasvdallincidentstable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Incident#</th>
-                <th>Summary</th>
-                <th>Priority</th>
-                <th>Category</th>
-                <th>CI</th>
-                <th>Status</th>
-                <th>Group</th>
-                <th>Assigned To</th>
-                <th>Main Assignee</th>
-                <th>Open Date</th>
-                <th>Last Modified Date</th>
-                <th>SLA Violation</th>
-            </tr>
-        </thead>
-        <tbody>';
-
         $casvdserver = DB::table('tbl_casvdservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
             ])->first();
 
+        $responseArray = array();
         if ($casvdserver->hostname == '') {
             return 'N/A';
         } else {
@@ -816,86 +745,127 @@ class casvdController extends Controller
             $sid = $client->__call("login", array($ap_param))->loginReturn;
 
             // Get all tickets
+            $start = intval($request->startdate);
+            $end = intval($request->enddate);
+            $whereParam = "type='I' AND open_date >= " . $start . " AND open_date <= " . $end;
+            // from yesterday to now
             $ap_param = array(
                 'sid' => $sid,
                 'objectType' => 'cr',
-                'whereClause' => "type='I'", // type I, R, P : Incident, Request, Problem
-                'maxRows' => 50,
-                'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'affected_resource.name', 'status.sym', 'group.last_name', 'assignee.last_name', 'assignee.first_name', 'assignee.middle_name', 'zmain_tech.last_name', 'zmain_tech.first_name', 'zmain_tech.middle_name', 'open_date', 'last_mod_dt', 'sla_violation'],
+                //'whereClause' => "type='I' AND open_date >= 1608768000 AND open_date <= 1608940799" , // type I, R, P : Incident, Request, Problem
+                'whereClause' => $whereParam
             );
-            $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
 
-            // Convert XML to object
-            $xmlresponse = simplexml_load_string($response);
-            // Convert SimpleXMLElement object to Array $responseArray
-            $responseArray = array();
-            foreach ($xmlresponse->UDSObject as $node) {
-                $responseArray[] = $node;
-            }
+            $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+            $listHandleID = $listHandle->listHandle;
+            $listHandleLength = $listHandle->listLength;
 
-            // Sorting SimpleXMLElement object array
-            function comparator($a, $b)
-            {
-                // sort by ID
-                return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
-            }
-            usort($responseArray, __NAMESPACE__ . '\comparator');
+            $startindex = intval($request->startindex);
+            $pagesize = intval($request->pagesize);
+            $numpage = ceil($listHandleLength / $pagesize);
+            $currentpage = ceil(($startindex - 1) / $pagesize) + 1;
 
-            // Print xml response to response template
-            foreach ($responseArray as $item) {
-                // Init attribute's variable
-                $assignee_lastname = $item->Attributes->Attribute[8]->AttrValue;
-                $assignee_firstname = $item->Attributes->Attribute[9]->AttrValue;
-                $assignee_middlename = $item->Attributes->Attribute[10]->AttrValue;
-                $zmaintech_lastname = $item->Attributes->Attribute[11]->AttrValue;
-                $zmaintech_firstname = $item->Attributes->Attribute[12]->AttrValue;
-                $zmaintech_middlename = $item->Attributes->Attribute[13]->AttrValue;
+            $result = array();
 
-                // Generate assignee name
-                if ($assignee_firstname != '' and $assignee_middlename != '') {
-                    $assignee_name = $assignee_lastname . ', ' . $assignee_firstname . ' ' . $assignee_middlename;
-                } elseif ($assignee_middlename = '' and $assignee_firstname != '') {
-                    $assignee_name = $assignee_lastname . ', ' . $assignee_firstname;
-                } elseif ($assignee_middlename != '' and $assignee_firstname = '') {
-                    $assignee_name = $assignee_lastname . ', ' . $assignee_middlename;
+            if (intval($listHandleLength) > 0) {
+                // check last page
+                if ($currentpage == $numpage) {
+                    // only 1 page
+                    if($numpage == 1 ){
+                        $fromIndex = 0;
+                        $toIndex = intval($listHandleLength) -1;
+                    }else {
+                        $fromIndex = $startindex;
+                        $toIndex = intval($listHandleLength) - 1;
+                    }
+                    //dd($fromIndex . ' ' . $toIndex.' '.$listHandleLength);
                 } else {
-                    $assignee_name = $assignee_lastname;
+                    $fromIndex = $startindex;
+                    $toIndex = ($fromIndex + $pagesize) - 1;
+                   // dd($fromIndex . ' ' . $toIndex);
                 }
 
-                // Generate zmaintech name
-                if ($zmaintech_firstname != '' and $zmaintech_middlename != '') {
-                    $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_firstname . ' ' . $zmaintech_middlename;
-                } elseif ($zmaintech_middlename = '' and $zmaintech_firstname != '') {
-                    $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_firstname;
-                } elseif ($zmaintech_middlename != '' and $zmaintech_firstname = '') {
-                    $zmaintech_name = $zmaintech_lastname . ', ' . $zmaintech_middlename;
-                } else {
-                    $zmaintech_name = $zmaintech_lastname;
+                $ap_param = array(
+                    'sid' => $sid,
+                    'listHandle' => $listHandleID,
+                    'startIndex' => $fromIndex,
+                    'endIndex' => $toIndex,
+                    'attributeNames' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'affected_resource.name', 'status.sym',
+                        'group.last_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation'],
+                );
+
+                $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
+                //endregion
+
+                // Convert XML to object
+                $xmlresponse = simplexml_load_string($response);
+
+                // Convert SimpleXMLElement object to Array $responseArray
+                foreach ($xmlresponse->UDSObject as $node) {
+                    $responseArray[] = $node;
+                }
+                // Sorting SimpleXMLElement object array
+                function comparator($a, $b)
+                {
+                    // sort by ID
+                    return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
                 }
 
-                $tmpstr = $tmpstr .
-                '<tr>
-                  <td style="vertical-align: middle;">' . $item->Attributes->Attribute[0]->AttrValue . '</a></td>' . // id
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[1]->AttrValue . '</a></td>' . // ref_num
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[2]->AttrValue . '</a></td>' . // summary
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[3]->AttrValue . '</a></td>' . // priority
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[4]->AttrValue . '</a></td>' . // category
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[5]->AttrValue . '</a></td>' . // affected_resource
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[6]->AttrValue . '</a></td>' . // status
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[7]->AttrValue . '</a></td>' . // group
-                '<td style="vertical-align: middle;">' . $assignee_name . '</a></td>' . // assignee
-                '<td style="vertical-align: middle;">' . $zmaintech_name . '</a></td>' . // zmain_tech
-                '<td style="vertical-align: middle;">' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[14]->AttrValue)) . '</a></td>' . // open_date
-                '<td style="vertical-align: middle;">' . date("d-m-Y g:i a", intval($item->Attributes->Attribute[15]->AttrValue)) . '</a></td>' . // last_mod_dt
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[16]->AttrValue . '</a></td>' . // sla_violation
-                '</tr>';
+                usort($responseArray, __NAMESPACE__ . '\comparator');
+
+                //$result = array();
+                foreach ($responseArray as $item) {
+                    // Init attribute's variable
+                    $id = $item->Attributes->Attribute[0]->AttrValue;
+                    $ref_num = $item->Attributes->Attribute[1]->AttrValue;
+                    $summary = $item->Attributes->Attribute[2]->AttrValue;
+                    $priority = $item->Attributes->Attribute[3]->AttrValue;
+                    $category = $item->Attributes->Attribute[4]->AttrValue;
+                    $affected_resource = $item->Attributes->Attribute[5]->AttrValue;
+                    $status = $item->Attributes->Attribute[6]->AttrValue;
+                    $group_name = $item->Attributes->Attribute[7]->AttrValue;
+                    $assignee_name = $item->Attributes->Attribute[8]->AttrValue;
+                    $zmaintech_name = $item->Attributes->Attribute[9]->AttrValue;
+                    $open_date = date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue));
+                    $last_modified_date = date("d-m-Y g:i a", intval($item->Attributes->Attribute[11]->AttrValue));
+                    $sla_violation = $item->Attributes->Attribute[12]->AttrValue;
+
+                    $el = [
+                        'id' => strval($id),
+                        'ref_num' => strval($ref_num),
+                        'summary' => strval($summary),
+                        'priority' => strval($priority),
+                        'category' => strval($category),
+                        'affected_resource' => strval($affected_resource),
+                        'status' => strval($status),
+                        'group_name' => strval($group_name),
+                        'assignee_name' => strval($assignee_name),
+                        'main_assignee' => strval($zmaintech_name),
+                        'open_date' => strval($open_date),
+                        'last_modified_date' => strval($last_modified_date),
+                        'sla_violation' => strval($sla_violation)
+                    ];
+                    array_push($result, $el);
+                }
             }
-            $tmpstr = $tmpstr . '
-            </tbody>
-        </table>';
-            echo $tmpstr;
+
+            // Free List hanlde
+            $ap_param = array(
+                'sid' => $sid,
+                'handles' => $listHandleID,
+            );
+            $client->__call("freeListHandles", array($ap_param));
         }
+
+        return response()->json([
+            //'draw'=> $pageno,
+            'recordsTotal'=> intval($listHandleLength),
+            'recordsFiltered'=>intval($listHandleLength),
+            'data'=> $result
+        ]);
+
     }
+
 
     /*
     Page: Dashboard -> Add Incident
@@ -972,64 +942,143 @@ class casvdController extends Controller
             } else {
                 $refreshrate = $refreshrate->refreshrate;
             }
-
+//
             if ($casvdserver->hostname == '') {
                 return 'N/A';
-            } else {
-                $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
-                // Login to CASVD
-                $ap_param = array(
-                    'username' => $casvdserver->user,
-                    'password' => $casvdserver->password,
-                );
-                $sid = $client->__call("login", array($ap_param))->loginReturn;
-
-                // Get all Requests
-                $ap_param = array(
-                    'sid' => $sid,
-                    'objectType' => 'cr',
-                    'whereClause' => "type='R' AND status.sym!='Closed'", // type I, R, P : Incident, Request, Problem
-                    'maxRows' => 50,
-                    'attributes' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation'],
-                );
-                $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
-
-                // Convert XML to object
-                $xmlresponse = simplexml_load_string($response);
-
-                // Convert SimpleXMLElement object to Array $responseArray
-                $responseArray = array();
-                foreach ($xmlresponse->UDSObject as $node) {
-                    $responseArray[] = $node;
-                }
-
-                $result = array();
-
-                // Print xml response to response template
-                foreach ($responseArray as $item) {
-                    $temparr = array();
-
-                    $temparr['ID'] = $item->Attributes->Attribute[0]->AttrValue;
-                    $temparr['Request#'] = $item->Attributes->Attribute[1]->AttrValue;
-                    $temparr['Summary'] = $item->Attributes->Attribute[2]->AttrValue;
-                    $temparr['Priority'] = $item->Attributes->Attribute[3]->AttrValue;
-                    $temparr['Category'] = $item->Attributes->Attribute[4]->AttrValue;
-                    $temparr['Status'] = $item->Attributes->Attribute[5]->AttrValue;
-                    $temparr['Group'] = $item->Attributes->Attribute[6]->AttrValue;
-                    $temparr['Assigned To'] = $item->Attributes->Attribute[7]->AttrValue;
-                    $temparr['Main Assignee'] = $item->Attributes->Attribute[8]->AttrValue;
-                    $temparr['Open Date'] = date("d-m-Y g:i a", intval($item->Attributes->Attribute[9]->AttrValue));
-                    $temparr['Last Modified Date'] = date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue));
-                    $temparr['SLA Violation'] = $item->Attributes->Attribute[11]->AttrValue;
-
-                    array_push($result, $temparr);
-                }
             }
-            return view('casvd.allrequests', compact('casvdserver', 'user', 'refreshrate', 'result'));
+
+            return view('casvd.allrequests', compact('casvdserver', 'user', 'refreshrate'));
         } else {
             $url = url('/') . '/admin/dashboard';
             return redirect($url);
         }
+    }
+
+    public  function ajaxcasvdallrequests(Request $request){
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+        $start = intval($request ->startdate);
+        $end = intval($request->enddate);
+        $whereParam = "type='R' AND status.sym!='Closed' AND open_date >= " .$start. " AND open_date <= " . $end;
+        // Get all Requests
+         $ap_param = array(
+            'sid' => $sid,
+            'objectType' => 'cr',
+            //'whereClause' => "type='R' AND status.sym!='Closed'", // type I, R, P : Incident, Request, Problem
+             'whereClause' => $whereParam, // type I, R, P : Incident, Request, Problem
+
+         );
+
+        $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+        $listHandleID = $listHandle->listHandle;
+        $listHandleLength = $listHandle->listLength;
+
+        $startindex = intval($request->startindex);
+        $pagesize = intval($request->pagesize);
+        $numpage = ceil($listHandleLength / $pagesize);
+        $currentpage =  ceil(($startindex - 1) / $pagesize) + 1;
+
+        $result = array();
+
+        if (intval($listHandleLength) > 0) {
+            // check last page
+            if ($currentpage == $numpage) {
+                // only 1 page
+                if ($numpage == 1) {
+                    $fromIndex = 0;
+                    $toIndex = intval($listHandleLength) - 1;
+                } else {
+                    $fromIndex = $startindex;
+                    $toIndex = intval($listHandleLength) - 1;
+                }
+                //dd($fromIndex . ' ' . $toIndex.' '.$listHandleLength);
+            } else {
+                $fromIndex = $startindex;
+                $toIndex = ($fromIndex + $pagesize) - 1;
+                // dd($fromIndex . ' ' . $toIndex);
+            }
+
+            $ap_param = array(
+                'sid' => $sid,
+                'listHandle' => $listHandleID,
+                'startIndex' => $fromIndex,
+                'endIndex' => $toIndex,
+                'attributeNames' => ['id', 'ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'group.combo_name', 'assignee.combo_name', 'zmain_tech.combo_name', 'open_date', 'last_mod_dt', 'sla_violation'],
+            );
+
+            $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
+
+            // Convert XML to object
+            $xmlresponse = simplexml_load_string($response);
+
+            // Convert SimpleXMLElement object to Array $responseArray
+            $responseArray = array();
+            foreach ($xmlresponse->UDSObject as $node) {
+                $responseArray[] = $node;
+            }
+
+            $result = array();
+
+            // Print xml response to response template
+            foreach ($responseArray as $item) {
+                $temparr = array();
+
+                $id = $item->Attributes->Attribute[0]->AttrValue;
+                $ref_num = $item->Attributes->Attribute[1]->AttrValue;
+                $summary = $item->Attributes->Attribute[2]->AttrValue;
+                $priority = $item->Attributes->Attribute[3]->AttrValue;
+                $category = $item->Attributes->Attribute[4]->AttrValue;
+                $status = $item->Attributes->Attribute[5]->AttrValue;
+                $group_name = $item->Attributes->Attribute[6]->AttrValue;
+                $assignto = $item->Attributes->Attribute[7]->AttrValue;
+                $main_assign = $item->Attributes->Attribute[8]->AttrValue;
+                $open_date = date("d-m-Y g:i a", intval($item->Attributes->Attribute[9]->AttrValue));
+                $last_modified_date = date("d-m-Y g:i a", intval($item->Attributes->Attribute[10]->AttrValue));
+                $sla_violation = $item->Attributes->Attribute[11]->AttrValue;
+
+                $el = [
+                    'id' => strval($id),
+                    'ref_num' => strval($ref_num),
+                    'summary' => strval($summary),
+                    'priority' => strval($priority),
+                    'category' => strval($category),
+                    'status' => strval($status),
+                    'group_name' => strval($group_name),
+                    'assignee_name' => strval($assignto),  // thay bang combo name
+                    'main_assignee' => strval($main_assign),
+                    'open_date' => strval($open_date),
+                    'last_modified_date' => strval($last_modified_date),
+                    'sla_violation' => strval($sla_violation)
+                ];
+                array_push($result, $el);
+            }
+
+            // Free List hanlde
+            $ap_param = array(
+                'sid' => $sid,
+                'handles' => $listHandleID,
+            );
+            $client->__call("freeListHandles", array($ap_param));
+        }
+
+        return response()->json([
+            //'draw'=> $pageno,
+            'recordsTotal'=> intval($listHandleLength),
+            'recordsFiltered'=>intval($listHandleLength),
+            'data'=> $result
+        ]);
     }
 
     /*
@@ -1333,24 +1382,8 @@ class casvdController extends Controller
     Page: Dashboard -> All Changes
     Section: Function Return all changes to ajax call back
      */
-    public function ajaxcasvdallchanges()
+    public function ajaxcasvdallchanges(Request $request)
     {
-        // Response template
-        $tmpstr =
-            '<table class="table table-hover table-condensed datatable" id="ajaxcasvdallchangestable">
-        <thead>
-            <tr>
-                <th>Change Order #</th>
-                <th>Summary</th>
-                <th>Priority</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Assigned To</th>
-                <th>Change Type</th>
-            </tr>
-        </thead>
-        <tbody>';
-
         $casvdserver = DB::table('tbl_casvdservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
@@ -1368,65 +1401,114 @@ class casvdController extends Controller
             $sid = $client->__call("login", array($ap_param))->loginReturn;
 
             // Get all tickets
+//            $ap_param = array(
+//                'sid' => $sid,
+//                'sortBy' => 'id',
+//                'objectType' => 'chg',
+//                'whereClause' => "",
+//                'maxRows' => 20,
+//                'attributes' => ['chg_ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'assignee.last_name', 'assignee.first_name', 'assignee.middle_name', 'chgtype'],
+//            );
+//            $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+            // Get all Changes
             $ap_param = array(
                 'sid' => $sid,
-                'sortBy' => 'id',
                 'objectType' => 'chg',
                 'whereClause' => "",
-                'maxRows' => 20,
-                'attributes' => ['chg_ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'assignee.last_name', 'assignee.first_name', 'assignee.middle_name', 'chgtype'],
             );
-            $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
 
-            // Convert XML to object
-            $xmlresponse = simplexml_load_string($response);
-            // Convert SimpleXMLElement object to Array $responseArray
-            $responseArray = array();
-            foreach ($xmlresponse->UDSObject as $node) {
-                $responseArray[] = $node;
-            }
+            $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+            $listHandleID = $listHandle->listHandle;
+            $listHandleLength = $listHandle->listLength;
 
-            // Sorting SimpleXMLElement object array
-            function comparator($a, $b)
-            {
-                // sort by ID
-                return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
-            }
-            usort($responseArray, __NAMESPACE__ . '\comparator');
+            $startindex = intval($request->startindex);
+            $pagesize = intval($request->pagesize);
+            $numpage = ceil($listHandleLength / $pagesize);
+            $currentpage = ceil(($startindex - 1) / $pagesize) + 1;
 
-            // Print xml response to response template
-            foreach ($responseArray as $item) {
-                // Init attribute's variable
-                $assignee_lastname = $item->Attributes->Attribute[5]->AttrValue;
-                $assignee_firstname = $item->Attributes->Attribute[6]->AttrValue;
-                $assignee_middlename = $item->Attributes->Attribute[7]->AttrValue;
+            $result = array();
 
-                // Generate assignee name
-                if ($assignee_firstname != '' and $assignee_middlename != '') {
-                    $assignee_name = $assignee_lastname . ', ' . $assignee_firstname . ' ' . $assignee_middlename;
-                } elseif ($assignee_middlename = '' and $assignee_firstname != '') {
-                    $assignee_name = $assignee_lastname . ', ' . $assignee_firstname;
-                } elseif ($assignee_middlename != '' and $assignee_firstname = '') {
-                    $assignee_name = $assignee_lastname . ', ' . $assignee_middlename;
+            if (intval($listHandleLength) > 0) {
+                // check last page
+                if ($currentpage == $numpage) {
+                    // only 1 page
+                    if ($numpage == 1) {
+                        $fromIndex = 0;
+                        $toIndex = intval($listHandleLength) - 1;
+                    } else {
+                        $fromIndex = $startindex;
+                        $toIndex = intval($listHandleLength) - 1;
+                    }
+                    //dd($fromIndex . ' ' . $toIndex.' '.$listHandleLength);
                 } else {
-                    $assignee_name = $assignee_lastname;
+                    $fromIndex = $startindex;
+                    $toIndex = ($fromIndex + $pagesize) - 1;
+                    // dd($fromIndex . ' ' . $toIndex);
                 }
 
-                $tmpstr = $tmpstr .
-                '<tr>
-                  <td style="vertical-align: middle;">' . $item->Attributes->Attribute[0]->AttrValue . '</a></td>' . // chg_ref_num
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[1]->AttrValue . '</a></td>' . // summary
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[2]->AttrValue . '</a></td>' . // priority
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[3]->AttrValue . '</a></td>' . // category.sym
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[4]->AttrValue . '</a></td>' . // status.sym
-                '<td style="vertical-align: middle;">' . $assignee_name . '</a></td>' . // assignee
-                '<td style="vertical-align: middle;">' . $item->Attributes->Attribute[8]->AttrValue . '</a></td>' . // chgtype
-                '</tr>';
+                $ap_param = array(
+                    'sid' => $sid,
+                    'listHandle' => $listHandleID,
+                    'startIndex' => $fromIndex,
+                    'endIndex' => $toIndex,
+                    'attributeNames' => ['chg_ref_num', 'summary', 'priority.sym', 'category.sym', 'status.sym', 'assignee.combo_name', 'chgtype'],
+                );
+
+                $response = $client->__call("getListValues", array($ap_param))->getListValuesReturn;
+
+                // Convert XML to object
+                $xmlresponse = simplexml_load_string($response);
+                // Convert SimpleXMLElement object to Array $responseArray
+                $responseArray = array();
+                foreach ($xmlresponse->UDSObject as $node) {
+                    $responseArray[] = $node;
+                }
+
+                // Sorting SimpleXMLElement object array
+                function comparator($a, $b)
+                {
+                    // sort by ID
+                    return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
+                }
+
+                usort($responseArray, __NAMESPACE__ . '\comparator');
+
+                $result = array();
+                // Print xml response to response template
+                foreach ($responseArray as $item) {
+                    $ref_num = $item->Attributes->Attribute[0]->AttrValue;
+                    $summary = $item->Attributes->Attribute[1]->AttrValue;
+                    $priority = $item->Attributes->Attribute[2]->AttrValue;
+                    $category = $item->Attributes->Attribute[3]->AttrValue;
+                    $status = $item->Attributes->Attribute[4]->AttrValue;
+                    $assignee_name = $item->Attributes->Attribute[5]->AttrValue;
+                    $change_type = $item->Attributes->Attribute[6]->AttrValue;
+                    $el = [
+                        'ref_num' => strval($ref_num),
+                        'summary' => strval($summary),
+                        'priority' => strval($priority),
+                        'category' => strval($category),
+                        'status' => strval($status),
+                        'assignee_name' => strval($assignee_name),
+                        'change_type' => strval($change_type)
+                    ];
+                    array_push($result, $el);
+                }
+                // Free List hanlde
+                $ap_param = array(
+                    'sid' => $sid,
+                    'handles' => $listHandleID,
+                );
+                $client->__call("freeListHandles", array($ap_param));
             }
-            $tmpstr = $tmpstr . '
-            </tbody>
-        </table>';
-            echo $tmpstr;
+
+            return response()->json([
+                //'draw'=> $pageno,
+                'recordsTotal'=> intval($listHandleLength),
+                'recordsFiltered'=>intval($listHandleLength),
+                'data'=> $result
+            ]);
         }
     }
 

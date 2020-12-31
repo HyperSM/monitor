@@ -7,6 +7,26 @@
 	<div class="page-title">
 		<h3>CA Service Desk | All Changes</h3>
 	</div>
+{{--    <div class="page-title" style="padding-left: 100px">--}}
+{{--        <form action="{{@Config::get('app.url')}}/admin/slwnpm/events" method="post">--}}
+{{--            @csrf--}}
+{{--            <table border="0" cellpadding="5" cellspacing="5" >--}}
+{{--                <tr>--}}
+{{--                    <td style="width: 10px;"></td>--}}
+{{--                    <td style="">INCIDENT FILTER: </td>--}}
+{{--                    <td>--}}
+{{--                        <div class="widget-header" style="display: grid; grid-template-columns: 1fr">--}}
+{{--                            <div id="selectrange" style="cursor: pointer; grid-column: 2/3; ">--}}
+{{--                                <span style="display: inline" class="selectdate"></span> &nbsp;--}}
+{{--                                <span style="display: inline"><i class="fa fa-calendar"></i>&nbsp;</span>--}}
+{{--                                <span style="display: inline"><i class="fa fa-caret-down"></i></span>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </td>--}}
+{{--                </tr>--}}
+{{--            </table>--}}
+{{--        </form>--}}
+{{--    </div>--}}
 </div>
 
 <div class="row">
@@ -23,7 +43,7 @@
 
 			<div class="widget-content" style="vertical-align: middle;">
 				<div class="ct-control-status" style="overflow-x: hidden; border:none;" align="center">
-					<table class="table table-striped table-bordered table-hover" id="changestable">
+					<table class="table table-striped table-bordered table-hover" data-display-length="5" id="allchanges" style="width: 100%;">
 						<thead>
 							<th>Change Order #</th>
 							<th>Summary</th>
@@ -33,22 +53,8 @@
 							<th>Assigned To</th>
 							<th>Change Type</th>
 						</thead>
-						<tbody>
-							<?php 
-								foreach ($result as $item) {
-									echo '<tr>';
-									echo '<td><a href="'.@Config::get('app.url').'/admin/casvd/allchanges/edit/'.$item['Change Order #'].'">'.$item['Change Order #'].'</a></td>';
-									echo '<td>'.$item['Summary'].'</td>';
-									echo '<td>'.$item['Priority'].'</td>';
-									echo '<td>'.$item['Category'].'</td>';
-									echo '<td>'.$item['Status'].'</td>';
-									echo '<td>'.$item['Assigned To'].'</td>';
-									echo '<td>'.$item['Change Type'].'</td>';
-									echo '</tr>';
-								}
-							?>
 					</table>
-					
+
 				</div>
 			</div>
 		</div>
@@ -56,22 +62,46 @@
 </div>
 
 <script>
-	$(document).ready(function(){
-		$('#changestable').dataTable({
-			"aaSorting": [[ 0, "desc" ]],
-			"iDisplayLength": 10,
-            "aLengthMenu": [5, 10, 15, 25, 50, "All"]
-            // "columnDefs": [
-            //     { "width": "9vw", "targets": 0 },
-            //     { "width": "45vw", "targets": 1 },
-            //     { "width": "5vw", "targets": 2 },
-            //     { "width": "16vw", "targets": 3 },
-            //     { "width": "8vw", "targets": 4 },
-            //     { "width": "10vw", "targets": 5 },
-            //     { "width": "7vw", "targets": 6 }
-            // ]
-		});
-	});
+    $(document).ready(function(){
+        var start = moment().startOf('day');
+        var end = moment().endOf('day');
+        function init(){
+            if ($.fn.DataTable.isDataTable("#allchanges")) {
+                $('#allchanges').DataTable().clear().destroy();
+            }
+
+            $('#allchanges').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "pageLength": 25,
+                "ajax": {
+                    "url": '<?php echo URL::route("ajaxcasvdallchanges") ?>',
+                    "type": "POST",
+                    "data": function (d) {
+                        //d.myKey = "myValue";
+                        d._token = '{{ csrf_token() }}';
+                        d.startindex = d.start;
+                        d.pagesize = d.length;
+                    }
+                },
+                "columns":[
+                    {"data":"ref_num"},
+                    {"data":"summary"},
+                    {"data":"priority"},
+                    {"data":"category"},
+                    {"data":"status"},
+                    {"data":"assignee_name"},
+                    {"data":"change_type"},
+                ]
+            });
+
+        }
+
+        init();
+
+
+    });
+
 </script>
 
 @endsection
