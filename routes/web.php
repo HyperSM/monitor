@@ -185,7 +185,7 @@ Route::post('/admin/casvd/popup/ci/{id}','casvdController@popupci');
 
 
 //Centreon
-Route::get('admin/centreon','centreonController@dashboard');
+Route::get('/admin/centreon','centreonController@dashboard');
 Route::get('/admin/centreon/serverconfig','centreonController@serverconfig');
 route::post('/admin/centreon/centreonserver','centreonController@centreonserversubmit');
 Route::get('/admin/centreon/getrefreshrate','centreonController@getrefreshrate');
