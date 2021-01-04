@@ -73,11 +73,14 @@ class centreonController extends Controller
                     unset($hosts[$i]);
                 }
             }
-          //  dd($hosts);
+          // dd($hosts);
         }
 
 
         $refreshrate = $this->getrefreshrate();
+        if(isset($refreshrate)){
+            $refreshrate = $this->setrefreshrate();
+        }
         return view('centreon.dashboard', compact('domain', 'user','hosts','refreshrate'));
     }
 
@@ -2693,14 +2696,16 @@ class centreonController extends Controller
             ])->first();
 
         if ($refreshrate == NULL) {
-            return 0;
+            //set default
+            $this->setrefreshrate(5000);
+            return 5000;
         } else {
             return $refreshrate->refreshrate;
         }
     }
 
 
-    public function setrefreshrate(Request $request) {
+    public function setrefreshrate($value) {
         $user = DB::table('tbl_accounts')
             ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
             ->where([
@@ -2723,7 +2728,7 @@ class centreonController extends Controller
                     [
                         'userid' => $userid,
                         'product' => 'centreon',
-                        'refreshrate' => $request->refreshrate
+                        'refreshrate' => intval($value)
                     ]
                 );
         } else {
@@ -2734,7 +2739,7 @@ class centreonController extends Controller
                     ['product', '=', 'centreon']
                 ])
                 ->update([
-                    'refreshrate' => $request->refreshrate
+                    'refreshrate' => intval($value)
                 ]);
         }
     }
