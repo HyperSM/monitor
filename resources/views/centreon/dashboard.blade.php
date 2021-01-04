@@ -4,12 +4,17 @@
 
 <style type="text/css">
     .circle{
-        width: 30px;
-        height: 30px;
+        width: 100px;
+        height: 100px;
         position: absolute;
-        top: 40%;
-        left: 50%;
-        margin-top:30px
+        top: 45%;
+        left: 45%;
+        opacity: 0.8;
+        margin-top:30px;
+        background-color: white;
+    }
+    .css-loading{
+        opacity: 0.8;
     }
 </style>
 <!-- Page header -->
@@ -35,9 +40,9 @@
         <div class="widget box">
             <div class="widget-header"></div>
             <div class="widget-content">
-                <div class="circle">
-                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif">
-                </div>
+{{--                <div class="circle">--}}
+{{--                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif">--}}
+{{--                </div>--}}
                 <div id="chart_pie" class="chart"></div>
             </div>
         </div>
@@ -94,6 +99,9 @@
         </div>
     </div>
 </div>
+<div class="circle">
+    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="    width: 50px;height: 50px;margin: 0 auto;position: absolute;top: 33%;left: 27%;">
+</div>
 
     <script>
         $(document).ready(function(){
@@ -141,8 +149,8 @@
                 //console.log(hostname);
                 jQuery.ajax({
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        '_token': '{{ csrf_token() }}'
+                        //'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        //'_token': '{{ csrf_token() }}'
                     },
                     url: '<?php echo URL::route("ajaxgetservicebyhost") ?>',
                     method: 'POST',
@@ -151,12 +159,8 @@
                         _token: '{{ csrf_token() }}'
                     },
                     beforeSend(){
-                        var strCircle = "<div  class='circle'>";
-                        strCircle    +=    "<img src='{{@Config::get('app.url')}}/images/casvd/loading.gif' style='width: 30px;height: 30px;margin:0 auto'>"
-                        strCircle    += "</div>";
-                        $('#chart_pie').html(strCircle);
-                        $('#hosttbl tbody').html(strCircle);
-                        $('#services tbody').html(strCircle);
+                        $('.circle').show();
+                        $('body').addClass('css-loading');
                     },
                     success: function (result, status, xhr) {
                         var rs = result.services;
@@ -179,7 +183,8 @@
                             formathost(dt);
                             drawchart(dt);
                         }
-
+                        $('.circle').hide();
+                        $('body').removeClass('css-loading');
                         formatservices(result);
                     },
                     error: function (xhr, textStatus, errorThrown) {
