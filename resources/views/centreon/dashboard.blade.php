@@ -20,7 +20,7 @@
             <p>Host </p>
             <select class="form-control" id="hosts">
                 @foreach($hosts as $host)
-                    <option value="{{$host->host_id}}">{{$host->name}}</option>
+                    <option value="{{$host->id}}">{{$host->name}}</option>
                 @endforeach
             </select>
         </div>
@@ -192,25 +192,25 @@
                 var strhost = "";
                 strhost += "<tr>";
                 strhost +=      "<td>UP</td>";
-              /*  strhost +=      "<td></td>";*/
+                /*  strhost +=      "<td></td>";*/
                 strhost +=      "<td>"+ data[0]+"%</td>";
                 strhost +=      "<td></td>";
                 strhost += "</tr>";
                 strhost += "<tr>";
                 strhost +=      "<td>DOWN</td>";
-            /*    strhost +=      "<td></td>";*/
+                /*    strhost +=      "<td></td>";*/
                 strhost +=      "<td>"+ data[1]+"%</td>";
                 strhost +=      "<td></td>";
                 strhost += "</tr>";
                 strhost += "<tr>";
                 strhost +=      "<td>UNREACHABLE</td>";
-              /*  strhost +=      "<td></td>";*/
+                /*  strhost +=      "<td></td>";*/
                 strhost +=      "<td>"+ data[2]+"%</td>";
                 strhost +=      "<td></td>";
                 strhost += "</tr>";
                 strhost += "<tr>";
                 strhost +=      "<td>SCHEDULED DOWNTIME</td>";
-              /*  strhost +=      "<td></td>";*/
+                /*  strhost +=      "<td></td>";*/
                 strhost +=      "<td>"+ data[3]+"%</td>";
                 strhost +=      "<td></td>";
                 strhost += "</tr>";
