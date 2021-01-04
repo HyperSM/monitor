@@ -78,9 +78,6 @@ class centreonController extends Controller
 
 
         $refreshrate = $this->getrefreshrate();
-        if(isset($refreshrate)){
-            $refreshrate = $this->setrefreshrate();
-        }
         return view('centreon.dashboard', compact('domain', 'user','hosts','refreshrate'));
     }
 
