@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use DB;
+use GuzzleHttp\Exception\RequestException;
+use Http\Client\Exception\HttpException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\View\View;
+use phpDocumentor\Reflection\Types\Array_;
 use Session;
 use SoapClient;
 
@@ -1124,40 +1128,44 @@ class casvdController extends Controller
                 'objectType' => 'cr',
                 'whereClause' => "type='R' AND ref_num='{$refnum}'", // type I, R, P : Incident, Request, Problem
                 'maxRows' => 1,
-                // 'attributes' => []
                 'attributes' => [
-                    'requested_by.combo_name', // 0. Requester
-                    'customer.combo_name', // 1. Affected End User
-                    'category.sym', // 2. Request Area
-                    'status.sym', // 3. Status
-                    'priority.sym', // 4. Priority
-                    'log_agent.combo_name', // 5. Reported By
-                    'group.combo_name', // 6. Group
-                    'assignee.combo_name', // 7. Assignee
-                    'affected_resource.name', // 8. Configuration Item
-                    'zccaddr', // 9. Mail CC
-                    'severity.sym', // 10. Severity
-                    'urgency.sym', // 11. Urgency
-                    'impact.sym', // 12. Impact
-                    'active.sym', // 13. Active?
-                    'charge_back_id', // 14. Charge Back ID
-                    'call_back_date', // 15. Call Back Date
-                    'resolution_code.sym', // 16. Resolution Code
-                    'requested_by.phone_number', // 17. Requester Phone
-                    'resolution_method.sym', // 18. Resolution Method
-                    'zmain_tech.combo_name', // 19. ZmainTech
-                    'change.chg_ref_num', // 20. Change
-                    'caused_by_chg.chg_ref_num', // 21. Caused by Change Order
-                    'external_system_ticket', // 22. External System Ticket
+                    'requested_by.combo_name',          // 0. Requester
+                    'customer.combo_name',              // 1. Affected End User
+                    'category.sym',                     // 2. Request Area
+                    'status.sym',                       // 3. Status
+                    'priority.sym',                     // 4. Priority
+                    'log_agent.combo_name',             // 5. Reported By
+                    'group.combo_name',                 // 6. Group
+                    'assignee.combo_name',              // 7. Assignee
+                    'affected_resource.name',           // 8. Configuration Item
+                    'zccaddr',                          // 9. Mail CC
+                    'severity.sym',                     // 10. Severity
+                    'urgency.sym',                      // 11. Urgency
+                    'impact.sym',                       // 12. Impact
+                    'active.sym',                       // 13. Active?
+                    'charge_back_id',                   // 14. Charge Back ID
+                    'call_back_date',                   // 15. Call Back Date
+                    'resolution_code.sym',              // 16. Resolution Code
+                    'requested_by.phone_number',        // 17. Requester Phone
+                    'resolution_method.sym',            // 18. Resolution Method
+                    'zmain_tech.combo_name',            // 19. ZmainTech
+                    'change.chg_ref_num',               // 20. Change
+                    'caused_by_chg.chg_ref_num',        // 21. Caused by Change Order
+                    'external_system_ticket',           // 22. External System Ticket
                     // ID
-                    'requested_by', // 23. Requester ID
-                    'customer', // 24. Affected End User ID
-                    'category', // 25. Request Area ID
-                    'group', // 26. Group ID
-                    'assignee', // 27. Assignee ID
-                    'affected_resource', // 28. Configuration Item ID
-                    'status', // 29. Status Code
-                    'severity', // 30. Severity ID
+                    'requested_by',                     // 23. Requester ID
+                    'customer',                         // 24. Affected End User ID
+                    'category',                         // 25. Request Area ID
+                    'group',                            // 26. Group ID
+                    'assignee',                         // 27. Assignee ID
+                    'affected_resource',                // 28. Configuration Item ID
+                    'status',                           // 29. Status Code
+                    'severity',                         // 30. Severity ID
+                    'summary',                          //31. summary
+                    'description',                      //32. descrition
+                    'open_date',                        //33. open date/time
+                    'resolve_date',                     //34. resolve date/time
+                    'close_date'                        //35. closed date/time
                 ],
             );
             $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
@@ -1165,59 +1173,141 @@ class casvdController extends Controller
             // Convert XML to object
             $xmlresponse = simplexml_load_string($response);
 
+
             // Convert SimpleXMLElement object to Array $responseArray
             $responseArray = array();
             foreach ($xmlresponse->UDSObject as $node) {
                 $responseArray[] = $node;
             }
 
+           // dd($responseArray);
+            $el = new \stdClass();
             // Print xml response to response template
             foreach ($responseArray as $item) {
-                $tmpstr = $tmpstr .
-                '{' .
-                '"Requester":"' . $item->Attributes->Attribute[0]->AttrValue . '", ' .
-                '"Affected End User":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' .
-                '"Request Area":"' . $item->Attributes->Attribute[2]->AttrValue . '", ' .
-                '"Status":"' . $item->Attributes->Attribute[3]->AttrValue . '", ' .
-                '"Priority":"' . $item->Attributes->Attribute[4]->AttrValue . '", ' .
-                '"Reported By":"' . $item->Attributes->Attribute[5]->AttrValue . '", ' .
-                '"Group":"' . $item->Attributes->Attribute[6]->AttrValue . '", ' .
-                '"Assignee":"' . $item->Attributes->Attribute[7]->AttrValue . '", ' .
-                '"Configuration Item":"' . $item->Attributes->Attribute[8]->AttrValue . '", ' .
-                '"Mail CC":"' . $item->Attributes->Attribute[9]->AttrValue . '", ' .
-                '"Severity":"' . $item->Attributes->Attribute[10]->AttrValue . '", ' .
-                '"Urgency":"' . $item->Attributes->Attribute[11]->AttrValue . '", ' .
-                '"Impact":"' . $item->Attributes->Attribute[12]->AttrValue . '", ' .
-                '"Active?":"' . $item->Attributes->Attribute[13]->AttrValue . '", ' .
-                '"Charge Back ID":"' . $item->Attributes->Attribute[14]->AttrValue . '", ' .
-                '"Call Back Date/Time":"' . $item->Attributes->Attribute[15]->AttrValue . '", ' .
-                '"Resolution Code":"' . $item->Attributes->Attribute[16]->AttrValue . '", ' .
-                '"Requester Phone":"' . $item->Attributes->Attribute[17]->AttrValue . '", ' .
-                '"Resolution Method By":"' . $item->Attributes->Attribute[18]->AttrValue . '", ' .
-                '"ZmainTech":"' . $item->Attributes->Attribute[19]->AttrValue . '", ' .
-                '"Change":"' . $item->Attributes->Attribute[20]->AttrValue . '", ' .
-                '"Caused by Change Order":"' . $item->Attributes->Attribute[21]->AttrValue . '", ' .
-                '"External System Ticket":"' . $item->Attributes->Attribute[22]->AttrValue . '", ' .
-                '"Requester ID":"' . $item->Attributes->Attribute[23]->AttrValue . '", ' .
-                '"Affected End User ID":"' . $item->Attributes->Attribute[24]->AttrValue . '" ,' .
-                '"Request Area ID":"' . $item->Attributes->Attribute[25]->AttrValue . '" ,' .
-                '"Group ID":"' . $item->Attributes->Attribute[26]->AttrValue . '" ,' .
-                '"Assignee ID":"' . $item->Attributes->Attribute[27]->AttrValue . '" ,' .
-                '"Configuration Item ID":"' . $item->Attributes->Attribute[28]->AttrValue . '" ,' .
-                '"Status ID":"' . $item->Attributes->Attribute[29]->AttrValue . '" ,' .
-                '"Severity ID":"' . $item->Attributes->Attribute[30]->AttrValue . '"' .
-                    '},';
+                $el->requester = empty($item->Attributes->Attribute[0]->AttrValue) ? '' : strval($item->Attributes->Attribute[0]->AttrValue);
+                $el->affected_user = empty($item->Attributes->Attribute[1]->AttrValue) ? '' : strval($item->Attributes->Attribute[1]->AttrValue);
+                $el->request_area = empty($item->Attributes->Attribute[2]->AttrValue) ? '' :strval($item->Attributes->Attribute[2]->AttrValue);
+                $el->status = empty($item->Attributes->Attribute[3]->AttrValue) ? '' :strval($item->Attributes->Attribute[3]->AttrValue);
+                $el->priority = empty($item->Attributes->Attribute[4]->AttrValue) ? '' :strval($item->Attributes->Attribute[4]->AttrValue);
+                $el->report_by = empty($item->Attributes->Attribute[5]->AttrValue) ? '' :strval($item->Attributes->Attribute[6]->AttrValue);
+                $el->group = empty($item->Attributes->Attribute[6]->AttrValue) ? '' :strval($item->Attributes->Attribute[0]->AttrValue);
+                $el->assignee = empty($item->Attributes->Attribute[7]->AttrValue) ? '' : strval($item->Attributes->Attribute[7]->AttrValue);
+                $el->config_item = empty($item->Attributes->Attribute[8]->AttrValue) ? '' :strval($item->Attributes->Attribute[8]->AttrValue);
+                $el->mail_cc = empty($item->Attributes->Attribute[9]->AttrValue) ? '' :strval($item->Attributes->Attribute[9]->AttrValue);
+                $el->severity = empty($item->Attributes->Attribute[10]->AttrValue) ? '' : strval($item->Attributes->Attribute[10]->AttrValue);
+                $el->urgency = empty($item->Attributes->Attribute[11]->AttrValue) ? '' :strval($item->Attributes->Attribute[11]->AttrValue);
+                $el->impact = empty($item->Attributes->Attribute[12]->AttrValue) ? '' :strval($item->Attributes->Attribute[12]->AttrValue);
+                $el->active = empty($item->Attributes->Attribute[13]->AttrValue) ? '' : strval($item->Attributes->Attribute[13]->AttrValue);
+                $el->charge_back_id = empty($item->Attributes->Attribute[14]->AttrValue) ? '' :strval($item->Attributes->Attribute[14]->AttrValue);
+                $el->call_back_date = empty($item->Attributes->Attribute[15]->AttrValue) ? '' :strval($item->Attributes->Attribute[15]->AttrValue);
+                $el->resolution_code = empty($item->Attributes->Attribute[16]->AttrValue) ? '' : strval($item->Attributes->Attribute[16]->AttrValue);
+                $el->resolution_phone = empty($item->Attributes->Attribute[17]->AttrValue) ? '' :strval($item->Attributes->Attribute[17]->AttrValue);
+                $el->resolution_method_by = empty($item->Attributes->Attribute[18]->AttrValue) ? '' :strval($item->Attributes->Attribute[18]->AttrValue);
+                $el->zmainTech = empty($item->Attributes->Attribute[19]->AttrValue) ? '' : strval($item->Attributes->Attribute[19]->AttrValue);
+                $el->change = empty($item->Attributes->Attribute[20]->AttrValue) ? '' :strval($item->Attributes->Attribute[20]->AttrValue);
+                $el->cause_by_change_order = empty($item->Attributes->Attribute[21]->AttrValue) ? '' :strval($item->Attributes->Attribute[21]->AttrValue);
+                $el->external_system_ticket = empty($item->Attributes->Attribute[22]->AttrValue) ? '' : strval($item->Attributes->Attribute[22]->AttrValue);
+                $el->request_id = empty($item->Attributes->Attribute[23]->AttrValue) ? '' :strval($item->Attributes->Attribute[23]->AttrValue);
+                $el->affect_user_id = empty($item->Attributes->Attribute[24]->AttrValue) ? '' :strval($item->Attributes->Attribute[24]->AttrValue);
+                $el->request_area_id = empty($item->Attributes->Attribute[25]->AttrValue) ? '' : strval($item->Attributes->Attribute[25]->AttrValue);
+                $el->group_id = empty($item->Attributes->Attribute[26]->AttrValue) ? '' :strval($item->Attributes->Attribute[20]->AttrValue);
+                $el->assign_id = empty($item->Attributes->Attribute[27]->AttrValue) ? '' :strval($item->Attributes->Attribute[21]->AttrValue);
+                $el->config_item_id = empty($item->Attributes->Attribute[28]->AttrValue) ? '' : strval($item->Attributes->Attribute[22]->AttrValue);
+                $el->status_id = empty($item->Attributes->Attribute[29]->AttrValue) ? '' :strval($item->Attributes->Attribute[23]->AttrValue);
+                $el->severity_id = empty($item->Attributes->Attribute[30]->AttrValue) ? '' :strval($item->Attributes->Attribute[24]->AttrValue);
+                $el->summary = empty($item->Attributes->Attribute[31]->AttrValue) ? '' : strval($item->Attributes->Attribute[25]->AttrValue);
+                $el->description = empty($item->Attributes->Attribute[32]->AttrValue) ? '' :strval($item->Attributes->Attribute[32]->AttrValue);
+                $el->open_date = empty($item->Attributes->Attribute[33]->AttrValue) ? '' : date("d-m-Y g:i a", intval($item->Attributes->Attribute[33]->AttrValue));
+                $el->resolved_date = empty($item->Attributes->Attribute[34]->AttrValue) ? '' : date("d-m-Y g:i a", intval($item->Attributes->Attribute[34]->AttrValue));
+                $el->closed_date = empty($item->Attributes->Attribute[35]->AttrValue) ? '' : date("d-m-Y g:i a", intval($item->Attributes->Attribute[35]->AttrValue));
             }
-
-            $tmpstr = substr($tmpstr, 0, -1);
-            // $tmpstr = $tmpstr . ']';
-            $tmpstr = json_decode($tmpstr, true);
         };
+
+        //reload grid
+        $droplist_status = $this->droplist('status');
+        $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+
+        return view('casvd.editrequest', compact('user', 'refnum', 'el', 'droplist_status', 'droplist_severity','droplist_impact'));
+    }
+
+    public function createrequest(){
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
 
         $droplist_status = $this->droplist('status');
         $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+        return view('casvd.createrequest',compact('user','droplist_impact','droplist_severity','droplist_status'));
+    }
 
-        return view('casvd.editrequest', compact('user', 'err_msg', 'refnum', 'tmpstr', 'droplist_status', 'droplist_severity'));
+    public function createrequestsubmit(Request $request){
+        $customer = $request->h_affected_user;
+        $status = $request->status;
+        $priority = $request->priority;
+
+        if(isset($customer) || isset($status) || isset($priority)){
+            return;
+        }
+
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+        $create_param = array(
+            'sid' => $sid,
+            'attributes' => ['customer','status','priority'],
+            'propertyValues'=>[],
+            'creatorHandle'=>'',
+            'attrVals'=>['customer',$customer,'status',$status,'priority',$priority],
+            'template'=>'',
+            'newRequestHandle'=>'',
+            'newRequestNumber'=>''
+        );
+
+        $response = $client->__call("createRequest", array($create_param));
+
+        $droplist_status = $this->droplist('status');
+        $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+        return view('casvd.createrequest',compact('user','droplist_impact','droplist_severity','droplist_status'));
     }
 
     /*
@@ -1273,12 +1363,110 @@ class casvdController extends Controller
             $ap_param = array(
                 'sid' => $sid,
                 'objectHandle' => $handle,
-                'attrVals' => ['requested_by', Request('requested_by'), 'customer', Request('customer'), 'category', Request('category'), 'status', Request('status'), 'zccaddr', Request('zccaddr'), 'severity', Request('severity')],
-                'attributes' => []
+                'attrVals' => [
+                    'requested_by', Request('requested_by'),
+                    'customer', Request('h_affected_user'),
+                    'category', Request('category'),
+                    'status', Request('status'),
+                    'zccaddr', Request('zccaddr'),
+                    'severity', Request('severity'),
+                    'priority',Request('priority')
+                ],
+                'attributes' => ['requested_by','customer','category','status','zccaddr','severity','priority']
             );
+            //dd($ap_param);
             $client->__call("updateObject", array($ap_param));
         }
         return $this->editrequest($refnum);
+    }
+
+    public function openDialogAssignee(){
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+
+//        $ap_param = array(
+//            'sid' => $sid,
+//            'objectType' => 'ctp',
+//            'whereClause' => '',
+//            'maxRows' => 50,
+//            'attributes' => ['id', 'sym', 'description']
+//        );
+
+        $ap_param = array(
+            'sid' => $sid,
+            'objectType' => 'cnt',
+            'whereClause' => 'type = 2307 AND delete_flag = 0',
+            'maxRows' => 50,
+            'attributes' => ['id', 'combo_name', 'userid', 'zcnt_area', 'email_address', 'type.sym', 'access_type.sym', 'schedule.sym', 'delete_flag.sym']
+        );
+
+
+        $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+        // Convert XML to object
+        $xmlresponse = simplexml_load_string($response);
+
+        // Convert SimpleXMLElement object to Array $responseArray
+        foreach ($xmlresponse->UDSObject as $node) {
+            $responseArray[] = $node;
+        }
+        // Sorting SimpleXMLElement object array
+        function comparator($a, $b)
+        {
+            // sort by ID
+            return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
+        }
+
+        usort($responseArray, __NAMESPACE__ . '\comparator');
+
+        //dd($responseArray);
+
+        $result = [];
+        foreach ($responseArray as $item) {
+
+            $id =  $item->Attributes->Attribute[0]->AttrValue ; // id
+            $name= $item->Attributes->Attribute[1]->AttrValue ; // combo_name
+            $user_id= $item->Attributes->Attribute[2]->AttrValue ; // userid
+            $area =  $item->Attributes->Attribute[3]->AttrValue ; // zcnt_area
+            $email_address= $item->Attributes->Attribute[4]->AttrValue ; // email_address
+            $contact_type= $item->Attributes->Attribute[5]->AttrValue ; // type.sym
+            $access_type =  $item->Attributes->Attribute[6]->AttrValue ; // access_type.sym
+            $workshift= $item->Attributes->Attribute[7]->AttrValue ; // schedule.sym
+            $status =$item->Attributes->Attribute[8]->AttrValue ; // delete_flag.sym
+
+            $el = [
+                'id' => strval($id),
+                'name' => strval($name),
+                'user_id' => strval($user_id),
+                'area' => strval($area),
+                'email_address' => strval($email_address),
+                'contact_type' => strval($contact_type),
+                'access_type' => strval($access_type),
+                'workshift' => strval($workshift),
+                'status' => strval($status)];
+            $result[] = $el;
+
+        }
+        return view('casvd.assigneedialog',compact('result'));
     }
 
     /*
@@ -1547,7 +1735,7 @@ class casvdController extends Controller
     /*
     Section: Popup window - Person - Search
      */
-    public function popuppersonsearch($id)
+    public function popuppersonsearch()
     {
         if (!Session::has('Monitor')) {
             $url = url('/');
@@ -1584,6 +1772,271 @@ class casvdController extends Controller
 
         return view('casvd.popupperson', compact('casvdserver', 'tmpstr', 'id'));
     }
+
+    public function  requesterdialog(){
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $droplist_contact_type = $this->droplist('contact_type');
+        $droplist_active = $this->droplist('active');
+        $droplist_access_type = $this->droplist('access_type');
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+        //region get list params
+        $whereParam = "";
+//        if ($request["last_name"] != "") {
+//            $temp = "last_name like '%" . $request["last_name"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["first_name"] != "") {
+//            $temp = "first_name like '%" . $request["first_name"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["middle_name"] != "") {
+//            $temp = "middle_name like '%" . $request["middle_name"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["contact_type"] != "") {
+//            $temp = "type.sym = '" . $request["contact_type"] . "'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["access_type"] != "") {
+//            $temp = "access_type.sym like '%" . $request["access_type"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["active"] != "") {
+//            $temp = "delete_flag.sym = '" . $request["active"] . "'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["userid"] != "") {
+//            $temp = "userid like '%" . $request["userid"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["email"] != "") {
+//            $temp = "email_address like '%" . $request["email"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["location"] != "") {
+//            $temp = "location.sym like '%" . $request["location"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["telephone"] != "") {
+//            $temp = "phone_number like '%" . $request["telephone"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+        //endregion
+
+        $ap_param = array(
+            'sid' => $sid,
+            'objectType' => 'cnt',
+            'whereClause' => $whereParam,
+            'maxRows' => 50,
+            'attributes' => ['id', 'combo_name', 'userid', 'zcnt_area', 'email_address', 'type.sym', 'access_type.sym', 'schedule.sym', 'delete_flag.sym']
+        );
+
+        $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+        // Convert XML to object
+        $xmlresponse = simplexml_load_string($response);
+
+
+        // Convert SimpleXMLElement object to Array $responseArray
+        foreach ($xmlresponse->UDSObject as $node) {
+            $responseArray[] = $node;
+        }
+        // Sorting SimpleXMLElement object array
+        function comparator($a, $b)
+        {
+            // sort by ID
+            return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
+        }
+
+        usort($responseArray, __NAMESPACE__ . '\comparator');
+
+        $result = [];
+        foreach ($responseArray as $item) {
+
+            $id =  $item->Attributes->Attribute[0]->AttrValue ; // id
+            $name= $item->Attributes->Attribute[1]->AttrValue ; // combo_name
+            $user_id= $item->Attributes->Attribute[2]->AttrValue ; // userid
+            $area =  $item->Attributes->Attribute[3]->AttrValue ; // zcnt_area
+            $email_address= $item->Attributes->Attribute[4]->AttrValue ; // email_address
+            $contact_type= $item->Attributes->Attribute[5]->AttrValue ; // type.sym
+            $access_type =  $item->Attributes->Attribute[6]->AttrValue ; // access_type.sym
+            $workshift= $item->Attributes->Attribute[7]->AttrValue ; // schedule.sym
+            $status =$item->Attributes->Attribute[8]->AttrValue ; // delete_flag.sym
+
+            //$el = new \stdClass();
+            $el = [
+                'id' => strval($id),
+                'name' => strval($name),
+                'user_id' => strval($user_id),
+                'area' => strval($area),
+                'email_address' => strval($email_address),
+                'contact_type' => strval($contact_type),
+                'access_type' => strval($access_type),
+                'workshift' => strval($workshift),
+                'status' => strval($status)];
+            $result[] = $el;
+
+        }
+
+       // dd($result);
+        //return response()->json(['data'=>$result]);
+
+        return view('casvd.requesterdialog', compact( 'droplist_contact_type', 'droplist_active', 'droplist_access_type','result'));
+    }
+
+    public  function getListRequester(){
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+        //region get list params
+        $whereParam = "";
+//        if ($request["last_name"] != "") {
+//            $temp = "last_name like '%" . $request["last_name"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["first_name"] != "") {
+//            $temp = "first_name like '%" . $request["first_name"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["middle_name"] != "") {
+//            $temp = "middle_name like '%" . $request["middle_name"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["contact_type"] != "") {
+//            $temp = "type.sym = '" . $request["contact_type"] . "'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["access_type"] != "") {
+//            $temp = "access_type.sym like '%" . $request["access_type"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["active"] != "") {
+//            $temp = "delete_flag.sym = '" . $request["active"] . "'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["userid"] != "") {
+//            $temp = "userid like '%" . $request["userid"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["email"] != "") {
+//            $temp = "email_address like '%" . $request["email"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["location"] != "") {
+//            $temp = "location.sym like '%" . $request["location"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+//        if ($request["telephone"] != "") {
+//            $temp = "phone_number like '%" . $request["telephone"] . "%'";
+//            $whereParam .= ($whereParam == "" ? $temp : (" AND " . $temp));
+//        };
+        //endregion
+
+        $ap_param = array(
+            'sid' => $sid,
+            'objectType' => 'cnt',
+            'whereClause' => $whereParam,
+            'maxRows' => 50,
+            'attributes' => ['id', 'combo_name', 'userid', 'zcnt_area', 'email_address', 'type.sym', 'access_type.sym', 'schedule.sym', 'delete_flag.sym']
+        );
+
+        $response = $client->__call("doSelect", array($ap_param))->doSelectReturn;
+
+        // Convert XML to object
+        $xmlresponse = simplexml_load_string($response);
+
+
+        // Convert SimpleXMLElement object to Array $responseArray
+        foreach ($xmlresponse->UDSObject as $node) {
+            $responseArray[] = $node;
+        }
+        // Sorting SimpleXMLElement object array
+        function comparator($a, $b)
+        {
+            // sort by ID
+            return (intval($a->Attributes->Attribute[0]->AttrValue) > intval($b->Attributes->Attribute[0]->AttrValue)) ? -1 : 1;
+        }
+
+        usort($responseArray, __NAMESPACE__ . '\comparator');
+
+        $result = [];
+        foreach ($responseArray as $item) {
+
+            $id =  $item->Attributes->Attribute[0]->AttrValue ; // id
+            $name= $item->Attributes->Attribute[1]->AttrValue ; // combo_name
+            $user_id= $item->Attributes->Attribute[2]->AttrValue ; // userid
+            $area =  $item->Attributes->Attribute[3]->AttrValue ; // zcnt_area
+            $email_address= $item->Attributes->Attribute[4]->AttrValue ; // email_address
+            $contact_type= $item->Attributes->Attribute[5]->AttrValue ; // type.sym
+            $access_type =  $item->Attributes->Attribute[6]->AttrValue ; // access_type.sym
+            $workshift= $item->Attributes->Attribute[7]->AttrValue ; // schedule.sym
+            $status =$item->Attributes->Attribute[8]->AttrValue ; // delete_flag.sym
+
+//            $el = new \stdClass();
+//            $el->id = strval($id);
+//            $el->name =  strval($name);
+//            $el ->user_id= strval($user_id);
+//            $el ->area= strval($area);
+//            $el ->email_address= strval($email_address);
+//            $el ->contact_type= strval($contact_type);
+//            $el ->access_type= strval($access_type);
+//            $el ->workshift= strval($workshift);
+//            $el ->status= strval($status);
+//            $result[] = json_encode($el);
+
+            $el = [
+                'id' => strval($id),
+                'name' => strval($name),
+                'user_id' => strval($user_id),
+                'area' => strval($area),
+                'email_address' => strval($email_address),
+                'contact_type' => strval($contact_type),
+                'access_type' => strval($access_type),
+                'workshift' => strval($workshift),
+                'status' => strval($status)];
+            $result[] = $el;
+        }
+        return response()->json($result);
+    }
+
 
     /*
     Page: Popup window - Person
@@ -2214,12 +2667,13 @@ class casvdController extends Controller
                 $tmpobj = 'sev';
                 $tmpattr = ['sym', 'id'];
                 break;
+            case 'impact':
+                $tmpobj = 'imp';
+                $tmpattr = ['sym', 'id'];
+                break;
         }
-        // dd(in_array("Open",array("Open","Close")));
+
         $tmpstr = '[';
-        // <select name='.$type.' class="select2 full-width-fix required">
-        // <option></option>
-        // <option value="">None</option>';
 
         // Get priority dropdown list
         $ap_param = array(
@@ -2240,29 +2694,6 @@ class casvdController extends Controller
             $responseArray[] = $node;
         }
 
-        //comment out
-        // Print xml response to response template
-        // foreach ($responseArray as $item) {
-        //   $val0 = $item->Attributes->Attribute[0]->AttrValue;
-        //   switch ($type) {
-        //     case 'status':
-        //         $valarr = array("Acknowledged","Assigned","In Progress","Open","Rejected");
-        //         if (in_array($val0,$valarr)) {
-        //           $val1 = $item->Attributes->Attribute[1]->AttrValue;
-        //           $tmpstr = $tmpstr .
-        //             '<option value="' . $val1 . '">' . $val0 . '</option>';
-        //         };
-        //         break;
-        //     default:
-        //         $tmpstr = $tmpstr .
-        //           '<option value="' . $val0 . '">' . $val0 . '</option>';
-        //         break;
-        //   }
-        // }
-
-        // $tmpstr = $tmpstr . '
-        //   </select>';
-
         switch ($type) {
             case 'status':
             case 'severity':
@@ -2271,6 +2702,15 @@ class casvdController extends Controller
                     '{' .
                     '"id":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' .
                     '"value":"' . $item->Attributes->Attribute[0]->AttrValue . '"' .
+                        '},';
+                };
+                break;
+            case 'impact':
+                foreach ($responseArray as $item) {
+                    $tmpstr = $tmpstr .
+                        '{' .
+                        '"id":"' . $item->Attributes->Attribute[1]->AttrValue . '", ' .
+                        '"value":"' . $item->Attributes->Attribute[0]->AttrValue . '"' .
                         '},';
                 };
                 break;
@@ -2587,46 +3027,4 @@ class casvdController extends Controller
         return $tmpstr;
     }
 
-    /*
-    Section: Function Return Contact drop down list
-     */
-    // public function droplist_group($client, $sid) {
-    //   $tmpstr='
-    //     <select name="group" class="select2 full-width-fix required">
-    //     <option></option>
-    //     <option value="">None</option>';
-
-    //   // Get group dropdown list
-    //   $ap_param = array(
-    //     'sid' => $sid,
-    //     'objectType' => 'cnt',
-    //     'whereClause' => "",
-    //     'maxRows' => 50,
-    //     'attributes' => ['last_name']
-    //   );
-
-    //   $response = $client->__call("doSelect",array($ap_param))->doSelectReturn;
-
-    //   // Convert XML to object
-    //   $xmlresponse = simplexml_load_string($response);
-    //   // Convert SimpleXMLElement object to Array $responseArray
-    //   $responseArray = array();
-    //   foreach($xmlresponse->UDSObject as $node) {
-    //     $responseArray[] = $node;
-    //   }
-
-    //   usort($responseArray, __NAMESPACE__ . '\comparator');
-
-    //   // Print xml response to response template
-    //   foreach ($responseArray as $item) {
-    //     $val = $item->Attributes->Attribute[0]->AttrValue;
-    //     $tmpstr = $tmpstr .
-    //             '<option value="'.$val.'">'.$val.'</option>'; // id
-    //   }
-
-    //   $tmpstr = $tmpstr . '
-    //     </select>';
-
-    //   return $tmpstr;
-    // }
 }

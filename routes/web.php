@@ -169,19 +169,23 @@ Route::get('/admin/casvd/allrequests','casvdController@allrequests');
 Route::post('ajaxcasvdallrequests','casvdController@ajaxcasvdallrequests')->name('ajaxcasvdallrequests');
 Route::get('/admin/casvd/allrequests/edit/{refnum}','casvdController@editrequest');
 Route::post('/admin/casvd/allrequests/edit/{refnum}','casvdController@editrequestsubmit');
+Route::get('/admin/casvd/allrequests/create','casvdController@createrequest');
+Route::post('/admin/casvd/allrequests/create','casvdController@createrequestsubmit');
 //Change
 Route::get('/admin/casvd/allchanges','casvdController@allchanges');
 Route::post('ajaxcasvdallchanges','casvdController@ajaxcasvdallchanges')->name('ajaxcasvdallchanges');
 //Popup
-Route::get('admin/casvd/popup/person','casvdController@popupperson');
-Route::get('admin/casvd/popup/person/requester/{id}','casvdController@popuppersonsearch');
-Route::get('admin/casvd/popup/person/customer/{id}','casvdController@popuppersonsearch');
-Route::get('admin/casvd/popup/group/{id}','casvdController@popupgroup');
-Route::get('admin/casvd/popup/ci/{id}','casvdController@popupcisearch');
+Route::get('/admin/casvd/popup/person','casvdController@popupperson');
+Route::get('/admin/casvd/popup/person/requester','casvdController@requesterdialog');
+Route::get('/admin/casvd/popup/person/customer','casvdController@popuppersonsearch');
+Route::get('/admin/casvd/popup/group/{id}','casvdController@popupgroup');
+Route::get('/admin/casvd/popup/ci/{id}','casvdController@popupcisearch');
 //Search
-Route::post('/admin/casvd/popup/person/requester/{id}','casvdController@popupperson');
-Route::post('/admin/casvd/popup/person/customer/{id}','casvdController@popupperson');
-Route::post('/admin/casvd/popup/ci/{id}','casvdController@popupci');
+Route::get('/admin/casvd/popup/search/requester','casvdController@getListRequester') ->name('ajaxgetListRequester');
+//Route::post('/admin/casvd/popup/person/customer/{id}','casvdController@popupperson');
+//Route::post('/admin/casvd/popup/ci/{id}','casvdController@popupci');
+Route::get('/admin/casvd/popup/assignee/search','casvdController@openDialogAssignee');
+Route::get('/admin/casvd/popup/requester/search','casvdController@test') ->name('test111');
 
 
 //Centreon

@@ -47,7 +47,7 @@
     <!-- Request menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-user"></i><span>Request </span><i class="icon-angle-down left-padding"></i></a>
 			<ul class="dropdown-menu pull-right">
-			<li><a href="#" title=""><i class="icon-plus"></i>Add new Request</a></li>
+			<li><a href="{{@Config::get('app.url')}}/admin/casvd/allrequests/create" title=""><i class="icon-plus"></i>Add new Request</a></li>
 			<li><a href="{{@Config::get('app.url')}}/admin/casvd/allrequests" title=""><i class="icon-reorder"></i>All Requests</a></li>
 			</ul>
 		</li>

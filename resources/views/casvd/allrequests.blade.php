@@ -87,14 +87,20 @@
                             d._token = '{{ csrf_token() }}';
                             d.startindex = d.start;
                             d.pagesize = d.length;
-                            //d.startrow = d.start;
                             d.startdate = start;
                             d.enddate = end;
                         }
                     },
                     "columns": [
                         {"data": "id"},
-                        {"data": "ref_num"},
+                        {
+                            "data": "ref_num",
+                            "render": function (data,type,row) {
+                                var url = '<?php echo \config('app.url').'/admin/casvd/allrequests/edit/'; ?>';
+                                url+= data;
+                                return "<a href='"+url+"'>"+ data +"</a>";
+                            }
+                        },
                         {"data": "summary"},
                         {"data": "priority"},
                         {"data": "category"},

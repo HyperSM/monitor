@@ -73,9 +73,6 @@
 	    //default get tickets today
        var start = moment().startOf('day');
        var end = moment().endOf('day');
-        // var info = $('#incidents').DataTable().page.info();
-        // var currentpage = info.page +1;
-
 
         function loadpage(start,end) {
             if ($.fn.DataTable.isDataTable("#incidents")) {
@@ -88,7 +85,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": '<?php echo URL::route("ajaxcasvdallincidents") ?>',
+                    "url": '<?php use League\Flysystem\Config;echo URL::route("ajaxcasvdallincidents") ?>',
                     "type": "POST",
                     "data": function (d) {
                         //d.myKey = "myValue";
@@ -101,7 +98,12 @@
                 },
                 "columns": [
                     {"data": "id"},
-                    {"data": "ref_num"},
+                    {
+                        "data": "ref_num",
+                        "render": function (data,type,row) {
+                            return "<a href='#'>"+ data +"</a>";
+                        }
+                    },
                     {"data": "summary"},
                     {"data": "priority"},
                     {"data": "category"},
