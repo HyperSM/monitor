@@ -31,6 +31,40 @@ route::post('/admin/dashboard/users/edit/{userid}','adminController@editusersubm
 route::get('/admin/dashboard/users/delete/{userid}','adminController@deleteuser');
 route::post('/admin/dashboard/users/delete/{userid}','adminController@deleteusersubmit');
 
+//System Admin (Sysadmin)
+route::get('/sysadmin','sysadminController@index');
+route::post('doAdminLogin','sysadminController@doLogin');
+route::get('/sysadmin/dashboard','sysadminController@dashboard');
+
+//System Admin (Sysadmin) - User Management
+route::get('/sysadmin/users','sysadminController@users');
+route::get('/sysadmin/users/adduser','sysadminController@adduser');
+route::post('/sysadmin/users/adduser','sysadminController@addusersubmit');
+route::get('/sysadmin/users/edit/{userid}','sysadminController@edituser');
+route::post('/sysadmin/users/edit/{userid}','sysadminController@editusersubmit');
+route::get('/sysadmin/users/delete/{userid}','sysadminController@deleteuser');
+route::post('/sysadmin/users/delete/{userid}','sysadminController@deleteusersubmit');
+
+//System Admin (Sysadmin) - Domain Management
+route::get('/sysadmin/domains','sysadminController@domains');
+route::get('/sysadmin/domains/adddomain','sysadminController@adddomain');
+route::post('/sysadmin/domains/adddomain','sysadminController@adddomainsubmit');
+route::get('/sysadmin/domains/edit/{domainid}','sysadminController@editdomain');
+route::post('/sysadmin/domains/edit/{domainid}','sysadminController@editdomainsubmit');
+route::get('/sysadmin/domains/delete/{domainid}','sysadminController@deletedomain');
+route::post('/sysadmin/domains/delete/{domainid}','sysadminController@deletedomainsubmit');
+route::get('/sysadmin/domains/ena/{domainid}','sysadminController@enabledomain');
+route::get('/sysadmin/domains/disa/{domainid}','sysadminController@disabledomain');
+route::get('/sysadmin/domains/{domainid}/users','sysadminController@domainusers');
+route::get('/sysadmin/domains/{domainid}/users/adduser','sysadminController@adddomainuser');
+route::post('/sysadmin/domains/{domainid}/users/adduser','sysadminController@adddomainusersubmit');
+route::get('/sysadmin/domains/{domainid}/users/edit/{userid}','sysadminController@editdomainuser');
+route::post('/sysadmin/domains/{domainid}/users/edit/{userid}','sysadminController@editdomainusersubmit');
+route::get('/sysadmin/domains/{domainid}/users/delete/{userid}','sysadminController@deletedomainuser');
+route::post('/sysadmin/domains/{domainid}/users/delete/{userid}','sysadminController@deletedomainusersubmit');
+route::get('/sysadmin/domains/{domainid}/users/ena/{userid}','sysadminController@enabledomainuser');
+route::get('/sysadmin/domains/{domainid}/users/disa/{userid}','sysadminController@disabledomainuser');
+
 
 //Solarwinds npm controller
 route::get('totalnodesquery','slwnpmController@totalnodesqueryfunction')->name('totalnodesquery');

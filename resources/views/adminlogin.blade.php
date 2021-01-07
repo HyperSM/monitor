@@ -77,7 +77,7 @@
 	<div class="box">
 		<div class="content">
 			<!-- Login Formular -->
-			<form class="form-vertical login-form" action="doLogin" method="post">
+			<form class="form-vertical login-form" action="doAdminLogin" method="post">
 				@csrf
 				{{csrf_field()}}
 				<!-- Title -->
@@ -133,10 +133,10 @@
 				<i class="icon-remove close hide-default"></i>
 
 				<!-- Link as Toggle Button -->
-				<a href="{{@Config::get('app.url')}}/sysadmin" class="forgot-password-link">Admin Login</a>
+				<a href="{{@Config::get('app.url')}}" class="forgot-password-link">Customer Login</a>
 
 				<!-- Forgot Password Formular -->
-				<form class="form-vertical forgot-password-form hide-default" action="doLogin" method="post">
+				<form class="form-vertical forgot-password-form hide-default" action="doAdminLogin" method="post">
 					<!-- Input Fields -->
 					<div class="form-group">
 						<!--<label for="email">Email:</label>-->
