@@ -20,6 +20,24 @@
         grid-row: 2/3;
         margin-left: 10px;
     }
+
+    .circle{
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 45%;
+        left: 45%;
+        opacity: 0.8;
+        margin-top:30px;
+        background-color: white;
+    }
+    .css-loading{
+        opacity: 0.8;
+    }
+
+    .gif-loading{
+        width: 30px;height: 30px;position: absolute;right: 10px;
+    }
 </style>
 
 
@@ -106,30 +124,52 @@
 {{--        </div>--}}
 {{--    </div>--}}
 
+{{--    <div class="col-md-4">--}}
+{{--        <div class="widget box">--}}
+{{--            <div class="widget-header">--}}
+{{--                <h4><i class="icon-reorder"></i>WAN Edge Health</h4>--}}
+{{--                <div class="toolbar no-padding">--}}
+{{--                    <div class="btn-group">--}}
+{{--                        <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            <div style="height: 100px;"></div>--}}
+{{--            <div class="row" align="center" style="vertical-align: middle;">--}}
+{{--                <div class="col-md-4">--}}
+{{--                    <h5>Normal</h5>--}}
+{{--                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" value="0" data-readOnly="true" id="normal">--}}
+{{--                </div>--}}
+{{--                <div class="col-md-4">--}}
+{{--                    <h5>Warning</h5>--}}
+{{--                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="#eb7d34" value="0" data-readOnly="true" id="warning">--}}
+{{--                </div>--}}
+{{--                <div class="col-md-4">--}}
+{{--                    <h5>Error</h5>--}}
+{{--                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="red" value="0" data-readOnly="true" id="error">--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+
     <div class="col-md-4">
         <div class="widget box">
             <div class="widget-header">
-                <h4><i class="icon-reorder"></i>WAN Edge Health</h4>
-                <div class="toolbar no-padding">
-                    <div class="btn-group">
-                        <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-                    </div>
-                </div>
+                    <h4>Host </h4>
+
             </div>
-            <div style="height: 100px;"></div>
-            <div class="row" align="center" style="vertical-align: middle;">
-                <div class="col-md-4">
-                    <h5>Normal</h5>
-                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" value="0" data-readOnly="true" id="normal">
+            <div class="widget-content" style="position: relative">
+                <div style="margin:0 0 20px 0;width: 100%">
+                    <select class="form-control" id="hosts">
+                        @foreach($hosts as $host)
+                            <option value="{{$host->id}}">{{$host->name}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="col-md-4">
-                    <h5>Warning</h5>
-                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="#eb7d34" value="0" data-readOnly="true" id="warning">
+                <div class="loading-gif-change gif-loading">
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
                 </div>
-                <div class="col-md-4">
-                    <h5>Error</h5>
-                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="red" value="0" data-readOnly="true" id="error">
-                </div>
+                <div id="chart_pie" class="chart" ></div>
             </div>
         </div>
     </div>
@@ -198,6 +238,58 @@
 </div>
 
 <div class="row">
+    <!-- Incident chart -->
+    <div class="col-md-4">
+        <div class="widget box" >
+            <div class="widget-header">
+                <h4>Monthly Incident Tickets</h4>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="widget-content no-padding" align="center" style="position:relative;">
+                <div class="loading-gif-request gif-loading" >
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+                </div>
+                <div id="incident-chart" class="chart" style="width:95%; height: 320px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request chart -->
+    <div class="col-md-4">
+        <div class="widget box">
+            <div class="widget-header">
+                <h4>Monthly Request Tickets</h4>
+            </div>
+            <div style="height: 10px;">
+            </div>
+            <div class="widget-content no-padding" align="center" style="position: relative">
+                <div class="loading-gif-request gif-loading" >
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+                </div>
+                <div id="request-chart" class="chart" style="width:95%; height: 320px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change chart -->
+    <div class="col-md-4">
+        <div class="widget box">
+            <div class="widget-header">
+                <h4>Monthly Change Tickets</h4>
+            </div>
+            <div style="height: 10px;">
+            </div>
+            <div class="widget-content no-padding" align="center" style="position:relative;">
+                <div class="loading-gif-request gif-loading" >
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+                </div>
+                <div id="change-chart" class="chart" style="width:95%; height: 320px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
 	<div class="col-md-4">
 		<div class="widget box">
 			<div class="widget-header">
@@ -249,6 +341,8 @@
 	</div>
 </div>
 
+<div id="ajaxchartdata" style="display: none !important;"></div>
+
 <script>
     var incidentIntervalID;
     var requestIntervalID;
@@ -294,7 +388,212 @@
         $('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
             $('.loading-gif-change').hide();
         }).fadeIn("slow");
+
+        <!-- Chart CA Service Desk-->
+        loadChartCASVR();
+
+        <!-- Centreon-->
+        getservices();
+
 	});
+
+	function loadChartCASVR(){
+        var ajaxcasvddashboardticketchart = '<?php echo URL::route('ajaxcasvddashboardticketchart') ?>';
+        $('#ajaxchartdata').load(ajaxcasvddashboardticketchart, function() {
+            $('.loading-gif-request').hide();
+            var response = $('#ajaxchartdata').html();
+            var tmpArr = response.split(";");
+            var incidentDatas = tmpArr[0];
+            var requestDatas = tmpArr[1];
+            var changetDatas = tmpArr[2];
+
+            Highcharts.chart('incident-chart', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Monthly Incident Tickets'
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Incidents'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    color: App.getLayoutColorCode('red'),
+                    name: 'Incident',
+                    data: addMonthChart(incidentDatas)
+                }]
+            });
+
+            Highcharts.chart('request-chart', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Monthly Request Tickets'
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Requests'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    color: App.getLayoutColorCode('purple'),
+                    name: 'Request',
+                    data: addMonthChart(requestDatas)
+                }]
+            });
+
+            Highcharts.chart('change-chart', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Monthly Changes Tickets'
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Changes'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    color: App.getLayoutColorCode('ocean'),
+                    name: 'Change',
+                    data: addMonthChart(changetDatas)
+                }]
+            });
+        });
+    }
+
+    function addMonthChart(source){
+        var outputArr= [];
+        var date = new Date();
+        var start = date.getMonth();
+        for(var i = 1 ;i<=12;i++){
+            if((start+1) == i){
+                outputArr.push(parseInt(source))
+            }else{
+                outputArr.push(null);
+            }
+        }
+        return outputArr;
+    }
+
+    $('select').change(function () {
+        getservices();
+    });
+
+    function drawchart(data,flag){        //var d_pie = [10,20,70];
+        var d_pie = data;
+        d_pie[2] = { label: "UP", data: Math.floor(d_pie[0]*100)+1 };
+        d_pie[1] = { label: "DOWN", data: Math.floor(d_pie[1]*100)+1 };
+        d_pie[0] = { label: "UNREACHABLE", data: Math.floor(d_pie[2]*100)+1 };
+        d_pie[3] = { label: "SCHEDULED DOWNTIME", data: Math.floor(d_pie[3]*100)+1 };
+        d_pie[4] = { label: "UNDETERMINED", data: Math.floor(d_pie[4]*100)+1 };
+        $.plot("#chart_pie", d_pie, $.extend(true, {}, Plugins.getFlotDefaults(), {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 1,
+                    label: {
+                        show: true
+                    }
+                }
+            },
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
+                shifts: {
+                    x: 20,
+                    y: 0
+                }
+            }
+        }));
+    }
+
+    function getservices(){
+        var hostname = $("#hosts :selected").text();
+        //console.log(hostname);
+        jQuery.ajax({
+            headers: {
+                //'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                //'_token': '{{ csrf_token() }}'
+            },
+            url: '<?php echo URL::route("ajaxgetservicebyhost") ?>',
+            method: 'POST',
+            data: {
+                name: hostname,
+                _token: '{{ csrf_token() }}'
+            },
+            beforeSend(){
+                $('.loading-gif-change').show();
+            },
+            success: function (result, status, xhr) {
+                $('.loading-gif-change').hide();
+                var rs = result.services;
+                //console.log(rs[0]);
+                // UP
+                if(rs[0]['host_state'] == 0){
+                    var host_downtimes = parseInt(rs[0]['host_downtimes']);
+                    var dt = [100,0,0,host_downtimes,0];
+                    drawchart(dt);
+                }
+                // DOWN
+                if(rs[0]['host_state'] == 2){
+                    var host_downtimes = parseInt(rs[0]['host_downtimes']);
+                    var dt = [0,100,0,host_downtimes,0];
+                    drawchart(dt);
+                }
+                //UNREACT
+                if(rs[0]['host_state'] == 3){
+                    var host_downtimes = parseInt(rs[0]['host_downtimes']);
+                    var dt = [0,0,100,host_downtimes,0];
+                    drawchart(dt);
+                }
+                $('body').removeClass('css-loading');
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log(errorThrown)
+            }
+        });
+    }
 
 
 	{{--setInterval(function(){--}}
@@ -316,8 +615,7 @@
     {{--    var query = '<?php echo URL::route('ciscosdwan.dashboard.sitehealth') ?>';--}}
     {{--    $('#sitehealth').load(query).fadeIn("slow");--}}
 
-    {{--    var start= moment().unix();--}}
-    {{--    var end= moment().unix();--}}
+    {{--    <!--Service Desk-->--}}
     {{--    var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';--}}
     {{--    ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);--}}
     {{--    $('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {--}}
@@ -335,27 +633,31 @@
     {{--    $('#changecount').load(ajaxcasvddashboardtotalchanges, function() {--}}
     {{--        $('.loading-gif-change').hide();--}}
     {{--    }).fadeIn("slow");--}}
+
+    {{--    loadChartCASVR();--}}
+
+    {{--    <!--Centreon-->--}}
+    {{--    getservices();--}}
 	{{--});--}}
 
-    $(document).ajaxComplete(function(event,xhr,settings){
-        //console.log("URL",settings.url);
-        if(settings.url.indexOf('ciscosdwan.dashboard.wanedgehealth')>0){
-            if(wanedgehealthdiv.innerText!=''){
-                var datas = JSON.parse(wanedgehealthdiv.innerText);
-                var i;
-                for (i=0;i<datas.length;i++){
-                    if(datas[i]['name']=='normal'){
-                        $('#normal').val(datas[i]['count']).trigger('change');
-                    }else if(datas[i]['name']=='warning'){
-                        $('#warning').val(datas[i]['count']).trigger('change');
-                    }else if(datas[i]['name']=='error'){
-                        $('#error').val(datas[i]['count']).trigger('change');
-                    }
-                }
-            }
-        }
-            //End of display chart
-
-    });
+    // $(document).ajaxComplete(function(event,xhr,settings){
+    //     //console.log("URL",settings.url);
+    //     if(settings.url.indexOf('ciscosdwan.dashboard.wanedgehealth')>0){
+    //         if(wanedgehealthdiv.innerText!=''){
+    //             var datas = JSON.parse(wanedgehealthdiv.innerText);
+    //             var i;
+    //             for (i=0;i<datas.length;i++){
+    //                 if(datas[i]['name']=='normal'){
+    //                     $('#normal').val(datas[i]['count']).trigger('change');
+    //                 }else if(datas[i]['name']=='warning'){
+    //                     $('#warning').val(datas[i]['count']).trigger('change');
+    //                 }else if(datas[i]['name']=='error'){
+    //                     $('#error').val(datas[i]['count']).trigger('change');
+    //                 }
+    //             }
+    //         }
+    //     }
+    //         //End of display chart
+    // });
 </script>
 @endsection

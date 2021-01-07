@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Crypt;
@@ -30,7 +31,142 @@ class adminController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        return view('admin.dashboard',compact('err_msg','domain','user'));
+        // get info centreonserver
+        $centreonserver = DB::table('tbl_centreonservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+
+        $authen_key = "";
+        $client = new \GuzzleHttp\Client(['cookies' => true]);
+        try {
+            $res = $client->request("POST",  $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                'form_params' => [
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
+                ],
+                //"verify" => false
+            ]);
+
+            $authen_key = json_decode($res->getBody())->authToken;
+        } catch (RequestException $e) {
+            $authen_key = "";
+        }
+        //endregion
+
+        //region get hosts centreon
+        if ($authen_key != "") {
+            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
+                "headers" => [
+                    "Content-Type" => "application/json",
+                    "centreon-auth-token" => $authen_key
+                ],
+            ]);
+            $hosts = json_decode($res->getBody());
+            for ($i = 1 ; $i < count($hosts);++$i){
+                if ($hosts[$i]->name == $hosts[$i - 1]->name) {
+                    unset($hosts[$i]);
+                }
+            }
+            // dd($hosts);
+        }
+        //endregion
+
+        return view('admin.dashboard',compact('err_msg','domain','user','hosts'));
+    }
+
+    function ajaxgetservicebyhost(Request $request){
+        //region auth
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $centreonserver = DB::table('tbl_centreonservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+        $authen_key = "";
+        $client = new \GuzzleHttp\Client(['cookies' => true]);
+        try {
+            $res = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                'form_params' => [
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
+                ]
+            ]);
+
+            $authen_key = json_decode($res->getBody())->authToken;
+        } catch (RequestException $e) {
+
+        }
+        //endregion
+
+        $html = "";
+        //region load data
+        $services = array();
+        if ($authen_key != "") {
+            if(!empty($request->name)) {
+                $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_services&action=list&fields=host_name,host_state,output,description,host_last_check,scheduled_downtime_depth&searchHost=" . $request->name, [
+                    "headers" => [
+                        "Content-Type" => "application/json",
+                        "centreon-auth-token" => $authen_key
+                    ],
+                ]);
+                $services = json_decode($res->getBody());
+
+
+                foreach ($services as $service){
+                    //region get service downtime
+                    $rs = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=action&object=centreon_clapi", [
+                        "headers" => [
+                            "Content-Type" => "application/json",
+                            "centreon-auth-token" => $authen_key
+                        ],
+                        'json'=>[
+                            "object"=>"RTDOWNTIME",
+                            "action"=>"show",
+                            "values"=>"SVC;".$service->host_name.",".$service->description
+                        ]
+                    ]);
+                    $data = json_decode($rs->getBody());
+                    if(isset($data)){
+                        $service->service_downtimes = "0";
+                    }
+                    else{
+                        $duration = $this->secondsToTime($data->duration);
+                        $service->service_downtimes = $duration['days'].'D'.$duration['hours'].'H'.$duration['minutes'].'M'.$duration['seconds'].'S';
+                    }
+                    //endregion
+
+                    //region get host downtime
+                    $rs_host = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=action&object=centreon_clapi", [
+                        "headers" => [
+                            "Content-Type" => "application/json",
+                            "centreon-auth-token" => $authen_key
+                        ],
+                        'json'=>[
+                            "object"=>"RTDOWNTIME",
+                            "action"=>"show",
+                            "values"=>"HOST;".$service->host_name
+                        ]
+                    ]);
+                    $data1 = json_decode($rs_host->getBody());
+                    if(isset($data1)){
+                        $service->host_downtimes = "0";
+                    }
+                    else{
+                        $duration = $this->secondsToTime($data->duration);
+                        $service->host_downtimes = $duration['days'].'D'.$duration['hours'].'H'.$duration['minutes'].'M'.$duration['seconds'].'S';
+                    }
+                    //endregion
+                }
+            }
+        }
+
+        //endregion
+        return response()->json(['services' => $services]);
+
     }
 
     public function timequeryfunction(){
@@ -81,7 +217,7 @@ class adminController extends Controller
       ])->first();
 
       $err_msg ='';
-      
+
       if ($user->accountconfig == '1') {
         return view('admin.adduser',compact('user','err_msg'));
       } else {
@@ -287,7 +423,7 @@ class adminController extends Controller
       ->where([
         ['userid','=',Request('userid')]
       ])->first();
-      
+
       if ($user->accountconfig == '1') {
         return view('admin.edituser',compact('user','selecteduser','selecteduserrights','err_msg'));
       } else {
