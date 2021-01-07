@@ -248,10 +248,10 @@
 				var response = $('#ajaxchartdata').html();
 
 				var tmpArr = response.split(";");
-				var incidentArr = JSON.parse("[" + tmpArr[0] +"]");
-				var requestArr = JSON.parse("[" + tmpArr[1] +"]");
-				var changeArr = JSON.parse("[" + tmpArr[2] +"]");
-				
+                var incidentDatas = tmpArr[0];
+                var requestDatas = tmpArr[1];
+                var changetDatas = tmpArr[2];
+
 				Highcharts.chart('incident-chart', {
 					chart: {
 						type: 'line'
@@ -278,7 +278,7 @@
 					series: [{
 						color: App.getLayoutColorCode('red'),
 						name: 'Incident',
-						data: incidentArr
+						data: addMonthChart(incidentDatas)
 					}]
 				});
 
@@ -308,7 +308,7 @@
 					series: [{
 						color: App.getLayoutColorCode('purple'),
 						name: 'Request',
-						data: requestArr
+						data: addMonthChart(requestDatas)
 					}]
 				});
 
@@ -338,7 +338,7 @@
 					series: [{
 						color: App.getLayoutColorCode('ocean'),
 						name: 'Change',
-						data: changeArr
+						data: addMonthChart(changetDatas)
 					}]
 				});
 			});
@@ -355,7 +355,7 @@
 			var ajaxcasvddashboardchanges = '<?php echo URL::route('ajaxcasvddashboardchanges') ?>';
 			$('#ajaxcasvddashboardchanges').load(ajaxcasvddashboardchanges).fadeIn("slow");
 
-		// Load ajax Counting	
+		// Load ajax Counting
 			var start= moment().unix();
 			var end= moment().unix();
 
@@ -383,10 +383,10 @@
 			var response = $('#ajaxchartdata').html();
 
 			var tmpArr = response.split(";");
-			var incidentArr = JSON.parse("[" + tmpArr[0] +"]");
-			var requestArr = JSON.parse("[" + tmpArr[1] +"]");
-			var changeArr = JSON.parse("[" + tmpArr[2] +"]");
-			
+            var incidentDatas = tmpArr[0];
+            var requestDatas = tmpArr[1];
+            var changetDatas = tmpArr[2];
+
 			Highcharts.chart('incident-chart', {
 				chart: {
 					type: 'line'
@@ -413,8 +413,8 @@
 				series: [{
 					color: App.getLayoutColorCode('red'),
 					name: 'Incident',
-					data: incidentArr
-				}]
+                    data :addMonthChart(incidentDatas)
+                }]
 			});
 
 			Highcharts.chart('request-chart', {
@@ -443,7 +443,7 @@
 				series: [{
 					color: App.getLayoutColorCode('purple'),
 					name: 'Request',
-					data: requestArr
+					data: addMonthChart(requestDatas)
 				}]
 			});
 
@@ -473,139 +473,152 @@
 				series: [{
 					color: App.getLayoutColorCode('ocean'),
 					name: 'Change',
-					data: changeArr
+					data: addMonthChart(changetDatas)
 				}]
 			});
 		});
 	});
 
-	// Init Date range picker + refresh ajaxGetTotal
-		// Incident
-		$(function() {
-			var start = moment().startOf('day');
-			var end = moment().startOf('day');
+    function addMonthChart(source){
+        var outputArr= [];
+        var start = parseInt(source);
+        for(var k = 1;k<start;k++){
+            outputArr.push(null);
+        }
+        outputArr.push(parseInt(source));
+        for(var i=start +1;i<=12;i++){
+            outputArr.push(null);
+        }
+        console.log(outputArr);
+        return outputArr;
+    }
 
-			$('#incidentrange').daterangepicker(
-				{
-					startDate: start,
-					endDate: end,
-					alwaysShowCalendars: true,
-					ranges: {
-						'Today': [moment(), moment()],
-						'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-						'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-						'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-						'This Month': [moment().startOf('month'), moment().endOf('month')],
-						'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-					}
-				}, 
-			
-				function (start, end) {
-					$('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-					ajaxGetTotal('incident',start.unix(),end.unix());
-				}
-			);
+    // Init Date range picker + refresh ajaxGetTotal
+    // Incident
+    $(function() {
+        var start = moment().startOf('day');
+        var end = moment().startOf('day');
 
-			$('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-			ajaxGetTotal('incident',start.unix(),end.unix());
-		});
-		// Request
-		$(function() {
-			var start = moment().startOf('day');
-			var end = moment().startOf('day');
+        $('#incidentrange').daterangepicker(
+            {
+                startDate: start,
+                endDate: end,
+                alwaysShowCalendars: true,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            },
 
-			$('#requestrange').daterangepicker(
-				{
-					startDate: start,
-					endDate: end,
-					ranges: {
-						'Today': [moment(), moment()],
-						'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-						'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-						'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-						'This Month': [moment().startOf('month'), moment().endOf('month')],
-						'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-					}
-				}, 
-			
-				function (start, end) {
-					$('#requestrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-					ajaxGetTotal('request',start.unix(),end.unix());
-				}
-			);
+            function (start, end) {
+                $('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+                ajaxGetTotal('incident',start.unix(),end.unix());
+            }
+        );
 
-			$('#requestrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-			ajaxGetTotal('request',start.unix(),end.unix());
-		});
-		//Change
-		$(function() {
-			var start = moment().startOf('day');
-			var end = moment().startOf('day');
+        $('#incidentrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+        ajaxGetTotal('incident',start.unix(),end.unix());
+    });
+    // Request
+    $(function() {
+        var start = moment().startOf('day');
+        var end = moment().startOf('day');
 
-			$('#changerange').daterangepicker(
-				{
-					startDate: start,
-					endDate: end,
-					ranges: {
-						'Today': [moment(), moment()],
-						'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-						'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-						'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-						'This Month': [moment().startOf('month'), moment().endOf('month')],
-						'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-					}
-				}, 
-			
-				function (start, end) {
-					$('#changerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-					ajaxGetTotal('change',start.unix(),end.unix());
-				}
-			);
+        $('#requestrange').daterangepicker(
+            {
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            },
 
-			$('#changerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-			ajaxGetTotal('change',start.unix(),end.unix());
-		});
+            function (start, end) {
+                $('#requestrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+                ajaxGetTotal('request',start.unix(),end.unix());
+            }
+        );
 
-	function ajaxGetTotal (type, start, end) {
-		refreshrate = {{ $refreshrate }};
+        $('#requestrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+        ajaxGetTotal('request',start.unix(),end.unix());
+    });
+    //Change
+    $(function() {
+        var start = moment().startOf('day');
+        var end = moment().startOf('day');
 
-		switch (type) {
-			case "incident":
-				clearInterval(incidentIntervalID);
-				incidentIntervalID = setInterval(function () {
-					var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
-					ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
-					$('.loading-gif-incident').show();
-					$('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {
-						$('.loading-gif-incident').hide();
-					}).fadeIn("slow");
-				}, refreshrate);
-				break;
-			case "request":
-				clearInterval(requestIntervalID);
-				requestIntervalID = setInterval(function () {
-					var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
-					ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
-					$('.loading-gif-request').show();
-					$('#requestcount').load(ajaxcasvddashboardtotalrequests, function() {
-						$('.loading-gif-request').hide();
-					}).fadeIn("slow");
-				}, refreshrate);
-				break;
-			case "change":
-				clearInterval(changeIntervalID);
-				changeIntervalID = setInterval(function () {
-					var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
-					ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
-					$('.loading-gif-change').show();
-					$('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
-						$('.loading-gif-change').hide();
-					}).fadeIn("slow");
-				}, refreshrate);
-				break;
-		}
-	};
+        $('#changerange').daterangepicker(
+            {
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            },
 
+            function (start, end) {
+                $('#changerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+                ajaxGetTotal('change',start.unix(),end.unix());
+            }
+        );
+
+        $('#changerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+        ajaxGetTotal('change',start.unix(),end.unix());
+    });
+
+    function ajaxGetTotal (type, start, end) {
+        refreshrate = {{ $refreshrate }};
+
+        switch (type) {
+            case "incident":
+                clearInterval(incidentIntervalID);
+                incidentIntervalID = setInterval(function () {
+                    var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
+                    ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
+                    $('.loading-gif-incident').show();
+                    $('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {
+                        $('.loading-gif-incident').hide();
+                    }).fadeIn("slow");
+                }, refreshrate);
+                break;
+            case "request":
+                clearInterval(requestIntervalID);
+                requestIntervalID = setInterval(function () {
+                    var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
+                    ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
+                    $('.loading-gif-request').show();
+                    $('#requestcount').load(ajaxcasvddashboardtotalrequests, function() {
+                        $('.loading-gif-request').hide();
+                    }).fadeIn("slow");
+                }, refreshrate);
+                break;
+            case "change":
+                clearInterval(changeIntervalID);
+                changeIntervalID = setInterval(function () {
+                    var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
+                    ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
+                    $('.loading-gif-change').show();
+                    $('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
+                        $('.loading-gif-change').hide();
+                    }).fadeIn("slow");
+                }, refreshrate);
+                break;
+        }
+    };
 </script>
 
 @endsection
