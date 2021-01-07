@@ -480,16 +480,15 @@
 	});
 
     function addMonthChart(source){
-        var outputArr= [];
-        var start = parseInt(source);
-        for(var k = 1;k<start;k++){
-            outputArr.push(null);
+         var outputArr= [];
+         var start = parseInt(source);
+        for(var i = 1 ;i<=12;i++){
+            if(start == i){
+                outputArr.push(parseInt(source))
+            }else{
+                outputArr.push(null);
+            }
         }
-        outputArr.push(parseInt(source));
-        for(var i=start +1;i<=12;i++){
-            outputArr.push(null);
-        }
-        console.log(outputArr);
         return outputArr;
     }
 
