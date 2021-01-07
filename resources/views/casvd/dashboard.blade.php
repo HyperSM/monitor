@@ -481,9 +481,10 @@
 
     function addMonthChart(source){
          var outputArr= [];
-         var start = parseInt(source);
+         var date = new Date();
+        var start = date.getMonth();
         for(var i = 1 ;i<=12;i++){
-            if(start == i){
+            if((start+1) == i){
                 outputArr.push(parseInt(source))
             }else{
                 outputArr.push(null);
