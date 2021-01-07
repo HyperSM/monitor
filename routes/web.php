@@ -35,6 +35,7 @@ route::post('/admin/dashboard/users/delete/{userid}','adminController@deleteuser
 route::get('/sysadmin','sysadminController@index');
 route::post('doAdminLogin','sysadminController@doLogin');
 route::get('/sysadmin/dashboard','sysadminController@dashboard');
+route::get('/sysadmin/logout','sysadminController@doLogout');
 
 //System Admin (Sysadmin) - User Management
 route::get('/sysadmin/users','sysadminController@users');
