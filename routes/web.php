@@ -285,3 +285,7 @@ Route::post('ajaxgetdetailhost','centreonController@ajaxgetdetailhost')->name('a
 
 //Test route
 Route::get('/test','adminController@test');
+
+//Report
+Route::get('/admin/centreon/report','centreonController@report');
+Route::get('/admin/centreon/report/{name}','centreonController@getreportbyname');

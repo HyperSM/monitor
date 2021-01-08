@@ -60,6 +60,15 @@
 			</ul>
 		</li>
 
+
+    <!-- Report menu -->
+    <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Report </span><i class="icon-angle-down left-padding"></i></a>
+        <ul class="dropdown-menu pull-right">
+            <li><a href="{{@Config::get('app.url')}}/admin/centreon/report" title="View Total Host" id="frame-report"></i>View Total Host</a></li>
+            <li  ><a id="detail_report" title="View Detail Host" id="frame-report"></i>View Detail Host</a></li>
+        </ul>
+    </li>
+
     <!-- Settings menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Settings </span><i class="icon-angle-down left-padding"></i></a>
 			<ul class="dropdown-menu pull-right">
@@ -68,6 +77,10 @@
 		</li>
 
 	</ul>
+
+
+
+    </ul>
 
 </div>
 
@@ -123,5 +136,18 @@
            }
     });
   });
+
+    function loadURL() {
+        var host = localStorage.getItem('host_name');
+        if(host){
+            document.getElementById('detail_report').style.display = 'block';
+            document.getElementById('detail_report').setAttribute('href','{{@Config::get('app.url')}}/admin/centreon/report/'+ host)
+        }
+        else{
+            document.getElementById('detail_report').setAttribute('href','javascript:void(0)');
+        }
+    }
+
+    loadURL();
 </script>
 <!-- /End of menu -->
