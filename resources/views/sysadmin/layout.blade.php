@@ -237,6 +237,26 @@
 							DOMAIN MANAGEMENT
 						</a>
 					</li>
+					<li>
+						<a href="javascript:void(0);">
+							<i class="icon-user-md"></i>
+							BILLING
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{{@Config::get('app.url')}}/sysadmin/billing/prices">
+								<i class="icon-angle-right"></i>
+								Price Management
+								</a>
+							</li>
+							<li>
+								<a href="{{@Config::get('app.url')}}/sysadmin/billing/detail">
+								<i class="icon-angle-right"></i>
+								Billing Detail
+								</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 
 				<div class="sidebar-widget align-center">
