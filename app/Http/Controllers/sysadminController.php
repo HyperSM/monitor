@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Crypt;
 use Session;
+use SoapClient;
 
 class sysadminController extends Controller
 {
@@ -68,7 +70,7 @@ class sysadminController extends Controller
 
     public function doLogout(){
         Session()->flush();
-        return redirect('/');
+        return redirect('/sysadmin');
     }
 
     public function dashboard(){
@@ -818,5 +820,427 @@ class sysadminController extends Controller
 
         $url = url('/sysadmin/domains/'.$domainid.'/users');
         return redirect($url);
+    }
+
+    public function billingprices() {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $billingprices = DB::table('tbl_billingprices')->get();
+
+        return view('sysadmin.billingprices',compact('user','billingprices'));
+    }
+
+    public function addbillingprice() {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $err_msg = '';
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        return view('sysadmin.addbillingprice',compact('user','err_msg'));
+    }
+
+    public function addbillingpricesubmit() {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $err_msg = '';
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $selectedprice = DB::table('tbl_billingprices')
+        ->where([
+            ['tbl_billingprices.product', '=', Request('product')]
+        ])->first();
+
+        if (is_null($selectedprice)) {
+            $id=DB::table('tbl_billingprices')
+                ->insertGetId([
+                    'product' => Request('product'),
+                    'price' => Request('price'),
+                ]);
+        
+            $url = url('/sysadmin/billing/prices');
+            return redirect($url);
+        }else{
+            $err_msg ='Product price exist!!!';
+            return view('sysadmin.addbillingprice',compact('user','err_msg'));
+        }
+    }
+
+    public function editbillingprice($product) {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $err_msg ='';
+
+        $selectedprice = DB::table('tbl_billingprices')
+        ->where([
+            ['product','=',Request('product')]
+        ])->first();
+        
+        return view('sysadmin.editbillingprice',compact('user','selectedprice','err_msg'));
+    }
+
+    public function editbillingpricesubmit($product) {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $err_msg = '';
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        DB::table('tbl_billingprices')
+            ->where('product',Request('product'))
+            ->update([
+                'product' => Request('product'),
+                'price' => Request('price')
+            ]);
+
+        $url = url('/sysadmin/billing/prices');
+        return redirect($url);
+    }
+
+    public function deletebillingprice($product) {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $err_msg = '';
+
+        $user = DB::table('tbl_admins')
+            ->where([
+                ['tbl_admins.username', '=', session('mymonitor_userid')]
+            ])->first();
+
+        $selectedprice = DB::table('tbl_billingprices')
+        ->where([
+            ['product','=',Request('product')]
+        ])->first();
+
+        return view('sysadmin.deletebillingprice',compact('user','selectedprice','err_msg'));
+    }
+
+    public function deletebillingpricesubmit($product) {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $err_msg = '';
+
+        $user = DB::table('tbl_admins')
+            ->where([
+                ['tbl_admins.username', '=', session('mymonitor_userid')]
+            ])->first();
+
+        $selectedprice = DB::table('tbl_billingprices')
+        ->where([
+            ['product','=',$product]
+        ])->first();
+
+        if ($selectedprice->product==Request('productname')) {
+            DB::table('tbl_billingprices')
+                ->where('product',Request('productname'))
+                ->delete();
+
+        $url = url('/sysadmin/billing/prices');
+        return redirect($url);
+        }else {
+            $err_msg ='Wrong product name! Product was not deleted.';
+            return view('sysadmin.deletebillingprice',compact('user','selectedprice','err_msg'));
+        }
+    }
+
+    public function billingdetail() {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $domains = DB::table('tbl_domains')->get();
+
+        return view('sysadmin.billingdetail',compact('user','domains'));
+    }
+
+    public function billingdetaildomain($domainid) {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $domain = DB::table('tbl_domains')
+        ->where([
+            ['domainid','=',$domainid]
+        ])->first();
+
+        $pricelist = DB::table('tbl_billingprices')->get();
+
+        $start = time();
+        $end = time();
+
+        $casvd = $this->billingcasvdcount($domainid,$start,$end);
+        $slwnpm = $this->slwnpmtotalnodes($domainid);
+        
+        return view('sysadmin.billingdetaildomain',compact('user','pricelist','domain','start','end','casvd','slwnpm'));
+    }
+
+    public function billingdetaildomainreload($domainid) {
+        if (!Session::has('Monitor') || Session('Monitor') != md5('sysadmin')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $start = Request('start');
+        $end = Request('end');
+
+        $user = DB::table('tbl_admins')
+        ->where([
+            ['tbl_admins.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $domain = DB::table('tbl_domains')
+        ->where([
+            ['domainid','=',$domainid]
+        ])->first();
+
+        $pricelist = DB::table('tbl_billingprices')->get();
+        
+        $casvd = $this->billingcasvdcount($domainid,$start,$end);
+
+        return view('sysadmin.billingdetaildomain',compact('user','pricelist','domain','start','end','casvd'));
+    }
+
+    public function billingcasvdcount($domainid, $start, $end) {
+        $casvdIncident = $this->billingtotalincidents($domainid,$start,$end);
+        $casvdRequest = $this->billingtotalrequests($domainid,$start,$end);
+        $casvdChange = $this->billingtotalchanges($domainid,$start,$end);
+        
+        $casvdCount = $casvdIncident + $casvdRequest + $casvdChange;
+        $price = DB::table('tbl_billingprices')
+        ->where([
+            ['product','=','casvd']
+        ])->get();
+        
+        $casvdPrice = $casvdCount * $price[0]->price;
+
+        $casvdPrice = number_format($casvdPrice,0,',','.');
+        $casvdPrice = "$".$casvdPrice;
+
+        $result = (object) array('count'=>$casvdCount,'price'=>$casvdPrice);
+
+        return $result;
+    }
+
+    public function billingcentreoncount($domainid, $start, $end) {
+        $casvdIncident = $this->billingtotalincidents($domainid,$start,$end);
+        $casvdRequest = $this->billingtotalrequests($domainid,$start,$end);
+        $casvdChange = $this->billingtotalchanges($domainid,$start,$end);
+        
+        $casvdCount = $casvdIncident + $casvdRequest + $casvdChange;
+
+        return $casvdCount;
+    }
+
+    public function billingslwnpmcount($domainid) {
+        $slwnpmCount = $this->slwnpmtotalnodes($domainid);
+        
+        $price = DB::table('tbl_billingprices')
+        ->where([
+            ['product','=','slwnpm']
+        ])->get();
+        
+        $slwnpmPrice = $slwnpmCount * $price[0]->price;
+
+        $slwnpmPrice = number_format($slwnpmPrice,0,',','.');
+        $slwnpmPrice = "$".$slwnpmPrice;
+
+        $result = (object) array('count'=>$slwnpmCount,'price'=>$slwnpmPrice);
+
+        return $result;
+    }
+
+    public function billingsdwancount($domainid, $start, $end) {
+        $casvdIncident = $this->billingtotalincidents($domainid,$start,$end);
+        $casvdRequest = $this->billingtotalrequests($domainid,$start,$end);
+        $casvdChange = $this->billingtotalchanges($domainid,$start,$end);
+        
+        $casvdCount = $casvdIncident + $casvdRequest + $casvdChange;
+
+        return $casvdCount;
+    }
+
+    public function billingtotalincidents($domainid, $start, $end){
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', $domainid],
+            ])->first();
+
+        if ($casvdserver->hostname == '') {
+            return 'N/A';
+        } else {
+            $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+            // Login to CASVD
+            $ap_param = array(
+                'username' => $casvdserver->user,
+                'password' => $casvdserver->password,
+                // 'username' => $casvdserver->user,
+                // 'password' => $casvdserver->password
+            );
+            $sid = $client->__call("login", array($ap_param))->loginReturn;
+            $whereParam = "type = 'I' AND open_date >= " . $start . "AND open_date <= " . ($end + 86400);
+
+            // Get list handle
+            $ap_param = array(
+                'sid' => $sid,
+                'objectType' => 'cr',
+                'whereClause' => $whereParam,
+            );
+            $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+            $listHandleID = $listHandle->listHandle;
+            $listHandleLength = $listHandle->listLength;
+
+            // Free List hanlde
+            $ap_param = array(
+                'sid' => $sid,
+                'handles' => $listHandleID,
+            );
+            $client->__call("freeListHandles", array($ap_param));
+        }
+        return $listHandleLength;
+    }
+
+    public function billingtotalrequests($domainid, $start, $end){
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', $domainid],
+            ])->first();
+
+        if ($casvdserver->hostname == '') {
+            return 'N/A';
+        } else {
+            $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+            // Login to CASVD
+            $ap_param = array(
+                'username' => $casvdserver->user,
+                'password' => $casvdserver->password,
+            );
+            $sid = $client->__call("login", array($ap_param))->loginReturn;
+            $whereParam = "type = 'R' AND open_date >= " . $start . "AND open_date <= " . ($end + 86400);
+
+            // Get list handle
+            $ap_param = array(
+                'sid' => $sid,
+                'objectType' => 'cr',
+                'whereClause' => $whereParam,
+            );
+            $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+            $listHandleID = $listHandle->listHandle;
+            $listHandleLength = $listHandle->listLength;
+
+            // Free List hanlde
+            $ap_param = array(
+                'sid' => $sid,
+                'handles' => $listHandleID,
+            );
+            $client->__call("freeListHandles", array($ap_param));
+        }
+        return $listHandleLength;
+    }
+
+    public function billingtotalchanges($domainid, $start, $end){
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', $domainid],
+            ])->first();
+
+        if ($casvdserver->hostname == '') {
+            return 'N/A';
+        } else {
+            $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+            // Login to CASVD
+            $ap_param = array(
+                'username' => $casvdserver->user,
+                'password' => $casvdserver->password,
+            );
+            $sid = $client->__call("login", array($ap_param))->loginReturn;
+            $whereParam = "open_date >= " . $start . "AND open_date <= " . ($end + 86400);
+
+            // Get list handle
+            $ap_param = array(
+                'sid' => $sid,
+                'objectType' => 'chg',
+                'whereClause' => $whereParam,
+            );
+            $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+            $listHandleID = $listHandle->listHandle;
+            $listHandleLength = $listHandle->listLength;
+
+            // Free List hanlde
+            $ap_param = array(
+                'sid' => $sid,
+                'handles' => $listHandleID,
+            );
+            $client->__call("freeListHandles", array($ap_param));
+        }
+        return $listHandleLength;
+    }
+
+    public function slwnpmtotalnodes($domainid){
+        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        ->where([
+            ['domainid', '=', $domainid]
+        ])->first();
+        
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT+COUNT(NodeId) AS NodesCount+FROM+ORION.Nodes";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        
+        $data = json_decode($response, TRUE);
+        
+        return array_values( $data )[0][0]['NodesCount'];
     }
 }
