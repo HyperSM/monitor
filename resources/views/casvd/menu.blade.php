@@ -94,7 +94,8 @@
            url: "{{ url('/admin/casvd/getrefreshrate') }}",
            method: 'get',
            success: function(result,response){
-            refreshrate.value = result;
+               document.getElementById('refreshrate').value = result;
+               //refreshrate.value = result;
            },
            error: function (xhr, textStatus, errorThrown) {
 
@@ -104,6 +105,7 @@
 
   // Set refresh rate to DB and reload page
   $(document).on('click', '#btn_submit', function(event) {
+      var refreshrate = document.getElementById('refreshrate').value;
     jQuery.ajax({
            headers: {
            },
@@ -111,7 +113,7 @@
            method: 'post',
            data: {
               _token: '{{ csrf_token() }}',
-              refreshrate: refreshrate.value
+              refreshrate: refreshrate
            },
            success: function(result,response){
             location.reload();
