@@ -88,12 +88,7 @@
 					<td></td>
 					<td></td>
                 </tr>
-				<tr>
-					<td>Cisco SDWAN</td>
-					<td>{{$slwnpm->count}}</td>
-					<td>{{$slwnpmUP}}</td>
-					<td>{{$slwnpm->price}}</td>
-                </tr>
+				
             @endif
 					</tbody>
 				</table>
