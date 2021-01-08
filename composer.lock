@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6aab2a8ab47acfdc6e4737de1837bb23",
+    "content-hash": "e1c73a72218190783ddb9196bf7965c8",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -937,6 +937,106 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.7.0"
             },
             "time": "2020-09-30T07:37:11+00:00"
+        },
+        {
+            "name": "koolreport/core",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/koolreport/core.git",
+                "reference": "b6a00721d746425f317ae1773daf3ca02ef1a008"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/koolreport/core/zipball/b6a00721d746425f317ae1773daf3ca02ef1a008",
+                "reference": "b6a00721d746425f317ae1773daf3ca02ef1a008",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KoolPHP Inc",
+                    "homepage": "https://www.koolphp.net"
+                }
+            ],
+            "description": "An Open Source PHP Reporting Framework for easier and faster report delivery.",
+            "homepage": "https://www.koolreport.com",
+            "keywords": [
+                "PHP Reporting Framework",
+                "PHP Reporting Tools",
+                "charts and graphs",
+                "data processing",
+                "data visualization"
+            ],
+            "support": {
+                "issues": "https://github.com/koolreport/core/issues",
+                "source": "https://github.com/koolreport/core/tree/v5.0.0"
+            },
+            "time": "2020-11-11T10:29:22+00:00"
+        },
+        {
+            "name": "laravel-bi/laravel-bi",
+            "version": "v0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-bi/laravel-bi.git",
+                "reference": "58a419b85a8c1944c485ff2ea6b0e46785de88ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-bi/laravel-bi/zipball/58a419b85a8c1944c485ff2ea6b0e46785de88ac",
+                "reference": "58a419b85a8c1944c485ff2ea6b0e46785de88ac",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.7.15 | 5.8.* | ^6.0 | ^7.0",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.8",
+                "phpunit/phpunit": "^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelBi\\LaravelBi\\BiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelBi\\LaravelBi\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alberto Bottarini",
+                    "email": "alberto.bottarini@gmail.com"
+                }
+            ],
+            "description": "A beautiful and fully-featured Business Intelligence dashboard manager for Laravel",
+            "support": {
+                "issues": "https://github.com/laravel-bi/laravel-bi/issues",
+                "source": "https://github.com/laravel-bi/laravel-bi/tree/v0.0.5"
+            },
+            "time": "2020-07-27T16:25:32+00:00"
         },
         {
             "name": "laravel/framework",

@@ -2663,6 +2663,189 @@ class centreonController extends Controller
 
         //endregion
         return response()->json(['services' => $services]);
+    }
+
+    public function getreportbyname(Request $request){
+        //region auth
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+        $domain = DB::table('tbl_domains')
+            ->where([
+                ['domainid', '=', $dm]
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')]
+            ])->first();
+
+        $centreonserver = DB::table('tbl_centreonservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+        $authen_key = "";
+        $client = new \GuzzleHttp\Client(['cookies' => true]);
+        try {
+            $res = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                'form_params' => [
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
+                ]
+            ]);
+
+            $authen_key = json_decode($res->getBody())->authToken;
+        } catch (RequestException $e) {
+            return view('centreon.errorpage',compact('user'));
+        }
+        //endregion
+
+        $hostname = $request->name;
+
+        //region load data
+        $services = array();
+        if ($authen_key != "") {
+            if(!empty($hostname)) {
+                $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_services&action=list&fields=host_name,host_state,output,description,host_last_check,scheduled_downtime_depth&searchHost=" . $hostname, [
+                    "headers" => [
+                        "Content-Type" => "application/json",
+                        "centreon-auth-token" => $authen_key
+                    ],
+                ]);
+                $services = json_decode($res->getBody());
+
+                // get first
+                $first = array_slice($services,0,1);
+
+                $data = array();
+                $month = date('m');
+
+                //UP
+                if($first[0]->host_state =='0'){
+//                    $data = array(
+//                        array("Host State" =>"UP", "Percentage" =>100),
+//                        array("Host State" =>"DOWN", "Percentage" =>0),
+//                        array("Host State" =>"UNREACT", "Percentage" =>0),
+//                    );
+                    array_push($data,array("Host State"=>"Host State","UP" => 100,'DOWN'=> 0,'UNREACT'=> 0));
+
+//                    for ($i = 1;$i<=1;$i++){
+//                        if($month == $i){
+//                            array_push($data,array("Month"=>"Tháng ".$i,"UP" => 100,'DOWN'=> 0,'UNREACT'=> 0));
+//                        }
+//                        else {
+//                            array_push($data, array("Month" => "Tháng " . $i, "UP" => 0, 'DOWN' => 0, 'UNREACT' => 0));
+//                        }
+//                    }
+                }
+
+                //DOWN
+                if($first[0]->host_state =='1'){
+                    $data = array(
+                        array("Host State" =>"UP", "Percentage" =>0),
+                        array("Host State" =>"DOWN", "Percentage" =>100),
+                        array("Host State" =>"UNREACT", "Percentage" =>0),
+                    );
+                }
+
+                //UNREACT
+                if($first[0]->host_state =='1'){
+                    $data = array(
+                        array("Host State" =>"UP", "Percentage" =>0),
+                        array("Host State" =>"DOWN", "Percentage" =>0),
+                        array("Host State" =>"UNREACT", "Percentage" =>100),
+                    );
+                }
+
+
+            }
+        }
+        return view('centreon.reportbyhost',compact('data','domain','user','hostname'));
+    }
+
+    public function report(){
+        if (!Session::has('Monitor') || !Session::has('mymonitor_md')) {
+            $url = url('/');
+            return redirect($url);
+        }
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $domain = DB::table('tbl_domains')
+            ->where([
+                ['domainid', '=', $dm]
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')]
+            ])->first();
+
+
+        // get info centreonserver
+        $centreonserver = DB::table('tbl_centreonservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+
+        $authen_key = "";
+        $client = new \GuzzleHttp\Client(['cookies' => true]);
+        try {
+            $res = $client->request("POST",  $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                'form_params' => [
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
+                ],
+                //"verify" => false
+            ]);
+
+            $authen_key = json_decode($res->getBody())->authToken;
+        } catch (RequestException $e) {
+            $authen_key = "";
+        }
+        //endregion
+
+        $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
+            "headers" => [
+                "Content-Type" => "application/json",
+                "centreon-auth-token" => $authen_key
+            ],
+        ]);
+        $hosts = json_decode($res->getBody());
+
+        $totalHostUp = 0;
+        $totalHostDown = 0;
+        $totalHostUnReact = 0;
+
+        foreach ($hosts as $host){
+            if($host ->state == '0'){
+                $totalHostUp +=1;
+            }
+            if($host ->state == '1'){
+                $totalHostDown +=1;
+            }
+            if($host ->state == '2'){
+                $totalHostUnReact +=1;
+            }
+        }
+
+        $data = array();
+        $month = date('m');
+        for ($i = 1;$i<=1;$i++){
+            if($month == $i){
+                array_push($data,array("Month"=>"Tháng ".$i,"UP" => $totalHostUp,'DOWN'=> $totalHostDown,'UNREACT'=> $totalHostUnReact));
+            }
+            else {
+                array_push($data, array("Month" => "Tháng " . $i, "UP" => 0, 'DOWN' => 0, 'UNREACT' => 0));
+            }
+        }
+
+        //dd($data);
+
+        return view('centreon.report',compact('data','domain','user'));
 
     }
 
