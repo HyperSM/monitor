@@ -77,6 +77,10 @@ route::post('/sysadmin/billing/prices/delete/{product}','sysadminController@dele
 route::get('/sysadmin/billing/detail','sysadminController@billingdetail');
 route::get('/sysadmin/billing/detail/{domainid}','sysadminController@billingdetaildomain');
 route::post('/sysadmin/billing/detail/{domainid}','sysadminController@billingdetaildomainreload');
+route::get('ajaxbillingcasvd/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvd')->name('ajaxbillingcasvd');
+route::get('ajaxbillingcentreon/{domainid}','sysadminController@ajaxbillingcentreon')->name('ajaxbillingcentreon');
+route::get('ajaxbillingslwnpm/{domainid}','sysadminController@ajaxbillingslwnpm')->name('ajaxbillingslwnpm');
+route::get('test1/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvd');
 // route::get('/sysadmin/ajaxbillingcasvdcount/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvdcount')->name('ajaxbillingcasvdcount');
 // route::get('/sysadmin/ajaxbillingcentreoncount/{domainid}/{start}/{end}','sysadminController@ajaxbillingcentreoncount')->name('ajaxbillingcentreoncount');
 // route::get('/sysadmin/ajaxbillingslwnpmcount/{domainid}/{start}/{end}','sysadminController@ajaxbillingslwnpmcount')->name('ajaxbillingslwnpmcount');

@@ -22,11 +22,11 @@
 
 <div style="height: 30px;"></div>
 
-<form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/sysadmin/billing/detail/{{$domain->domainid}}" name="dateform" method="POST">
-	@csrf
-	<input id="start" name="start" style="display: none;"></input>
-	<input id="end" name="end" style="display: none;"></input>
-</form>
+<!-- <form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/sysadmin/billing/detail/{{$domain->domainid}}" name="dateform" method="POST"> -->
+	<!-- @csrf -->
+	<!-- <input id="start" name="start" style="display: none;"></input>
+	<input id="end" name="end" style="display: none;"></input> -->
+<!-- </form> -->
 
 
 <div class="row">
@@ -51,45 +51,30 @@
 						</tr>
 					</thead>
 					<tbody>
-			<?php 
-				foreach ($pricelist as $key) {
-					switch ($key->product) {
-						case 'casvd':
-							$casvdUP = $key->price;
-							break;
-						case 'centreon':
-							$centreonUP = $key->price;
-							break;
-						case 'slwnpm':
-							$slwnpmUP = $key->price;
-							break;
-						case 'sdwan':
-							$sdwanUP = $key->price;
-							break;
-					}
-				}
-			?>
-            @if(isset($pricelist))
                 <tr>
-					<td>CA Service Desk</td>
-					<td>{{$casvd->count}}</td>
-					<td>{{$casvdUP}}</td>
-					<td>{{$casvd->price}}</td>
+                    <td>CA Service Desk</td>
+                    <td><span style="display: inline;" id="casvdCount"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="casvdUP"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="casvdPrice"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
                 </tr>
 				<tr>
-					<td>Centreon</td>
-					<td></td>
-					<td></td>
-					<td></td>
+                    <td>Centreon</td>
+                    <td><span style="display: inline;" id="centreonCount"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="centreonUP"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+					<td><span style="display: inline;" id="centreonPrice"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
                 </tr>
 				<tr>
-					<td>Solarwinds NPM</td>
-					<td>{{$casvd->count}}</td>
-					<td></td>
-					<td></td>
+                    <td>Solarwinds NPM</td>
+                    <td><span style="display: inline;" id="slwnpmCount"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="slwnpmUP"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="slwnpmPrice"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
                 </tr>
-				
-            @endif
+				<tr>
+                    <td>Cisco SDWAN</td>
+                    <td><span style="display: inline;" id="sdwanCount"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="sdwanUP"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                    <td><span style="display: inline;" id="sdwanPrice"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                </tr>
 					</tbody>
 				</table>
 			</div>
@@ -101,6 +86,9 @@
 <!-- end Modal -->
 
 <script>
+    var rangestart = moment().startOf('day');
+    var rangeend = moment().startOf('day');
+
 	//Date Range Picker
 	$(function() {
         var start = moment().startOf('day');
@@ -123,16 +111,51 @@
 
             function (start, end) {
                 $('#timerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-				document.getElementById("start").value = start.unix();
-				document.getElementById("end").value = end.unix();
-				document.dateform.submit();
+                rangestart = start.unix();
+                rangeend = end.unix();
+                ajaxcasvdloading();
             }
         );
 
         $('#timerange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
-		document.getElementById("start").value = start.unix();
-		document.getElementById("end").value = end.unix();
+        ajaxcasvdloading();
     });
+
+    $(document).ready(function () {
+        //Centreon
+        var ajaxbillingcentreon = "<?php echo @Config::get('app.url') ?>";
+        ajaxbillingcentreon += ('/ajaxbillingcentreon/' + '{{$domain->domainid}}');
+        $.ajax({url: ajaxbillingcentreon, success: function(result){
+            $('.centreonGIF').hide();
+            $("#centreonCount").html(result["count"]);
+            $("#centreonUP").html(result["up"]);
+            $("#centreonPrice").html(result["price"]);
+        }});
+
+        //Solarwinds NPM
+        var ajaxbillingslwnpm = "<?php echo @Config::get('app.url') ?>";
+        ajaxbillingslwnpm += ('/ajaxbillingslwnpm/' + '{{$domain->domainid}}');
+        $.ajax({url: ajaxbillingslwnpm, success: function(result){
+            $('.slwnpmGIF').hide();
+            $("#slwnpmCount").html(result["count"]);
+            $("#slwnpmUP").html(result["up"]);
+            $("#slwnpmPrice").html(result["price"]);
+        }});
+    });
+
+    function ajaxcasvdloading() {
+        //CA Service Desk
+        $('.casvdGIF').show();
+        var ajaxbillingcasvd = "<?php echo @Config::get('app.url') ?>";
+        ajaxbillingcasvd += ('/ajaxbillingcasvd/' + '{{$domain->domainid}}' + '/' + rangestart + '/' + rangeend);
+        $.ajax({url: ajaxbillingcasvd, success: function(result){
+            console.log(result);
+            $('.casvdGIF').hide();
+            $("#casvdCount").html(result["count"]);
+            $("#casvdUP").html(result["up"]);
+            $("#casvdPrice").html(result["price"]);
+        }});
+    }
 
 </script>
 
