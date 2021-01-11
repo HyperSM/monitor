@@ -272,5 +272,18 @@ Route::post('ajaxgetdetailhost','centreonController@ajaxgetdetailhost')->name('a
 Route::get('/test','adminController@test');
 
 //Report
+//Centreon
 Route::get('/admin/centreon/report','centreonController@report');
 Route::get('/admin/centreon/report/{name}','centreonController@getreportbyname');
+Route::get('/admin/centreon/reportdetail','centreonController@reportdetail');
+Route::post('/admin/centreon/reportdetailbyhost','centreonController@reportdetailbyhost');
+
+//CASVD
+Route::get('/admin/casvd/report','casvdController@report');
+Route::post('/admin/casvd/reporttotal','casvdController@reporttotal');
+
+//Cisco SDWAN
+route::get('/ciscosdwan/report','ciscosdwanController@reporttotal');
+// SolarWind
+route::get('/admin/slwnpm/report','slwnpmController@report');
+

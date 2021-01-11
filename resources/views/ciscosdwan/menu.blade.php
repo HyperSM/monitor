@@ -38,6 +38,13 @@
 			<li><a href="#" title="">Settings</a></li>
 			</ul>
 		</li>
+
+        <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Report</span><i class="icon-angle-down left-padding"></i></a>
+            <ul class="dropdown-menu pull-right">
+                    <li><a href="{{@Config::get('app.url')}}/ciscosdwan/report" title="">View Report</a></li>
+            </ul>
+        </li>
+
 		<!--li><a href="charts.html" title=""><i class="icon-signal"></i><span>Statistics</span></a></li-->
 		<li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Settings</span><i class="icon-angle-down left-padding"></i></a>
 			<ul class="dropdown-menu pull-right">

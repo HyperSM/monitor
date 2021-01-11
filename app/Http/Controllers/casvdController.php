@@ -3027,4 +3027,115 @@ class casvdController extends Controller
         return $tmpstr;
     }
 
+    public function report(){
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+        $domain = DB::table('tbl_domains')
+            ->where([
+                ['domainid', '=', $dm],
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
+        return view('casvd.report',compact('domain','user'));
+    }
+
+    public function reporttotal(){
+
+        if (!Session::has('Monitor') || !Session::has('mymonitor_md')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $start = Request('starttime');
+        $end = Request('endtime');
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        if ($casvdserver->hostname == '') {
+            return 'N/A';
+        } else {
+            $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+            // Login to CASVD
+            $ap_param = array(
+                'username' => $casvdserver->user,
+                'password' => $casvdserver->password,
+            );
+            $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+            $whereParam = "";
+            $incidentObj = array();
+            $requestObj = array();
+            $changeObj = array();
+
+                //Incident
+                $ap_param = array(
+                    'sid' => $sid,
+                    'objectType' => 'cr',
+                    'whereClause' => "type='I' AND open_date >= " . $start . "AND open_date <= " . $end,
+                );
+                $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+                $listHandleID = $listHandle->listHandle;
+
+                $incidentObj = $listHandle->listLength;
+
+                // Free List hanlde
+                $ap_param = array(
+                    'sid' => $sid,
+                    'handles' => $listHandleID,
+                );
+                $client->__call("freeListHandles", array($ap_param));
+
+                //Request
+                $ap_param = array(
+                    'sid' => $sid,
+                    'objectType' => 'cr',
+                    'whereClause' => "type='R' AND open_date >= " . $start . "AND open_date <= " . $end,
+                );
+                $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+                $listHandleID = $listHandle->listHandle;
+
+                $requestObj = $listHandle->listLength;
+
+                // Free List hanlde
+                $ap_param = array(
+                    'sid' => $sid,
+                    'handles' => $listHandleID,
+                );
+                $client->__call("freeListHandles", array($ap_param));
+
+                //Change
+                $ap_param = array(
+                    'sid' => $sid,
+                    'objectType' => 'chg',
+                    'whereClause' => "open_date >= " . $start . "AND open_date <= " . $end,
+                );
+                $listHandle = $client->__call("doQuery", array($ap_param))->doQueryReturn;
+                $listHandleID = $listHandle->listHandle;
+
+                $changeObj = $listHandle->listLength;
+
+                // Free List hanlde
+                $ap_param = array(
+                    'sid' => $sid,
+                    'handles' => $listHandleID,
+                );
+                $client->__call("freeListHandles", array($ap_param));
+            }
+
+
+        $data = array();
+        array_push($data, array("Tickets" => "Tickets ", "Incident" => intval($incidentObj), 'Request' => intval($requestObj), 'Change' => intval($changeObj)));
+
+        return view('casvd.reporttotal',compact('data'));
+        //dd($data);
+    }
+
 }

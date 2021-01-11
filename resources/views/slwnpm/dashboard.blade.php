@@ -128,7 +128,7 @@
 						<td colspan="5">Examples: Cisco*, 10.15.*.*, W?ndows, Site-*, *.SolarWinds.Net</td>
 					</tr>
 				</table>
-				</form>			
+				</form>
 			</div>
 		</div>
 	</div>
@@ -150,12 +150,12 @@
 				</div>
 			</div>
 			<div class="widget-content">
-				<div class="ct-control-status" style="height:370px; overflow: overlay; border:none;">								
+				<div class="ct-control-status" style="height:370px; overflow: overlay; border:none;">
             		<!-- <div id="mytree"></div> -->
             		<div id="nodestree"></div>
           		</div>
 			</div>
-			
+
 		</div>
 	</div>
 
@@ -169,7 +169,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="widget-content" style="height: 390px;">
 				<!--div id="gmap_markers" class="gmaps"></div-->
 				<div id="world-map-markers" style="height: 325px; width: 100%"></div>
@@ -193,7 +193,7 @@
 				</div>
 			</div>
 			<div class="widget-content" style="height: 300px;">
-				<div id="ajaxnpmutilization"></div>								
+				<div id="ajaxnpmutilization"></div>
 			</div>
 		</div>
 	</div>
@@ -239,10 +239,10 @@
 		            				<input type="Submit" value="Send" class="save-data" style="width: 100px; height: 30px; padding: 0px; border-color: gray; border-width: 1px;"/>
 		            			</td>
 		            		</tr>
-		            	</table>						                 
+		            	</table>
 		            </div>
 		        </form>
-		    </div>								
+		    </div>
 		</div>
 	</div>
 </div>
@@ -259,8 +259,8 @@
 				</div>
 			</div>
 			<div class="widget-content" style="height: 650px; overflow:overlay; border:none;">
-				<div id="ajaxnpmunack">							
-				</div>							
+				<div id="ajaxnpmunack">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -277,7 +277,7 @@
 				</div>
 			</div>
 			<div class="widget-content" style="height: 650px; overflow:overlay; border:none;">
-				<div id="ajaxnpmeventsum"></div>								
+				<div id="ajaxnpmeventsum"></div>
 			</div>
 		</div>
 	</div>
@@ -293,7 +293,7 @@
 				</div>
 			</div>
 			<div class="widget-content" style="height: 650px; overflow:overlay; border:none;">
-				<div id="ajaxnpmlast10event"></div>								
+				<div id="ajaxnpmlast10event"></div>
 			</div>
 		</div>
 	</div>
@@ -405,15 +405,15 @@
 		];
 
 		// DEFAULT
-	    $.plot($("#chart_pie"), data, 
+	    $.plot($("#chart_pie"), data,
 		{
 			series: {
-				pie: { 
+				pie: {
 					show: true
 				}
 			}
 		});*/
-		
+
         //////////////////////////
     });
 
@@ -440,7 +440,7 @@
 		];
 
 		// DEFAULT
-	    $.plot($("#chart_pie"), data, 
+	    $.plot($("#chart_pie"), data,
 		{
 			series: {
 				pie: {
@@ -512,9 +512,9 @@
 	    var ajaxnpmunack = '<?php echo URL::route('ajaxnpmunack') ?>';
 	    $('#ajaxnpmunack').load(ajaxnpmunack).fadeIn("slow");
 
-	    
-	});	
-	
+
+	});
+
 	$(".save-data").click(function(event){
 	    event.preventDefault();
 	    let message = $("input[name=message]").val();
@@ -538,23 +538,22 @@
 		        	//document.getElementById('message').value = "";
 		            if(response) {
 		          	    //alert(response.success);
-		                //$("#ajaxform")[0].reset();	   
-		                //alert('OK');             
+		                //$("#ajaxform")[0].reset();
+		                //alert('OK');
 		                var get = '<?php echo URL::route('slwnpm.chat') ?>';
 		    			$('#chat_content').load(get);
 
 		    			document.getElementById('message').value = "";
-		    			
+
 		            }
 		        },
 		    });
 	    	//
 	    }
-	    
-	});	
+
+	});
 
 
 </script>
 @endsection
 
-		

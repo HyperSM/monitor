@@ -21,7 +21,7 @@ class ciscosdwanController extends Controller
     Page: Dashboard
     Section: Main view
     */
-    public function dashboard(){        
+    public function dashboard(){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -45,7 +45,7 @@ class ciscosdwanController extends Controller
         }else{
             $url = url('/').'/admin/dashboard';
             return redirect($url);
-        }        
+        }
     }
 
     /*
@@ -72,7 +72,7 @@ class ciscosdwanController extends Controller
         ->where([
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
-        
+
         return view('ciscosdwan.serverconfig',compact('ciscosdwanserver','user'));
     }
 
@@ -126,7 +126,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardalldevices(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -136,7 +136,7 @@ class ciscosdwanController extends Controller
         }else{
             /////////////////////////////////////
             //Get cookie first
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -151,7 +151,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device";
@@ -163,13 +163,14 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
             if ($myJSON!=null){
                 $dataArray = $myJSON->data;
-                echo(json_encode($dataArray));          
+                echo(json_encode($dataArray));
+                dd($dataArray);
             }else{
                 echo('');
             }
         }
     }
-    
+
     /*
     Category: Cisco SDWAN
     Page: Dashboard
@@ -177,7 +178,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardrebootcount(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -187,7 +188,7 @@ class ciscosdwanController extends Controller
         }else{
             /////////////////////////////////////
             //Get cookie first
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -202,7 +203,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "network/issues/rebootcount";
@@ -214,7 +215,7 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
             if ($myJSON!=null){
                 $dataArray = $myJSON->data;
-                echo($dataArray[0]->count);          
+                echo($dataArray[0]->count);
             }else{
                 $dataArray = null;
                 echo('N/A');
@@ -229,7 +230,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardwarningcount(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -239,7 +240,7 @@ class ciscosdwanController extends Controller
         }else{
             /////////////////////////////////////
             //Get cookie first
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -254,7 +255,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "certificate/stats/summary";
@@ -266,7 +267,7 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
             if ($myJSON!=null){
                 $dataArray = $myJSON->data;
-                echo('WARNING ' . $dataArray[0]->warning);          
+                echo('WARNING ' . $dataArray[0]->warning);
             }else{
                 $dataArray = null;
                 echo('WARNING N/A');
@@ -281,7 +282,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardinvalidcount(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -291,7 +292,7 @@ class ciscosdwanController extends Controller
         }else{
             /////////////////////////////////////
             //Get cookie first
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -306,7 +307,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "certificate/stats/summary";
@@ -318,7 +319,7 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
             if ($myJSON!=null){
                 $dataArray = $myJSON->data;
-                echo('INVALID ' . $dataArray[0]->invalid);          
+                echo('INVALID ' . $dataArray[0]->invalid);
             }else{
                 $dataArray = null;
                 echo('INVALID N/A');
@@ -333,7 +334,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardwanedgehealth(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -343,7 +344,7 @@ class ciscosdwanController extends Controller
         }else{
             /////////////////////////////////////
             //Get cookie first
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -358,7 +359,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device/hardwarehealth/summary";
@@ -370,11 +371,11 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
             if ($myJSON!=null){
                 $dataArray = $myJSON->data[0]->statusList;
-                echo(json_encode($dataArray));          
+                echo(json_encode($dataArray));
             }else{
                 $dataArray = null;
                 echo('');
-            }            
+            }
         }
     }
 
@@ -385,7 +386,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardcontrolstatus(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -394,7 +395,7 @@ class ciscosdwanController extends Controller
             echo 'DATA IS NOT AVAILABLE';
         }else{
             /////////////////////////////////////
-            $tmpstr = 
+            $tmpstr =
             '<table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -405,7 +406,7 @@ class ciscosdwanController extends Controller
                 </thead>
                 <tbody>';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -420,7 +421,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device/control/count";
@@ -440,7 +441,7 @@ class ciscosdwanController extends Controller
                 foreach($dataArray as $data){
                     $tmp = ($data->count/$total) * 100;
                     ////
-                    $tmpstr = $tmpstr . 
+                    $tmpstr = $tmpstr .
                         '<tr>
                                 <td style="vertical-align: middle;"><a id="'.$data->name.'" class="click_devices open-options" style="text-decoration:none;" href="#">' .$data->name.'</a></td>
                                 <td style="vertical-align: middle;">' .$data->status.'</td>
@@ -457,10 +458,10 @@ class ciscosdwanController extends Controller
             $tmpstr = $tmpstr.' 
                 </tbody>
             </table>';
-            echo $tmpstr; 
+            echo $tmpstr;
         }
     }
-    
+
     /*
     Category: Cisco SDWAN
     Page: Dashboard
@@ -468,7 +469,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardwanedgeinventory(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -477,7 +478,7 @@ class ciscosdwanController extends Controller
             echo 'DATA IS NOT AVAILABLE';
         }else{
             /////////////////////////////////////
-            $tmpstr = 
+            $tmpstr =
             '<table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -488,7 +489,7 @@ class ciscosdwanController extends Controller
                 </thead>
                 <tbody>';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -503,7 +504,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device/vedgeinventory/summary";
@@ -515,11 +516,11 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
 
             if ($myJSON!=null){
-                $dataArray = $myJSON->data;                
+                $dataArray = $myJSON->data;
 
                 foreach($dataArray as $data){
                     ////
-                    $tmpstr = $tmpstr . 
+                    $tmpstr = $tmpstr .
                         '<tr>
                                 <td style="vertical-align: middle;"><a id="'.$data->name.'" class="click_devices open-options" style="text-decoration:none;" href="#">' .$data->name.'</a></td>
                                 <td style="vertical-align: middle;">' .$data->list.'</td>
@@ -533,7 +534,7 @@ class ciscosdwanController extends Controller
             $tmpstr = $tmpstr.' 
                 </tbody>
             </table>';
-            echo $tmpstr; 
+            echo $tmpstr;
         }
     }
 
@@ -545,7 +546,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardsitehealth(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -554,7 +555,7 @@ class ciscosdwanController extends Controller
             echo 'DATA IS NOT AVAILABLE';
         }else{
             /////////////////////////////////////
-            $tmpstr = 
+            $tmpstr =
             '<table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -565,7 +566,7 @@ class ciscosdwanController extends Controller
                 </thead>
                 <tbody>';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -580,7 +581,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device/bfd/sites/summary";
@@ -592,7 +593,7 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
 
             if ($myJSON!=null){
-                $dataArray = $myJSON->data[0]->statusList;                
+                $dataArray = $myJSON->data[0]->statusList;
 
                 foreach($dataArray as $data){
                     ////
@@ -602,16 +603,16 @@ class ciscosdwanController extends Controller
                             $i = '<span class="fa fa-check-circle text-primary"></i>';
                             break;
                         case 'warning':
-                            $i = '<i class="fa fa-exclamation-circle text-warning"></i>';                            
+                            $i = '<i class="fa fa-exclamation-circle text-warning"></i>';
                             break;
                         case 'down':
-                            $i = '<i class="fa fa-times-circle text-danger"></i>';                            
+                            $i = '<i class="fa fa-times-circle text-danger"></i>';
                             break;
                         default:
                             # code...
                             break;
                     }
-                    $tmpstr = $tmpstr . 
+                    $tmpstr = $tmpstr .
                         '<tr>
                                 <td style="vertical-align: middle;" align="center">' .$i. '</td>
                                 <td style="vertical-align: middle;"><a id="'.$data->name.'" class="click_devices open-options" style="text-decoration:none;" href="#">' .$data->name.'</a></td>
@@ -625,7 +626,7 @@ class ciscosdwanController extends Controller
             $tmpstr = $tmpstr.' 
                 </tbody>
             </table>';
-            echo $tmpstr; 
+            echo $tmpstr;
         }
     }
 
@@ -636,7 +637,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardstransportinterface(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -645,7 +646,7 @@ class ciscosdwanController extends Controller
             echo 'DATA IS NOT AVAILABLE';
         }else{
             /////////////////////////////////////
-            $tmpstr = 
+            $tmpstr =
             '<table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -655,7 +656,7 @@ class ciscosdwanController extends Controller
                 </thead>
                 <tbody>';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -670,7 +671,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device/tlocutil";
@@ -682,11 +683,11 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
 
             if ($myJSON!=null){
-                $dataArray = $myJSON->data;                
+                $dataArray = $myJSON->data;
 
                 foreach($dataArray as $data){
                     ////
-                    $tmpstr = $tmpstr . 
+                    $tmpstr = $tmpstr .
                         '<tr>
                                 <td style="vertical-align: middle;"><a id="'.$data->name.'" class="click_devices open-options" style="text-decoration:none;" href="#">' .$data->percentageDistribution.'</a></td>
                                 <td style="vertical-align: middle;">' .$data->value.' sites</td>                  
@@ -699,7 +700,7 @@ class ciscosdwanController extends Controller
             $tmpstr = $tmpstr.' 
                 </tbody>
             </table>';
-            echo $tmpstr; 
+            echo $tmpstr;
 
         }
     }
@@ -711,7 +712,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardtransporthealth(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -722,7 +723,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -737,7 +738,7 @@ class ciscosdwanController extends Controller
                 $data = $cookieJar->toArray($cookieJar);
                 //dd($data[0]['Value']);
                 $j_ssesion = $data[0]['Value'];
-            } 
+            }
             ////////////////////////////////////////////
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "device/bfd/sites/summary";
@@ -749,7 +750,7 @@ class ciscosdwanController extends Controller
             $myJSON = json_decode($response->getBody()->getContents());
 
             if ($myJSON!=null){
-                $dataArray = $myJSON->data;                
+                $dataArray = $myJSON->data;
 
                 echo json_encode($dataArray);
             }else{
@@ -765,7 +766,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardalarms(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -776,7 +777,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -789,7 +790,7 @@ class ciscosdwanController extends Controller
                     $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                     $res = $client->request('POST', $apihost . "/j_security_check", [
                       'form_params' => [
-                          'j_username' => $ciscosdwanserver->user , 
+                          'j_username' => $ciscosdwanserver->user ,
                           'j_password' => $ciscosdwanserver->password
                       ],
                       "verify" => false
@@ -844,7 +845,7 @@ class ciscosdwanController extends Controller
                     dd('There are something wrong with your data');
                 }else{
                     $alarms = $jsondata->data;
-                    $tmpstr = 
+                    $tmpstr =
                     '<table class="table table-hover table-condensed">
                         <thead>
                             <tr>
@@ -871,15 +872,15 @@ class ciscosdwanController extends Controller
                             <td>' . date("d F, Y H:i A", $timestamp) . '</td>
                         </tr>';
                     }
-                    $tmpstr = $tmpstr . 
+                    $tmpstr = $tmpstr .
                     '   </tbody>
                     </table>';
 
                     echo $tmpstr;
                 }
-                
+
                 /*Kết thúc thống kê*/
-            } 
+            }
         }
     }
 
@@ -890,7 +891,7 @@ class ciscosdwanController extends Controller
     Return value to div in dashboard
     */
     public function dashboardserverdetail(){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -901,7 +902,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -914,7 +915,7 @@ class ciscosdwanController extends Controller
                     $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                     $res = $client->request('POST', $apihost . "/j_security_check", [
                       'form_params' => [
-                          'j_username' => $ciscosdwanserver->user , 
+                          'j_username' => $ciscosdwanserver->user ,
                           'j_password' => $ciscosdwanserver->password
                       ],
                       "verify" => false
@@ -949,7 +950,7 @@ class ciscosdwanController extends Controller
                     dd('There are something wrong with your data');
                 }else{
                     $server = $jsondata->data;
-                    $tmpstr = 
+                    $tmpstr =
                     '<table class="table table-hover table-condensed">
                         <tbody>';
                         # code...
@@ -958,15 +959,15 @@ class ciscosdwanController extends Controller
                             <td>Platform Version</td><td>' . $server->platformVersion . '</td></tr>
                             <td>General Template</td><td>' . ($server->generalTemplate==true?'True':'False') . '</td>
                         </tr>';
-                    $tmpstr = $tmpstr . 
+                    $tmpstr = $tmpstr .
                     '   </tbody>
                     </table>';
 
                     echo $tmpstr;
                 }
-                
+
                 /*Kết thúc thống kê*/
-            } 
+            }
         }
     }
 
@@ -977,7 +978,7 @@ class ciscosdwanController extends Controller
     Return value to ajax call back
     */
     public function dashboardajaxcontrol($type){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -988,7 +989,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -1001,7 +1002,7 @@ class ciscosdwanController extends Controller
                     $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                     $res = $client->request('POST', $apihost . "/j_security_check", [
                       'form_params' => [
-                          'j_username' => $ciscosdwanserver->user , 
+                          'j_username' => $ciscosdwanserver->user ,
                           'j_password' => $ciscosdwanserver->password
                       ],
                       "verify" => false
@@ -1030,9 +1031,9 @@ class ciscosdwanController extends Controller
                 }else{
                     echo(json_encode($jsondata->data));
                 }
-                
 
-            } 
+
+            }
         }
     }
 
@@ -1043,7 +1044,7 @@ class ciscosdwanController extends Controller
     Return value to ajax call back
     */
     public function dashboardajaxinventory(Request $request){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1054,7 +1055,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -1067,7 +1068,7 @@ class ciscosdwanController extends Controller
                     $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                     $res = $client->request('POST', $apihost . "/j_security_check", [
                       'form_params' => [
-                          'j_username' => $ciscosdwanserver->user , 
+                          'j_username' => $ciscosdwanserver->user ,
                           'j_password' => $ciscosdwanserver->password
                       ],
                       "verify" => false
@@ -1096,9 +1097,9 @@ class ciscosdwanController extends Controller
                 }else{
                     echo(json_encode($jsondata->data));
                 }
-                
 
-            } 
+
+            }
         }
     }
 
@@ -1109,7 +1110,7 @@ class ciscosdwanController extends Controller
     Return value to ajax call back
     */
     public function dashboardajaxsitehealth(Request $request){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1120,7 +1121,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -1133,7 +1134,7 @@ class ciscosdwanController extends Controller
                     $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                     $res = $client->request('POST', $apihost . "/j_security_check", [
                       'form_params' => [
-                          'j_username' => $ciscosdwanserver->user , 
+                          'j_username' => $ciscosdwanserver->user ,
                           'j_password' => $ciscosdwanserver->password
                       ],
                       "verify" => false
@@ -1162,9 +1163,9 @@ class ciscosdwanController extends Controller
                 }else{
                     echo(json_encode($jsondata->data));
                 }
-                
 
-            } 
+
+            }
         }
     }
 
@@ -1175,7 +1176,7 @@ class ciscosdwanController extends Controller
     Return value to ajax call back
     */
     public function dashboardajaxsiteinterface(Request $request){
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1186,7 +1187,7 @@ class ciscosdwanController extends Controller
             /////////////////////////////////////
             $tmpstr = '';
 
-            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
@@ -1199,7 +1200,7 @@ class ciscosdwanController extends Controller
                     $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                     $res = $client->request('POST', $apihost . "/j_security_check", [
                       'form_params' => [
-                          'j_username' => $ciscosdwanserver->user , 
+                          'j_username' => $ciscosdwanserver->user ,
                           'j_password' => $ciscosdwanserver->password
                       ],
                       "verify" => false
@@ -1229,8 +1230,8 @@ class ciscosdwanController extends Controller
                     echo ('There are something wrong with your data');
                 }else{
                     echo(json_encode($jsondata->data));
-                }                
-            } 
+                }
+            }
         }
     }
 
@@ -1239,7 +1240,7 @@ class ciscosdwanController extends Controller
     Page: Network -> Device list
     Section: Main view
     */
-    public function network(){        
+    public function network(){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -1263,7 +1264,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1278,7 +1279,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -1308,7 +1309,7 @@ class ciscosdwanController extends Controller
                 return redirect($url);
             }
 
-            $jsondata = json_decode($response->getBody()->getContents());            
+            $jsondata = json_decode($response->getBody()->getContents());
 
             if ($jsondata==null){
                 $devices = null;
@@ -1316,8 +1317,8 @@ class ciscosdwanController extends Controller
             }else{
                 $devices = $jsondata->data;
                 return view('ciscosdwan.network',compact('user','ciscosdwanserver','devices'));
-            }                
-        } 
+            }
+        }
     }
 
     /*
@@ -1348,7 +1349,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1367,11 +1368,11 @@ class ciscosdwanController extends Controller
     Page: Network Detail System Status
     Section: Function Return reboot count to ajax call
     */
-    public function networkajaxreboot(Request $request){        
+    public function networkajaxreboot(Request $request){
 
         $dm=Crypt::decryptString(session('mymonitor_md'));
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1381,7 +1382,7 @@ class ciscosdwanController extends Controller
         $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
         $res = $client->request('POST', $apihost . "/j_security_check", [
             'form_params' => [
-                'j_username' => $ciscosdwanserver->user , 
+                'j_username' => $ciscosdwanserver->user ,
                 'j_password' => $ciscosdwanserver->password
             ],
             "verify" => false
@@ -1414,11 +1415,11 @@ class ciscosdwanController extends Controller
     Page: Network Detail System Status
     Section: Function Return crash count to ajax call
     */
-    public function networkajaxcrash(Request $request){        
+    public function networkajaxcrash(Request $request){
 
         $dm=Crypt::decryptString(session('mymonitor_md'));
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1428,7 +1429,7 @@ class ciscosdwanController extends Controller
         $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
         $res = $client->request('POST', $apihost . "/j_security_check", [
             'form_params' => [
-                'j_username' => $ciscosdwanserver->user , 
+                'j_username' => $ciscosdwanserver->user ,
                 'j_password' => $ciscosdwanserver->password
             ],
             "verify" => false
@@ -1461,11 +1462,11 @@ class ciscosdwanController extends Controller
     Page: Network Detail System Status
     Section: Function Return device's summary information to ajax call back
     */
-    public function networkajaxsummary(Request $request){        
+    public function networkajaxsummary(Request $request){
 
         $dm=Crypt::decryptString(session('mymonitor_md'));
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1475,7 +1476,7 @@ class ciscosdwanController extends Controller
         $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
         $res = $client->request('POST', $apihost . "/j_security_check", [
             'form_params' => [
-                'j_username' => $ciscosdwanserver->user , 
+                'j_username' => $ciscosdwanserver->user ,
                 'j_password' => $ciscosdwanserver->password
             ],
             "verify" => false
@@ -1507,11 +1508,11 @@ class ciscosdwanController extends Controller
     Page: Network Detail System Status
     Section: Function Return all devices to ajax call back
     */
-    public function networkajaxalldevices(Request $request){        
+    public function networkajaxalldevices(Request $request){
 
         $dm=Crypt::decryptString(session('mymonitor_md'));
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1521,7 +1522,7 @@ class ciscosdwanController extends Controller
         $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
         $res = $client->request('POST', $apihost . "/j_security_check", [
             'form_params' => [
-                'j_username' => $ciscosdwanserver->user , 
+                'j_username' => $ciscosdwanserver->user ,
                 'j_password' => $ciscosdwanserver->password
             ],
             "verify" => false
@@ -1546,18 +1547,18 @@ class ciscosdwanController extends Controller
         $jsondata = json_decode($response->getBody()->getContents());
         $summary = json_encode($jsondata->data);
         echo $summary;
-    }    
+    }
 
     /*
     Category: Cisco SDWAN
     Page: Network Detail System Status
     Section: load cpu & ram
     */
-    public function networkloadcpumemory(Request $request){        
+    public function networkloadcpumemory(Request $request){
 
         $dm=Crypt::decryptString(session('mymonitor_md'));
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1567,7 +1568,7 @@ class ciscosdwanController extends Controller
         $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
         $res = $client->request('POST', $apihost . "/j_security_check", [
             'form_params' => [
-                'j_username' => $ciscosdwanserver->user , 
+                'j_username' => $ciscosdwanserver->user ,
                 'j_password' => $ciscosdwanserver->password
             ],
             "verify" => false
@@ -1605,7 +1606,7 @@ class ciscosdwanController extends Controller
                 ]
             ],
             "aggregation" => [
-            "histogram" => [               
+            "histogram" => [
                 "property" => "entry_time",
                 "type" =>  "minute",
                 "interval" =>  60,
@@ -1642,10 +1643,10 @@ class ciscosdwanController extends Controller
             //echo gmdate("Y-m-d\TH:i:s\Z", $timestamp);
             //
             //$milliseconds = $devicesSpec->entry_time;
-            //$timestamp = ($milliseconds/1000) + 25200;            
+            //$timestamp = ($milliseconds/1000) + 25200;
             array_push($cpuPercentage,[
                 //'x'=> $devicesSpec->entry_time,
-                'x'=> $devicesSpec->entry_time + 25200000,                
+                'x'=> $devicesSpec->entry_time + 25200000,
                 'y'=> $devicesSpec->cpu_user_new,
             ]);
             array_push($memPercentage,[
@@ -1699,7 +1700,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1713,17 +1714,17 @@ class ciscosdwanController extends Controller
         }
     }
 
-    
+
     /*
     Category: Cisco SDWAN
     Page: Network Detail System Status
     Section: load application dpi
     */
-    public function networkloadapplicationdpi(Request $request){        
+    public function networkloadapplicationdpi(Request $request){
 
         $dm=Crypt::decryptString(session('mymonitor_md'));
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1733,7 +1734,7 @@ class ciscosdwanController extends Controller
         $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
         $res = $client->request('POST', $apihost . "/j_security_check", [
             'form_params' => [
-                'j_username' => $ciscosdwanserver->user , 
+                'j_username' => $ciscosdwanserver->user ,
                 'j_password' => $ciscosdwanserver->password
             ],
             "verify" => false
@@ -1787,7 +1788,7 @@ class ciscosdwanController extends Controller
                   "order" => "desc"
                 ]
               ],
-              "histogram" => [               
+              "histogram" => [
                 "property" => "entry_time",
                 "type" =>  "minute",
                 "interval" =>  $interval,
@@ -1845,7 +1846,7 @@ class ciscosdwanController extends Controller
     Page: Network Detail events
     Section: Main view
     */
-    public function networkevents($deviceid){        
+    public function networkevents($deviceid){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -1869,7 +1870,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1884,7 +1885,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -1900,12 +1901,12 @@ class ciscosdwanController extends Controller
             $cookie    = $infoArray[0]["Value"];
 
             $rawdata = [
-                "size" => 1000,                         
+                "size" => 1000,
                 "query" => [
-                    "condition" => "AND",                
+                    "condition" => "AND",
                     "rules" => [
                         [
-                            "value" => [                      
+                            "value" => [
                                 "24"
                             ],
                             "field" => "entry_time",
@@ -1913,7 +1914,7 @@ class ciscosdwanController extends Controller
                             "operator" => "last_n_hours"
                         ],
                         [
-                            "value" => [                      
+                            "value" => [
                                 "$deviceid"
                             ],
                             "field" => "system_ip",
@@ -1957,7 +1958,7 @@ class ciscosdwanController extends Controller
                 return redirect($url);
             }
 
-            $jsondata = json_decode($response->getBody()->getContents());    
+            $jsondata = json_decode($response->getBody()->getContents());
 
             if ($jsondata==null){
                 $events = null;
@@ -1965,8 +1966,8 @@ class ciscosdwanController extends Controller
             }else{
                 $events = $jsondata->data;
                 return view('ciscosdwan.events',compact('user','ciscosdwanserver','events','deviceid'));
-            }                
-        } 
+            }
+        }
     }
 
     /*
@@ -1974,7 +1975,7 @@ class ciscosdwanController extends Controller
     Page: Network Detail connections
     Section: Main view
     */
-    public function networkconnections($deviceid){        
+    public function networkconnections($deviceid){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -1998,7 +1999,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2013,7 +2014,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -2027,7 +2028,7 @@ class ciscosdwanController extends Controller
             $cookieJar = $client->getConfig('cookies');
             $infoArray = $cookieJar->toArray();
             $cookie    = $infoArray[0]["Value"];
-            
+
             try{
                 $client= new \GuzzleHttp\Client(['cookies' => true]);
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
@@ -2051,7 +2052,7 @@ class ciscosdwanController extends Controller
                 return redirect($url);
             }
 
-            $jsondata = json_decode($response->getBody()->getContents()); 
+            $jsondata = json_decode($response->getBody()->getContents());
 
             if ($jsondata==null){
                 $connections = null;
@@ -2059,8 +2060,8 @@ class ciscosdwanController extends Controller
             }else{
                 $connections = $jsondata->data;
                 return view('ciscosdwan.connections',compact('user','ciscosdwanserver','connections','deviceid'));
-            }                
-        } 
+            }
+        }
     }
 
     /*
@@ -2068,7 +2069,7 @@ class ciscosdwanController extends Controller
     Page: Template
     Section: Main view
     */
-    public function templates(){        
+    public function templates(){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2092,7 +2093,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2107,7 +2108,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -2121,7 +2122,7 @@ class ciscosdwanController extends Controller
             $cookieJar = $client->getConfig('cookies');
             $infoArray = $cookieJar->toArray();
             $cookie    = $infoArray[0]["Value"];
-            
+
             try{
                 $client= new \GuzzleHttp\Client(['cookies' => true]);
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
@@ -2138,7 +2139,7 @@ class ciscosdwanController extends Controller
                 return redirect($url);
             }
 
-            $jsondata = json_decode($response->getBody()->getContents()); 
+            $jsondata = json_decode($response->getBody()->getContents());
 
             if ($jsondata==null){
                 $templates= null;
@@ -2146,8 +2147,8 @@ class ciscosdwanController extends Controller
             }else{
                 $templates = $jsondata->data;
                 return view('ciscosdwan.templates',compact('user','templates'));
-            }                
-        } 
+            }
+        }
     }
 
     /*
@@ -2155,7 +2156,7 @@ class ciscosdwanController extends Controller
     Page: Template Attach
     Section: Main view
     */
-    public function templatesattach($templateid){        
+    public function templatesattach($templateid){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2179,7 +2180,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2192,10 +2193,10 @@ class ciscosdwanController extends Controller
             //Get jsessionid
             $client = new \GuzzleHttp\Client(['cookies' => true]);
             try {
-                
+
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -2209,7 +2210,7 @@ class ciscosdwanController extends Controller
             $cookieJar = $client->getConfig('cookies');
             $infoArray = $cookieJar->toArray();
             $cookie    = $infoArray[0]["Value"];
-            
+
             //
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "template/device";
@@ -2217,7 +2218,7 @@ class ciscosdwanController extends Controller
                 'headers'        => ['Cookie' => "JSESSIONID=".$cookie],
                 "verify" => false
             ]);
-          
+
             $myJSON = json_decode($response->getBody()->getContents());
             if($myJSON == null){
                 $url = url('/').'/admin/ciscosdwan/templates';
@@ -2230,7 +2231,7 @@ class ciscosdwanController extends Controller
                 if($data->templateId == $templateid){
                     $selectedtemplate = $data;
                 }
-            } 
+            }
 
             //echo 'template đã chọn<br>';
             //print_r($selectedtemplate);
@@ -2241,7 +2242,7 @@ class ciscosdwanController extends Controller
                'headers'        => ['Cookie' => "JSESSIONID=".$cookie],
                "verify" => false
             ]);
-              
+
             $myJSON = json_decode($response->getBody()->getContents());
             if($myJSON == null){
                 $tmpAttachedDevices = null;
@@ -2268,7 +2269,7 @@ class ciscosdwanController extends Controller
                'headers'        => ['Cookie' => "JSESSIONID=".$cookie],
                "verify" => false
             ]);
-              
+
             $myJSON = json_decode($response->getBody()->getContents());
             if($myJSON == null){
                 $tmmpAllDevices = null;
@@ -2295,10 +2296,10 @@ class ciscosdwanController extends Controller
             $AvailableDevices=array_diff($AllDevices,$AttachedDevices);
             //echo '<br><br>Có thể attach<br>';
             //print_r($AvailableDevices);
-            
+
             return view('ciscosdwan.attach',compact('user','selectedtemplate','AvailableDevices'));
-            
-        } 
+
+        }
     }
 
     /*
@@ -2336,7 +2337,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2346,7 +2347,7 @@ class ciscosdwanController extends Controller
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
             $res = $client->request('POST', $apihost . "/j_security_check", [
               'form_params' => [
-                  'j_username' => $ciscosdwanserver->user , 
+                  'j_username' => $ciscosdwanserver->user ,
                   'j_password' => $ciscosdwanserver->password
               ],
               "verify" => false
@@ -2384,14 +2385,14 @@ class ciscosdwanController extends Controller
                 }
             }
 
-            // Lấy ra Input Device 
+            // Lấy ra Input Device
             $deviceTemplateJSON = [
-                "templateId" => $selectedtemplate,  
-                "deviceIds" =>[                    
+                "templateId" => $selectedtemplate,
+                "deviceIds" =>[
                     $deviceIds,
                 ],
-                "isEdited" => false,        
-                "isMasterEdited" => false              
+                "isEdited" => false,
+                "isMasterEdited" => false
             ];
             $response = $client->request('POST', $apihost . "template/device/config/input", [
                'headers'        => [
@@ -2409,10 +2410,10 @@ class ciscosdwanController extends Controller
             $attachTemplateJson = [
                 "deviceTemplateList" => [
                     [
-                        "templateId" =>  $selectedtemplate,       
+                        "templateId" =>  $selectedtemplate,
                         "device" =>  $deviceInput,
-                        "isEdited" => false, 
-                        "isMasterEdited" => false 
+                        "isEdited" => false,
+                        "isMasterEdited" => false
                     ]
                 ]
             ];
@@ -2453,7 +2454,7 @@ class ciscosdwanController extends Controller
                 ////
             }catch(\GuzzleHttp\Exception\GuzzleException $e){
                 array_push($resultArray,['status' => 'Can not attach to device','currentActivity' => 'Attach Failed','deviceIp' => '']);
-            }            
+            }
         }
         return json_encode($resultArray);
 
@@ -2465,7 +2466,7 @@ class ciscosdwanController extends Controller
     Page: Template Detach
     Section: Main view
     */
-    public function templatesdetach($templateid){        
+    public function templatesdetach($templateid){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2489,7 +2490,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2502,10 +2503,10 @@ class ciscosdwanController extends Controller
             //Get jsessionid
             $client = new \GuzzleHttp\Client(['cookies' => true]);
             try {
-                
+
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -2519,7 +2520,7 @@ class ciscosdwanController extends Controller
             $cookieJar = $client->getConfig('cookies');
             $infoArray = $cookieJar->toArray();
             $cookie    = $infoArray[0]["Value"];
-            
+
             //
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
             $query = "template/device";
@@ -2527,7 +2528,7 @@ class ciscosdwanController extends Controller
                 'headers'        => ['Cookie' => "JSESSIONID=".$cookie],
                 "verify" => false
             ]);
-          
+
             $myJSON = json_decode($response->getBody()->getContents());
             if($myJSON == null){
                 $url = url('/').'/admin/ciscosdwan/templates';
@@ -2540,7 +2541,7 @@ class ciscosdwanController extends Controller
                 if($data->templateId == $templateid){
                     $selectedtemplate = $data;
                 }
-            } 
+            }
 
             //echo 'template đã chọn<br>';
             //print_r($selectedtemplate);
@@ -2551,7 +2552,7 @@ class ciscosdwanController extends Controller
                'headers'        => ['Cookie' => "JSESSIONID=".$cookie],
                "verify" => false
             ]);
-              
+
             $myJSON = json_decode($response->getBody()->getContents());
             if($myJSON == null){
                 $tmpAttachedDevices = null;
@@ -2567,11 +2568,11 @@ class ciscosdwanController extends Controller
                     //Nhét deviceid vào mảng
                     array_push($AvailableDevices, $tmpAttachedDevice->deviceIP);
                 }
-            }            
-            
+            }
+
             return view('ciscosdwan.detach',compact('user','selectedtemplate','AvailableDevices'));
-            
-        } 
+
+        }
     }
 
     /*
@@ -2609,7 +2610,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2619,7 +2620,7 @@ class ciscosdwanController extends Controller
             $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
             $res = $client->request('POST', $apihost . "/j_security_check", [
               'form_params' => [
-                  'j_username' => $ciscosdwanserver->user , 
+                  'j_username' => $ciscosdwanserver->user ,
                   'j_password' => $ciscosdwanserver->password
               ],
               "verify" => false
@@ -2648,7 +2649,7 @@ class ciscosdwanController extends Controller
                 "verify" => false
             ]);
             $myJSON = json_decode($response->getBody()->getContents());
-          
+
             $arrDevice = $myJSON->data;
             foreach ($arrDevice as $device) {
                 if($device->deviceId == $item){
@@ -2660,7 +2661,7 @@ class ciscosdwanController extends Controller
             // return $deviceType;
             $detachTemplateJson = [
                 "deviceType" => $deviceType,
-                "devices" => [  
+                "devices" => [
                     [
                         "deviceId" => $deviceIds,
                         "deviceIP" => $deviceId,
@@ -2698,7 +2699,7 @@ class ciscosdwanController extends Controller
                 }
             }catch(\GuzzleHttp\Exception\GuzzleException $e){
                 array_push($resultArray,['status' => 'Can not detach the template from device']);
-            }  
+            }
         }
 
         return json_encode($resultArray);
@@ -2709,7 +2710,7 @@ class ciscosdwanController extends Controller
     Page: Schedules
     Section: Main view
     */
-    public function schedules(){        
+    public function schedules(){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2733,7 +2734,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $schedules = DB::table('tbl_ciscosdwanschedules')        
+        $schedules = DB::table('tbl_ciscosdwanschedules')
         ->where([
             ['domainid', '=', $dm]
         ])->get();
@@ -2741,13 +2742,13 @@ class ciscosdwanController extends Controller
         return view('ciscosdwan.schedules',compact('user','schedules'));
     }
 
-    
+
     /*
     Category: Cisco SDWAN
     Page: Schedules
     Section: Function to return devices and templates to ajax call back from add new button click
     */
-    public function getdeviceandtemplate(){        
+    public function getdeviceandtemplate(){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2771,7 +2772,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2784,7 +2785,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -2798,7 +2799,7 @@ class ciscosdwanController extends Controller
             $cookie    = $infoArray[0]["Value"];
 
             $jsonarray = [];
-            
+
             try{
                 $client= new \GuzzleHttp\Client(['cookies' => true]);
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port . $ciscosdwanserver->basestring;
@@ -2811,11 +2812,11 @@ class ciscosdwanController extends Controller
                     "verify" => false
                 ]);
                 ///
-                $jsondata = json_decode($response->getBody()->getContents()); 
-            
+                $jsondata = json_decode($response->getBody()->getContents());
+
                 $i = 0;
                 if ($jsondata==null){
-                    $templates= null;                
+                    $templates= null;
                 }else{
                     $templates = $jsondata->data;
                     foreach ($templates as $template){
@@ -2839,17 +2840,17 @@ class ciscosdwanController extends Controller
                     "verify" => false
                 ]);
                 ///
-                $jsondata = json_decode($response->getBody()->getContents()); 
-            
+                $jsondata = json_decode($response->getBody()->getContents());
+
                 $i = 0;
                 if ($jsondata==null){
-                    $devices= null;                
+                    $devices= null;
                 }else{
                     $devices = $jsondata->data;
                     foreach ($devices as $device){
                         //$jsonarray['devices'][$i++] = $device->deviceId;
                         $tmp = 'host-name';
-                        $jsonarray['devices'][$i++] = $device->$tmp;          
+                        $jsonarray['devices'][$i++] = $device->$tmp;
                     }
                 }
                 ///
@@ -2857,8 +2858,8 @@ class ciscosdwanController extends Controller
             }
 
             $json = json_encode($jsonarray);
-            echo $json;                
-        } 
+            echo $json;
+        }
     }
 
     /*
@@ -2866,7 +2867,7 @@ class ciscosdwanController extends Controller
     Page: Schedules
     Section: Function insert schedule into db
     */
-    public function scheduledoaddnew(Request $request){        
+    public function scheduledoaddnew(Request $request){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2877,7 +2878,7 @@ class ciscosdwanController extends Controller
         DB::table('tbl_ciscosdwanschedules')
         ->insert(
             [
-                'name' => $request->name, 
+                'name' => $request->name,
                 'time' => $request->time,
                 'deviceid' => $request->deviceid,
                 'templateid' => $request->templateid,
@@ -2891,7 +2892,7 @@ class ciscosdwanController extends Controller
     Page: Schedules
     Section: Function delete schedule from db
     */
-    public function scheduledodelete(Request $request){        
+    public function scheduledodelete(Request $request){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2910,7 +2911,7 @@ class ciscosdwanController extends Controller
     Page: Bandwidth Forecasting
     Section: Main view
     */
-    public function forecast(){        
+    public function forecast(){
 
         if (!Session::has('Monitor')||!Session::has('mymonitor_md')){
             $url = url('/');
@@ -2934,7 +2935,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -2949,7 +2950,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -2979,7 +2980,7 @@ class ciscosdwanController extends Controller
                 return redirect($url);
             }
 
-            $jsondata = json_decode($response->getBody()->getContents());            
+            $jsondata = json_decode($response->getBody()->getContents());
 
             if ($jsondata==null){
                 $devices = null;
@@ -2987,8 +2988,8 @@ class ciscosdwanController extends Controller
             }else{
                 $devices = $jsondata->data;
                 return view('ciscosdwan.forecast',compact('user','devices'));
-            }                
-        } 
+            }
+        }
     }
 
     /*
@@ -3020,7 +3021,7 @@ class ciscosdwanController extends Controller
             return redirect($url);
         }
 
-        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')        
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -3035,7 +3036,7 @@ class ciscosdwanController extends Controller
                 $apihost = $ciscosdwanserver->secures."://". $ciscosdwanserver->hostname.":". $ciscosdwanserver->port;
                 $res = $client->request('POST', $apihost . "/j_security_check", [
                   'form_params' => [
-                      'j_username' => $ciscosdwanserver->user , 
+                      'j_username' => $ciscosdwanserver->user ,
                       'j_password' => $ciscosdwanserver->password
                   ],
                   "verify" => false
@@ -3057,8 +3058,8 @@ class ciscosdwanController extends Controller
             for($i= $heso; $i<=0; $i++){
                 //
                 try{
-                    ////Đổi date time ra timestamp  
-                    $d = strtotime($i.' day', time());                  
+                    ////Đổi date time ra timestamp
+                    $d = strtotime($i.' day', time());
 
                     $query = 'data/device/statistics/interfacestatistics?startDate=' . date('Y-m-d', strtotime($i.' day', time())).'T00:00:00&endDate=' . date('Y-m-d', strtotime($i. ' day', time())).'T23:59:59';
 
@@ -3102,7 +3103,7 @@ class ciscosdwanController extends Controller
                     $totaldata['travg'][$i + abs($heso)] = $rxavgbandwidth;
                     $totaldata['txavg'][$i + abs($heso)] = $txavgbandwidth;
                     $totaldata['time'][$i + abs($heso)] = $d;
-                  
+
                 } catch(\GuzzleHttp\Exception\GuzzleException $e) {
                 }
                 //
@@ -3114,14 +3115,190 @@ class ciscosdwanController extends Controller
                 $totaldata['trforecast'] = $trforecast;
                 $totaldata['txforecast'] = $txforecast;
             }catch (Exception $e) {
-                
+
             }
-            
+
 
             $totaldatajson = json_encode($totaldata);
             echo $totaldatajson;
- 
-        } 
+
+        }
     }
-    
+
+    public function reporttotal(){
+        $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+
+        if($ciscosdwanserver->hostname==''){
+            return 'N/A';
+        }else{
+            /////////////////////////////////////
+            //Get cookie first
+            $ciscosdwanserver = DB::table('tbl_ciscosdwanservers')
+                ->where([
+                    ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+                ])->first();
+
+            if($ciscosdwanserver->hostname==''){
+                return 'N/A';
+            }else {
+                $apihost = $ciscosdwanserver->secures . "://" . $ciscosdwanserver->hostname . ":" . $ciscosdwanserver->port;
+                $query = "/j_security_check";
+                $response = Http::withBasicAuth($ciscosdwanserver->user, $ciscosdwanserver->password)->Get($apihost . $query);
+                $cookieJar = $response->cookies;
+                $data = $cookieJar->toArray($cookieJar);
+                //dd($data[0]['Value']);
+                $j_ssesion = $data[0]['Value'];
+
+                //region collect data
+                // get device
+                $vsmart = 0;
+                $vedge = 0;
+                $vbond = 0;
+                $vmanage = 0;
+                $apihost = $ciscosdwanserver->secures . "://" . $ciscosdwanserver->hostname . ":" . $ciscosdwanserver->port . $ciscosdwanserver->basestring;
+                $query = "device";
+                $response = Http::withBasicAuth($ciscosdwanserver->user, $ciscosdwanserver->password, [
+                    'form_params' => [
+                        'j_ssesion' => $j_ssesion
+                    ]])->Get($apihost . $query);
+
+                $myJSON = json_decode($response->getBody()->getContents());
+                if ($myJSON != null) {
+                    $dataArray = $myJSON->data;
+                    //echo(json_encode($dataArray));
+                    //dd($dataArray);
+                    foreach ($dataArray as $item) {
+                        if (strcmp($item->personality, 'vsmart') == 0) {
+                            $vsmart += 1;
+                        }
+                        if (strcmp($item->personality, 'vbond') == 0) {
+                            $vbond += 1;
+                        }
+                        if (strcmp($item->personality, 'vmanage') == 0) {
+                            $vmanage += 1;
+                        }
+                        if (strcmp($item->personality, 'vedge') == 0) {
+                            $vedge += 1;
+                        }
+                    }
+                }
+
+                $dataDevice = array(
+                    array("category" => "Device", "vsmart" => $vsmart, "vbond" => $vbond, "vmanage" => $vmanage, 'vedge' => $vedge),
+                );
+
+                // wan edge
+                $total = 0;
+                $authorized = 0;
+                $deployed = 0;
+                $staging = 0;
+                $apihost = $ciscosdwanserver->secures . "://" . $ciscosdwanserver->hostname . ":" . $ciscosdwanserver->port . $ciscosdwanserver->basestring;
+                $query = "device/vedgeinventory/summary";
+                $response = Http::withBasicAuth($ciscosdwanserver->user, $ciscosdwanserver->password, [
+                    'form_params' => [
+                        'j_ssesion' => $j_ssesion
+                    ]])->Get($apihost . $query);
+
+                $myJSON = json_decode($response->getBody()->getContents());
+                $data = $myJSON->data;
+                if ($myJSON != null) {
+                    foreach ($data as $item) {
+                        if (strcmp($item->name, 'Total') == 0) {
+                            $total = $item->value;
+                        }
+                        if (strcmp($item->name, 'Authorized') == 0) {
+                            $authorized = $item->value;
+                        }
+                        if (strcmp($item->name, 'Deployed') == 0) {
+                            $deployed = $item->value;
+                        }
+                        if (strcmp($item->name, 'Staging') == 0) {
+                            $staging = $item->value;
+                        }
+                    }
+                }
+                $dataWanEdge = array(
+                    array("category" => "WanEdge", "total" => $total, "authorized" => $authorized, "deployed" => $deployed, 'staging' => $staging),
+                );
+
+                //dd($dataWanEdge);
+
+                // Site Health
+                $upcount = 0;
+                $warningcount = 0;
+                $downcount = 0;
+                $apihost = $ciscosdwanserver->secures . "://" . $ciscosdwanserver->hostname . ":" . $ciscosdwanserver->port . $ciscosdwanserver->basestring;
+                $query = "device/bfd/sites/summary";
+                $response = Http::withBasicAuth($ciscosdwanserver->user, $ciscosdwanserver->password, [
+                    'form_params' => [
+                        'j_ssesion' => $j_ssesion
+                    ]])->Get($apihost . $query);
+
+                $myJSON = json_decode($response->getBody()->getContents());
+                if ($myJSON != null) {
+                    $data = $myJSON->data;
+                    foreach ($data[0]->statusList as $item) {
+                        if (strcmp($item->status, 'up') == 0) {
+                            $upcount = $item->count;
+                        }
+                        if (strcmp($item->status, 'warning') == 0) {
+                            $warningcount = $item->count;
+                        }
+                        if (strcmp($item->status, 'down') == 0) {
+                            $downcount = $item->count;
+                        }
+                    }
+                }
+                $dataSiteHealth = array(
+                    array("category" => "SiteHealth", "up" => $upcount, "warning" => $warningcount, "down" => $downcount),
+                );
+
+                //Transport Interface
+                $less_than_10_mbps = 0;
+                $from10_mbps_100_mbps = 0;
+                $from100_mbps_500_mbps = 0;
+                $greater_than_500_mbps = 0;
+                $apihost = $ciscosdwanserver->secures . "://" . $ciscosdwanserver->hostname . ":" . $ciscosdwanserver->port . $ciscosdwanserver->basestring;
+                $query = "device/tlocutil";
+                $response = Http::withBasicAuth($ciscosdwanserver->user, $ciscosdwanserver->password, [
+                    'form_params' => [
+                        'j_ssesion' => $j_ssesion
+                    ]])->Get($apihost . $query);
+
+                $myJSON = json_decode($response->getBody()->getContents());
+                if ($myJSON != null) {
+                    $data = $myJSON->data;
+                    foreach ($data as $item) {
+                        if (strcmp($item->name, 'less_than_10_mbps') == 0) {
+                            $less_than_10_mbps = $item->value;
+                        }
+                        if (strcmp($item->name, '10_mbps_100_mbps') == 0) {
+                            $from10_mbps_100_mbps = $item->value;
+                        }
+                        if (strcmp($item->name, '100_mbps_500_mbps') == 0) {
+                            $from100_mbps_500_mbps = $item->value;
+                        }
+                        if (strcmp($item->name, 'greater_than_500_mbps') == 0) {
+                            $greater_than_500_mbps = $item->value;
+                        }
+                    }
+                }
+                $dataTransportInt = array(
+                    array("category" => "TransportInt", "less_than_10_mbps" => $less_than_10_mbps, "10_mbps_100_mbps" => $from10_mbps_100_mbps, "100_mbps_500_mbps" => $from100_mbps_500_mbps, 'greater_than_500_mbps' => $greater_than_500_mbps),
+                );
+
+                //dd($myJSON);
+
+                //endregion
+
+            }
+            return view('ciscosdwan.report',compact('dataDevice','dataWanEdge','dataSiteHealth','dataTransportInt'));
+        }
+
+
+    }
+
 }

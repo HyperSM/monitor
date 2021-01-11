@@ -105,15 +105,10 @@
 
     <script>
         $(document).ready(function(){
-            // setDefaultHost();
-            // loadURL();
 
             $('.circle').show();
             $('select').change(function () {
-                var val = $(this).find(":selected").text();
-                setDefaultHost();
                 getservices();
-                loadURL();
             });
 
             function drawchart(data,flag){
@@ -275,23 +270,6 @@
                 $('#services tbody').html(html);
             }
 
-            function setDefaultHost() {
-                var selectedhost = $('select').find(":selected").text();
-                if(selectedhost){
-                    console.log(selectedhost);
-                    localStorage.setItem('host_name', selectedhost);
-                }
-            }
-
-            function loadURL() {
-                var host = localStorage.getItem('host_name');
-                if(host){
-                    document.getElementById('detail_report').setAttribute('href','{{@Config::get('app.url')}}/admin/centreon/report/'+ host)
-                }
-                else{
-                    document.getElementById('detail_report').setAttribute('href','javascript:void(0)')
-                }
-            }
 
             getservices();
 

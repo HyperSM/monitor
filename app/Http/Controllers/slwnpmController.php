@@ -47,7 +47,7 @@ class slwnpmController extends Controller
     public function totalnodesqueryfunction(){
     	//echo "Server time: " . date("H:i:s", time()+3600*7);// . date("h:i:sa");
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -63,7 +63,7 @@ class slwnpmController extends Controller
 
     //Get total interfaces for slwnpm dashboard
     public function totalintqueryfunction(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -78,7 +78,7 @@ class slwnpmController extends Controller
 
     //Get total nodes with status is up for slwnpm dashboard
     public function nodeupqueryfunction(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -93,7 +93,7 @@ class slwnpmController extends Controller
 
     //Get total nodes with status is down for slwnpm dashboard
     public function nodedownqueryfunction(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -108,7 +108,7 @@ class slwnpmController extends Controller
 
     //Get total interfaces up for slwnpm dashboard
     public function intupqueryfunction(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -123,7 +123,7 @@ class slwnpmController extends Controller
 
     //Get total interfaces down and unreachable for slwnpm dashboard
     public function intdownqueryfunction(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -141,7 +141,7 @@ class slwnpmController extends Controller
     Nạp ajax widget top 5 utilization interfaces
     */
     public function ajaxnpmutilization(){
-        $tmpstr = 
+        $tmpstr =
         '<table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -153,7 +153,7 @@ class slwnpmController extends Controller
             </thead>
             <tbody>';
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -165,7 +165,7 @@ class slwnpmController extends Controller
         $data = json_decode($response, TRUE);
         foreach (array_values( $data )[0] as $item) {
             //echo $item['InPercentUtil'];
-            $tmpstr = $tmpstr . 
+            $tmpstr = $tmpstr .
             '<tr>
                     <td style="vertical-align: middle;"><a href="'. url('/'). '/admin/slwnpm/nodesummary/' .$item['NodeID'].'" style="text-decoration:none;">'.$item['Caption'].'</a></td>
                     <td style="vertical-align: middle;"><a href="'. url('/'). '/admin/slwnpm/interfacedetail/' .$item['InterfaceID'].'" style="text-decoration:none;">'.$item['Name'].'</a></td>
@@ -185,7 +185,7 @@ class slwnpmController extends Controller
         </table>';
         echo $tmpstr;
     }
-    
+
 
     public function npmnodetreefunction(){
         /*$response = Http::withBasicAuth('admin','Cisco@1234')->Get('https://172.16.0.10:17778/SolarWinds/InformationService/v3/Json/Query?query=SELECT+I.Name AS InterfaceName ,I.OperStatus AS InterfaceStatus, N.Caption AS NodeCaption, N.IPAddress AS NodeIP, N.Vendor AS NodeVendor, N.Status AS NodeStatus FROM+Orion.NPM.Interfaces+I+JOIN+Orion.Nodes+N+ON+I.NodeId=N.NodeID+ORDER BY+NodeVendor,NodeCaption');
@@ -196,7 +196,7 @@ class slwnpmController extends Controller
         //echo array_values( $data )[0][0][1];
 
         //var_dump(array_values( $data )[0][0]);
-        //var_dump(array_values( $data )[0][1]);  
+        //var_dump(array_values( $data )[0][1]);
 
         //echo  count(array_values( $data )[0]);
 
@@ -210,7 +210,7 @@ class slwnpmController extends Controller
         foreach (array_values( $data )[0] as $key) {
             if ($lastnode != $key['NodeCaption']){
                 if ($i<>0){$tmpstr = $tmpstr.'</ul>';}
-                
+
                 if($key['InterfaceStatus']=='1'){
                     $tmpstr = $tmpstr .
                     '<li><span class="mycaret"><i class="fas fa-circle text-success" style="padding-right:10px;"></i>'.$key['NodeCaption'].'</span>
@@ -222,16 +222,16 @@ class slwnpmController extends Controller
                     <ul class="mynested">
                       <li><i class="fas fa-network-wired text-danger" style="padding-right:10px;"></i>'.$key['InterfaceName'].'</li>';
                 }
-                
+
             }else{
 
                 if($key['InterfaceStatus']=='1'){
                     $tmpstr = $tmpstr . '<li><i class="fas fa-network-wired text-success" style="padding-right:10px;"></i>' . $key['InterfaceName']. '</li>';
                 }else{
                     $tmpstr = $tmpstr . '<li><i class="fas fa-network-wired text-danger" style="padding-right:10px;"></i>' . $key['InterfaceName']. '</li>';
-                }             
+                }
             }
-            
+
             $lastnode = $key['NodeCaption'];
             $i++;
         }
@@ -272,7 +272,7 @@ class slwnpmController extends Controller
                 <li><span class="mycaret">Vietlott</span>
                     <ul>';
         /////
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -289,13 +289,13 @@ class slwnpmController extends Controller
                 $tmpstr = $tmpstr.'<li style="padding-top:5px;"><i class="fas fa-circle text-danger" style="padding-right:10px; color:Red;"><a href="'.url('/').'/admin/slwnpm/nodedetail/'.$item['NodeId'].'" title="Vendor: '.$item['Vendor'].' - Management IP: '.$item['IPAddress'].'" style="text-decoration:none;"></i>'.$item['DisplayName'].'</a></li>';
             }*/
 
-            $slwnpmserver = DB::table('tbl_slwnpmservers')        
+            $slwnpmserver = DB::table('tbl_slwnpmservers')
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
 
             $tmpstr = $tmpstr.'<li style="padding-top:5px;"><img src="http://'.$slwnpmserver->hostname.'/Orion/images/StatusIcons/small-'.$item['StatusIcon'].'"/><a href="'.url('/').'/admin/slwnpm/nodesummary/'.$item['NodeId'].'" title="Vendor: '.$item['Vendor'].' - Management IP: '.$item['IPAddress'].'" style="text-decoration:none;"></i>'.$item['DisplayName'].'</a></li>';
-            
+
         }
 
         /////
@@ -308,7 +308,7 @@ class slwnpmController extends Controller
 
     //Get total nodes with status is up for slwnpm dashboard
     public function ajaxhwhealthup(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -322,7 +322,7 @@ class slwnpmController extends Controller
     }
 
     public function ajaxhwhealthunknown(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -336,7 +336,7 @@ class slwnpmController extends Controller
     }
 
     public function ajaxhwhealthcritical(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -350,7 +350,7 @@ class slwnpmController extends Controller
     }
 
     public function ajaxhwhealthwarning(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -368,7 +368,7 @@ class slwnpmController extends Controller
     ajax load last 10 event cho widget
     */
     public function ajaxnpmlast10event(){
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -381,7 +381,7 @@ class slwnpmController extends Controller
         $data = json_decode($response, TRUE);
         //dd($data);
         //echo array_values( $data )[0][0]['Total'];
-        $tmpstr = 
+        $tmpstr =
         '<table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -412,10 +412,10 @@ class slwnpmController extends Controller
                     $link = '<a href="'.url('/').'/admin/slwnpm/interfacedetail/'. $item['NetObjectID'].'" style="text-decoration:none;">'.$item['Message'].'</a>';
                     break;
                 default:
-                    $link = '<a href="#" style="text-decoration:none;">'.$item['Message'].'</a>'; 
+                    $link = '<a href="#" style="text-decoration:none;">'.$item['Message'].'</a>';
                     break;
             }
-            
+
             //End of generating link
 
             //Generating image depends on Name
@@ -438,7 +438,7 @@ class slwnpmController extends Controller
             }
             //End of image gen
 
-            $tmpstr = $tmpstr . 
+            $tmpstr = $tmpstr .
                 '<tr>
                         <td style="vertical-align: middle; width:100px; text-align: right;">'.$dt->format('M d, yy H:i A').'</td>
                         <td style="vertical-align: middle; width:40px; text-align: center;">'.$image.'</td>
@@ -451,7 +451,7 @@ class slwnpmController extends Controller
         </table>';
 
         echo $tmpstr;
-        
+
     }
 
     /*
@@ -462,7 +462,7 @@ class slwnpmController extends Controller
         $sdate = gmdate("Y-m-d\TH:i:s\Z");
         $edate = gmdate("Y-m-d\TH:i:s\Z",strtotime('- 24 hours'));
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -472,13 +472,13 @@ class slwnpmController extends Controller
 
         //$query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE hourdiff(EventTime,GetUtcDate())<=24 GROUP BY T.Name";
         $query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE (YEAR(ToLocal(EVENTTIME)) = ".date("Y")." AND MONTH(ToLocal(EVENTTIME))=".date("m")." AND DAY(ToLocal(EVENTTIME))=".date("d"). ") GROUP BY T.Name";
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
 
         $data = json_decode($response, TRUE);
         //dd($data);
         //echo array_values( $data )[0][0]['Total'];
-        $tmpstr = 
+        $tmpstr =
         '<table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -488,8 +488,8 @@ class slwnpmController extends Controller
                 </tr>
             </thead>
             <tbody>';
-        foreach (array_values( $data )[0] as $item) {            
-            $tmpstr = $tmpstr . 
+        foreach (array_values( $data )[0] as $item) {
+            $tmpstr = $tmpstr .
                 '<tr>
                         <td style="vertical-align: middle; width:40px; text-align: center;">';
             if (strpos($item['Name'], 'Up') !== false) {
@@ -526,7 +526,7 @@ class slwnpmController extends Controller
         </table>';
 
         echo $tmpstr;
-        
+
     }
 
     /*
@@ -552,11 +552,11 @@ class slwnpmController extends Controller
         ->where([
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
-        
+
 
         return view('slwnpm.serverconfig',compact('slwnpmserver','user'));
     }
-    
+
     /*
     Page: Submit Config server
     Section: Submit form
@@ -605,16 +605,16 @@ class slwnpmController extends Controller
     Widget Unacknowledge alerts
     Ajax
     */
-    public function ajaxnpmunack(){        
+    public function ajaxnpmunack(){
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
         $query = "query=SELECT+TOP 10 D.Name, ObjectName, isnull(TriggerTimeStamp,'') AS TriggerTimeStamp, C.Severity, O.RelatedNodeId+FROM+Orion.AlertDefinitions D + LEFT JOIN Orion.AlertStatus S ON D.AlertDefID = S.AlertDefID+LEFT JOIN Orion.AlertConfigurations C ON C.AlertRefID = S.AlertDefID+LEFT JOIN Orion.AlertObjects O ON S.AlertObjectID = O.AlertObjectID+WHERE+S.Acknowledged=0+ORDER BY TriggerTimeStamp DESC";
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
 
         $data = json_decode($response, TRUE);
@@ -623,7 +623,7 @@ class slwnpmController extends Controller
         $tmpstr =' 
         <table class="table table-hover table-condensed">
             <tbody>';
-        foreach (array_values( $data )[0] as $item) { 
+        foreach (array_values( $data )[0] as $item) {
             $sdate = strtotime($item['TriggerTimeStamp']);
             $edate = strtotime(gmdate("Y-m-d\TH:i:s\Z"));
             $phut = round(($edate - $sdate)/60);
@@ -647,7 +647,7 @@ class slwnpmController extends Controller
             $tz = new DateTimeZone('Asia/Ho_Chi_Minh');
             $dt->setTimezone($tz);
 
-            $tmpstr = $tmpstr . 
+            $tmpstr = $tmpstr .
                 '<tr>
                         <td style="vertical-align: middle; width:40px; text-align: center;">';
             if ($item['Severity']=='0') {
@@ -685,7 +685,7 @@ class slwnpmController extends Controller
 
 
         echo($tmpstr);
-        
+
     }
 
     /*
@@ -704,14 +704,14 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
         $query = "query=SELECT NodeID, ObjectSubType, N.IPAddress, IPAddressType, DynamicIP, Caption, NodeDescription, N.Description, DNS, SysName, Vendor, SysObjectID, Location, Contact, VendorIcon, Icon, Status, StatusLED, StatusDescription, CustomStatus, IOSImage, IOSVersion, GroupStatus, N.StatusIcon, LastBoot, SystemUpTime, LastSync, LastSystemUpTimePollUtc, MachineType, IsServer, Severity, Allow64BitCounters, PollInterval, RediscoveryInterval, NextPoll, NextRediscovery, StatCollection, External,N.IP, IP_Address, IPAddressGUID, NodeName, BlockUntil, EntityType, DetailsUrl, N.DisplayName, Category, IsOrionServer, CPUCount, E.DisplayName AS PoolDisplayName, E.IP as PoolIP FROM Orion.Nodes N left join (SELECT count(NodeID) as [CPUCount], nodeid FROM Orion.CPUMultiLoadCurrent group by nodeid) cpu on cpu.nodeid=N.nodeid LEFT JOIN Orion.Engines E on N.EngineID = E.EngineID WHERE NodeID =" . $nodeid;
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
         if (isset(array_values( $data )[0][0])){
@@ -719,7 +719,7 @@ class slwnpmController extends Controller
         }else{
             $device = null;
         }
-        
+
         $query = "query= SELECT I.StatusIcon, I.STATUS, I.Icon, I.FullName,I.InPercentUtil,I.OutPercentUtil, V.DisplayName as Vlan FROM Orion.NPM.Interfaces I JOIN Orion.NodeVlans V ON I.NodeID = V.NodeID where NodeID =" . $nodeid;
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $interfacedata = json_decode($response, TRUE);
@@ -728,7 +728,7 @@ class slwnpmController extends Controller
         }else{
             $interfaces = null;
         }
-        
+
         $query = "query= SELECT IPAddress, IPAddressType, SubnetMask FROM Orion.NodeIPAddresses where NodeID=" . $nodeid;
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $ipsdata = json_decode($response, TRUE);
@@ -737,7 +737,7 @@ class slwnpmController extends Controller
         }else{
             $ips = null;
         }
-        
+
         $edate = gmdate("Y-m-d\TH:i:s\Z",strtotime('- 7 days'));
         $query = "query= SELECT avg(MinLoad) as MinCPU, avg(MaxLoad) as MaxCPU, avg(AvgLoad) as AvgCPU, avg(MinMemoryUsed/TotalMemory*100) as MinMEM, avg(MaxMemoryUsed/TotalMemory*100) as MaxMEM, avg(AvgPercentMemoryUsed) as AvgMEM FROM Orion.CPULoad where NodeID = ".$nodeid." and daydiff(datetime,getdate())<7 group by NodeID";
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
@@ -748,7 +748,7 @@ class slwnpmController extends Controller
             $cpuload = null;
         }
 
-        $query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE hourdiff(EventTime,GetUtcDate())<=24 AND NetworkNode=". $nodeid ." GROUP BY T.Name";        
+        $query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE hourdiff(EventTime,GetUtcDate())<=24 AND NetworkNode=". $nodeid ." GROUP BY T.Name";
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $eventsumsdata = json_decode($response, TRUE);
         if(isset(array_values( $eventsumsdata )[0])){
@@ -756,8 +756,8 @@ class slwnpmController extends Controller
         }else{
             $eventsums = null;
         }
-        
-        $query = "query=SELECT D.Name, ObjectName, isnull(TriggerTimeStamp,'') AS TriggerTimeStamp, C.Severity, S.AlertMessage FROM Orion.AlertDefinitions D LEFT JOIN Orion.AlertStatus S ON D.AlertDefID = S.AlertDefID LEFT JOIN Orion.AlertConfigurations C ON C.AlertRefID = S.AlertDefID LEFT JOIN Orion.AlertObjects O ON S.AlertObjectID = O.AlertObjectID WHERE O.RelatedNodeID = ".$nodeid." ORDER BY TriggerTimeStamp DESC";        
+
+        $query = "query=SELECT D.Name, ObjectName, isnull(TriggerTimeStamp,'') AS TriggerTimeStamp, C.Severity, S.AlertMessage FROM Orion.AlertDefinitions D LEFT JOIN Orion.AlertStatus S ON D.AlertDefID = S.AlertDefID LEFT JOIN Orion.AlertConfigurations C ON C.AlertRefID = S.AlertDefID LEFT JOIN Orion.AlertObjects O ON S.AlertObjectID = O.AlertObjectID WHERE O.RelatedNodeID = ".$nodeid." ORDER BY TriggerTimeStamp DESC";
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $alertsdata = json_decode($response, TRUE);
         if (isset(array_values( $alertsdata )[0])){
@@ -785,7 +785,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -794,7 +794,7 @@ class slwnpmController extends Controller
 
         //device
         $query = "query=SELECT SysName,StatusIcon,BufferNoMemThisHour, BufferNoMemToday, BufferSmMissThisHour, BufferSmMissToday, BufferMdMissThisHour, BufferMdMissToday, BufferBgMissThisHour, BufferBgMissToday, BufferLgMissThisHour, BufferLgMissToday, BufferHgMissThisHour, BufferHgMissToday FROM Orion.Nodes WHERE NodeID = " . $nodeid;
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $devicedata = json_decode($response, TRUE);
         if (isset(array_values( $devicedata )[0][0])){
@@ -805,7 +805,7 @@ class slwnpmController extends Controller
 
         //hardware health
         $query = "query=SELECT StatusDescription, Manufacturer, Model, ServiceTag, LastPollTime FROM Orion.HardwareHealth.HardwareInfo WHERE NodeID = " . $nodeid;
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $hwhealthdata = json_decode($response, TRUE);
         if (isset(array_values( $hwhealthdata )[0][0])){
@@ -816,7 +816,7 @@ class slwnpmController extends Controller
 
         //flapping route
         $query = "query=SELECT TOP 10 RouteDestination,CIDR, NodeId, DateTime, RouteNextHop FROM Orion.Routing.RoutingTableFlap where nodeid = ".$nodeid. " ORDER BY DATETIME DESC";
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $flappingdata = json_decode($response, TRUE);
         if (isset(array_values( $flappingdata )[0])){
@@ -827,7 +827,7 @@ class slwnpmController extends Controller
 
         //acive vlans
         $query = "query=SELECT VlanId, VlanName, VlanTag FROM Orion.NodeVlans where NodeID = ".$nodeid." AND VlanStatus =1";
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $vlansdata = json_decode($response, TRUE);
         if (isset(array_values( $vlansdata )[0])){
@@ -838,7 +838,7 @@ class slwnpmController extends Controller
 
         //vrfs
         $query = "query=SELECT Status, RouteDistinguisher, Name, Description FROM Orion.Routing.VRF WHERE NodeID = ".$nodeid;
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $vrfsdata = json_decode($response, TRUE);
         if (isset(array_values( $vrfsdata )[0])){
@@ -849,7 +849,7 @@ class slwnpmController extends Controller
 
         //routing neighbors
         $query = "query=SELECT  DISTINCT NeighborIP, rp.DisplayName, rpsm.displayname as status,rn.lastchange FROM orion.routing.Neighbors rn LEFT JOIN orion.routing.RoutingProtocolStateMapping rpsm  ON rn.ProtocolID=rpsm.ProtocolID  AND rn.ProtocolStatus=rpsm.ProtocolStatus left join orion.routing.RoutingProtocol rp on rn.ProtocolID=rp.ProtocolID left join orion.Nodes  on rn.NodeID=nodes.NodeID where nodes.NodeID = ".$nodeid;
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $r_neighborsdata = json_decode($response, TRUE);
         if (isset(array_values( $r_neighborsdata )[0])){
@@ -887,12 +887,12 @@ class slwnpmController extends Controller
     */
     public function npmnodejstree(){
         /////
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
-        
+
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
         $i = 0;
 
@@ -912,7 +912,7 @@ class slwnpmController extends Controller
             $img = url('/') . '/images/slwnpm/StatusIcons/small-up.gif';
             $tmpstr = $tmpstr . '{"id":1,"text":"UP","icon":"'.$img.'","children":';
             $tmpstr = $tmpstr. '[';
-            foreach (array_values( $data )[0] as $item) { 
+            foreach (array_values( $data )[0] as $item) {
 
                 if ($item['Status']==1){
                     $i++;
@@ -933,7 +933,7 @@ class slwnpmController extends Controller
             $i++;
             $tmpstr = $tmpstr . ',{"id":'.$i.',"text":"DOWN","icon":"'.$img.'","children":';
             $tmpstr = $tmpstr. '[';
-            foreach (array_values( $data )[0] as $item) {    
+            foreach (array_values( $data )[0] as $item) {
                 if ($item['Status']!=1){
                     $i++;
                     $href = url('/') . '/admin/slwnpm/nodesummary/' . $item['NodeId'];
@@ -973,7 +973,7 @@ class slwnpmController extends Controller
 
                 //
                 //$img = 'http://' . $slwnpmserver->hostname . '/Orion/images/StatusIcons/small-up.gif';
-                foreach (array_values( $data )[0] as $item) { 
+                foreach (array_values( $data )[0] as $item) {
 
                     if ($item[$slwnpmserver->nodegroupby]==$category[$slwnpmserver->nodegroupby]){
                         $i++;
@@ -1018,7 +1018,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', $dm]
         ])->first();
@@ -1041,7 +1041,7 @@ class slwnpmController extends Controller
     /*
     Hàm submit lưu cấu hình groupby
     */
-    public function configgroupsubmit(){        
+    public function configgroupsubmit(){
         $server = DB::table('tbl_slwnpmservers')
         ->where('domainid','=', Crypt::decryptString(session('mymonitor_md')))
         ->first();
@@ -1083,7 +1083,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1103,14 +1103,14 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
         $query = "query=SELECT NodeID, ObjectSubType, N.IPAddress, IPAddressType, DynamicIP, Caption, NodeDescription, N.Description, DNS, SysName, Vendor, SysObjectID, Location, Contact, VendorIcon, Icon, Status, StatusLED, StatusDescription, CustomStatus, IOSImage, IOSVersion, GroupStatus, N.StatusIcon, LastBoot, SystemUpTime, LastSync, LastSystemUpTimePollUtc, MachineType, IsServer, Severity, Allow64BitCounters, PollInterval, RediscoveryInterval, NextPoll, NextRediscovery, StatCollection, External,N.IP, IP_Address, IPAddressGUID, NodeName, BlockUntil, EntityType, DetailsUrl, N.DisplayName, Category, IsOrionServer, CPUCount, E.DisplayName AS PoolDisplayName, E.IP as PoolIP FROM Orion.Nodes N left join (SELECT count(NodeID) as [CPUCount], nodeid FROM Orion.CPUMultiLoadCurrent group by nodeid) cpu on cpu.nodeid=N.nodeid LEFT JOIN Orion.Engines E on N.EngineID = E.EngineID WHERE NodeID =" . $nodeid;
-        
+
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
         if (isset(array_values( $data )[0][0])){
@@ -1132,7 +1132,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1160,7 +1160,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1176,7 +1176,7 @@ class slwnpmController extends Controller
         }
         return $cpuload;
     }
-    
+
     /*
     Page hiển thị chi tiết 1 node phần summary
     Nạp ajax all ips on node
@@ -1188,7 +1188,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1201,7 +1201,7 @@ class slwnpmController extends Controller
             $ips = array_values( $ipsdata )[0];
         }else{
             $ips = null;
-        }        
+        }
         return $ips;
     }
 
@@ -1217,14 +1217,14 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
-        $query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE (YEAR(ToLocal(EVENTTIME)) = YEAR(TOLOCAL(GETUTCDATE())) AND MONTH(ToLocal(EVENTTIME))= MONTH(TOLOCAL(GETUTCDATE())) AND DAY(ToLocal(EVENTTIME))= DAY(TOLOCAL(GETUTCDATE())) ) AND(((NetObjectID= ".$nodeid.")AND(NetObjectType<>'I')) OR ((NetObjectID IN (select InterfaceID FROM Orion.NPM.Interfaces WHERE NodeID = ".$nodeid.")) AND (NetObjectType='I')))  GROUP BY T.Name";  
-        //$query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE (YEAR(ToLocal(EVENTTIME)) = ".date("Y")." AND MONTH(ToLocal(EVENTTIME))=".date("m")." AND DAY(ToLocal(EVENTTIME))=".date("d"). ") AND (E.NetObjectType = 'I') AND (E.NetObjectID = ".$interfaceid.") GROUP BY T.Name";      
+        $query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE (YEAR(ToLocal(EVENTTIME)) = YEAR(TOLOCAL(GETUTCDATE())) AND MONTH(ToLocal(EVENTTIME))= MONTH(TOLOCAL(GETUTCDATE())) AND DAY(ToLocal(EVENTTIME))= DAY(TOLOCAL(GETUTCDATE())) ) AND(((NetObjectID= ".$nodeid.")AND(NetObjectType<>'I')) OR ((NetObjectID IN (select InterfaceID FROM Orion.NPM.Interfaces WHERE NodeID = ".$nodeid.")) AND (NetObjectType='I')))  GROUP BY T.Name";
+        //$query = "query=SELECT COUNT(E.EventID) AS Total, T.Name FROM Orion.Events AS E LEFT JOIN Orion.EventTypes AS T ON E.EventType=T.EventType WHERE (YEAR(ToLocal(EVENTTIME)) = ".date("Y")." AND MONTH(ToLocal(EVENTTIME))=".date("m")." AND DAY(ToLocal(EVENTTIME))=".date("d"). ") AND (E.NetObjectType = 'I') AND (E.NetObjectID = ".$interfaceid.") GROUP BY T.Name";
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $eventsumsdata = json_decode($response, TRUE);
         if(isset(array_values( $eventsumsdata )[0])){
@@ -1234,7 +1234,7 @@ class slwnpmController extends Controller
         }
         return $eventsums;
     }
-    
+
     /*
     Page hiển thị chi tiết 1 node phần summary
     Nạp ajax all alerts
@@ -1246,13 +1246,13 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
-        $query = "query=SELECT D.Name, ObjectName, isnull(TriggerTimeStamp,'') AS TriggerTimeStamp, C.Severity, S.AlertMessage FROM Orion.AlertDefinitions D LEFT JOIN Orion.AlertStatus S ON D.AlertDefID = S.AlertDefID LEFT JOIN Orion.AlertConfigurations C ON C.AlertRefID = S.AlertDefID LEFT JOIN Orion.AlertObjects O ON S.AlertObjectID = O.AlertObjectID WHERE O.RelatedNodeID = ".$nodeid." ORDER BY TriggerTimeStamp DESC";        
+        $query = "query=SELECT D.Name, ObjectName, isnull(TriggerTimeStamp,'') AS TriggerTimeStamp, C.Severity, S.AlertMessage FROM Orion.AlertDefinitions D LEFT JOIN Orion.AlertStatus S ON D.AlertDefID = S.AlertDefID LEFT JOIN Orion.AlertConfigurations C ON C.AlertRefID = S.AlertDefID LEFT JOIN Orion.AlertObjects O ON S.AlertObjectID = O.AlertObjectID WHERE O.RelatedNodeID = ".$nodeid." ORDER BY TriggerTimeStamp DESC";
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $alertsdata = json_decode($response, TRUE);
         if (isset(array_values( $alertsdata )[0])){
@@ -1262,7 +1262,7 @@ class slwnpmController extends Controller
         }
         return $alerts;
     }
-    
+
 
     /*
     Page hiển thị chi tiết 1 interface
@@ -1280,13 +1280,13 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
-        $query = "query=SELECT I.NodeID, InterfaceID, I.ObjectSubType, I.Name, I.Index, I.Icon, I.Type, I.TypeName, I.TypeDescription, I.Speed, I.MTU, I.LastChange, I.PhysicalAddress, I.AdminStatus, I.OperStatus, I.StatusIcon, I.InBandwidth, I.OutBandwidth, I.Caption, I.FullName, Round(I.Outbps,0) AS Outbps, Round(I.Inbps,0) AS Inbps, I.Bps, I.OutPercentUtil, I.InPercentUtil, I.PercentUtil, round(I.OutPps,1) AS OutPps, round(I.InPps,1) AS InPps, I.InPktSize, I.OutPktSize, I.OutUcastPps, I.OutMcastPps, I.InUcastPps, I.InMcastPps, I.InDiscardsThisHour, I.InDiscardsToday, I.InErrorsThisHour, I.InErrorsToday, I.OutDiscardsThisHour, I.OutDiscardsToday, I.OutErrorsThisHour, I.OutErrorsToday,I.Counter64, I.LastSync, I.Alias, I.IfName, I.Severity, I.CustomBandwidth, I.CustomPollerLastStatisticsPoll, I.PollInterval, I.NextPoll, I.RediscoveryInterval, I.NextRediscovery, I.StatCollection, I.UnPluggable, I.InterfaceSpeed, I.InterfaceCaption, I.InterfaceType, I.InterfaceSubType, I.MAC, I.InterfaceName, I.InterfaceIcon, I.InterfaceTypeName, I.AdminStatusLED, I.OperStatusLED, I.InterfaceAlias, I.InterfaceIndex, I.InterfaceLastChange, I.InterfaceMTU, I.InterfaceTypeDescription, I.OrionIdPrefix, I.DuplexMode, I.SkippedPollingCycles, I.MinutesSinceLastSync, I.Status, I.InterfaceResponding, I.Description, A.IPAddress, E.DisplayName, E.IP AS EngineIP FROM Orion.NPM.Interfaces I LEFT JOIN Orion.NodeIPAddresses A ON I.InterfaceIndex = A.InterfaceIndex AND I.NodeID = A.NodeID LEFT JOIN Orion.Nodes N ON I.NodeID = N.NodeID LEFT JOIN Orion.Engines E ON N.EngineID = E.EngineID where I.InterfaceID = " . $interfaceid;        
+        $query = "query=SELECT I.NodeID, InterfaceID, I.ObjectSubType, I.Name, I.Index, I.Icon, I.Type, I.TypeName, I.TypeDescription, I.Speed, I.MTU, I.LastChange, I.PhysicalAddress, I.AdminStatus, I.OperStatus, I.StatusIcon, I.InBandwidth, I.OutBandwidth, I.Caption, I.FullName, Round(I.Outbps,0) AS Outbps, Round(I.Inbps,0) AS Inbps, I.Bps, I.OutPercentUtil, I.InPercentUtil, I.PercentUtil, round(I.OutPps,1) AS OutPps, round(I.InPps,1) AS InPps, I.InPktSize, I.OutPktSize, I.OutUcastPps, I.OutMcastPps, I.InUcastPps, I.InMcastPps, I.InDiscardsThisHour, I.InDiscardsToday, I.InErrorsThisHour, I.InErrorsToday, I.OutDiscardsThisHour, I.OutDiscardsToday, I.OutErrorsThisHour, I.OutErrorsToday,I.Counter64, I.LastSync, I.Alias, I.IfName, I.Severity, I.CustomBandwidth, I.CustomPollerLastStatisticsPoll, I.PollInterval, I.NextPoll, I.RediscoveryInterval, I.NextRediscovery, I.StatCollection, I.UnPluggable, I.InterfaceSpeed, I.InterfaceCaption, I.InterfaceType, I.InterfaceSubType, I.MAC, I.InterfaceName, I.InterfaceIcon, I.InterfaceTypeName, I.AdminStatusLED, I.OperStatusLED, I.InterfaceAlias, I.InterfaceIndex, I.InterfaceLastChange, I.InterfaceMTU, I.InterfaceTypeDescription, I.OrionIdPrefix, I.DuplexMode, I.SkippedPollingCycles, I.MinutesSinceLastSync, I.Status, I.InterfaceResponding, I.Description, A.IPAddress, E.DisplayName, E.IP AS EngineIP FROM Orion.NPM.Interfaces I LEFT JOIN Orion.NodeIPAddresses A ON I.InterfaceIndex = A.InterfaceIndex AND I.NodeID = A.NodeID LEFT JOIN Orion.Nodes N ON I.NodeID = N.NodeID LEFT JOIN Orion.Engines E ON N.EngineID = E.EngineID where I.InterfaceID = " . $interfaceid;
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $devicedata = json_decode($response, TRUE);
         if (isset(array_values( $devicedata )[0][0])){
@@ -1309,7 +1309,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1337,14 +1337,14 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
 
-        $query = "query=SELECT HOUR(TOLOCAL(DATETIME)) AS STATTIME, AVG(OutPercentUtil) AS OutPercentUtil, AVG(InPercentUtil) AS InPercentUtil, AVG(PercentUtil) AS PercentUtil FROM Orion.NPM.InterfaceTraffic WHERE InterfaceID = ".$interfaceid." AND MONTH(TOLOCAL(DATETIME))=MONTH(TOLOCAL(GETUTCDATE())) AND YEAR(TOLOCAL(DATETIME))=YEAR(TOLOCAL(GETUTCDATE())) AND DAY(TOLOCAL(DATETIME))=DAY(TOLOCAL(GETUTCDATE())) GROUP BY HOUR(TOLOCAL(DATETIME))";       
+        $query = "query=SELECT HOUR(TOLOCAL(DATETIME)) AS STATTIME, AVG(OutPercentUtil) AS OutPercentUtil, AVG(InPercentUtil) AS InPercentUtil, AVG(PercentUtil) AS PercentUtil FROM Orion.NPM.InterfaceTraffic WHERE InterfaceID = ".$interfaceid." AND MONTH(TOLOCAL(DATETIME))=MONTH(TOLOCAL(GETUTCDATE())) AND YEAR(TOLOCAL(DATETIME))=YEAR(TOLOCAL(GETUTCDATE())) AND DAY(TOLOCAL(DATETIME))=DAY(TOLOCAL(GETUTCDATE())) GROUP BY HOUR(TOLOCAL(DATETIME))";
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
         if (isset(array_values( $data )[0])){
@@ -1366,15 +1366,15 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
 
-        //$query = 'query=SELECT HOUR(TOLOCAL(DATETIME)) AS STATTIME, AVG(OutPercentUtil) AS OutPercentUtil, AVG(InPercentUtil) AS InPercentUtil, AVG(PercentUtil) AS PercentUtil FROM Orion.NPM.InterfaceTraffic WHERE InterfaceID = 4817 AND MONTH(TOLOCAL(DATETIME))=9 AND YEAR(TOLOCAL(DATETIME))=2020 AND DAY(TOLOCAL(DATETIME))=23 GROUP BY HOUR(TOLOCAL(DATETIME))';     
-        $query = 'query=SELECT HOUR(TOLOCAL(DATETIME)) AS STATTIME, AVG(InDiscards) AS InDiscards, AVG(OutDiscards) AS OutDiscards, AVG(InErrors) AS InErrors, AVG(OutErrors) AS OutErrors FROM Orion.NPM.InterfaceErrors  WHERE InterfaceID = '.$interfaceid.' AND MONTH(TOLOCAL(DATETIME))=MONTH(TOLOCAL(GETUTCDATE())) AND YEAR(TOLOCAL(DATETIME))=YEAR(TOLOCAL(GETUTCDATE())) AND DAY(TOLOCAL(DATETIME))=DAY(TOLOCAL(GETUTCDATE())) GROUP BY HOUR(TOLOCAL(DATETIME))'; 
+        //$query = 'query=SELECT HOUR(TOLOCAL(DATETIME)) AS STATTIME, AVG(OutPercentUtil) AS OutPercentUtil, AVG(InPercentUtil) AS InPercentUtil, AVG(PercentUtil) AS PercentUtil FROM Orion.NPM.InterfaceTraffic WHERE InterfaceID = 4817 AND MONTH(TOLOCAL(DATETIME))=9 AND YEAR(TOLOCAL(DATETIME))=2020 AND DAY(TOLOCAL(DATETIME))=23 GROUP BY HOUR(TOLOCAL(DATETIME))';
+        $query = 'query=SELECT HOUR(TOLOCAL(DATETIME)) AS STATTIME, AVG(InDiscards) AS InDiscards, AVG(OutDiscards) AS OutDiscards, AVG(InErrors) AS InErrors, AVG(OutErrors) AS OutErrors FROM Orion.NPM.InterfaceErrors  WHERE InterfaceID = '.$interfaceid.' AND MONTH(TOLOCAL(DATETIME))=MONTH(TOLOCAL(GETUTCDATE())) AND YEAR(TOLOCAL(DATETIME))=YEAR(TOLOCAL(GETUTCDATE())) AND DAY(TOLOCAL(DATETIME))=DAY(TOLOCAL(GETUTCDATE())) GROUP BY HOUR(TOLOCAL(DATETIME))';
 
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
@@ -1397,14 +1397,14 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
 
-        $query = 'query=SELECT State, TotalDurationMin, DateTimeFrom, DateTimeUntil FROM Orion.NPM.InterfaceNetObjectDowntime WHERE HOURDIFF(TOLOCAL(DateTimeFrom),TOLOCAL(GETUTCDATE())) <24 AND DateTimeUntil is not NULL AND EntityID = ' . $interfaceid; 
+        $query = 'query=SELECT State, TotalDurationMin, DateTimeFrom, DateTimeUntil FROM Orion.NPM.InterfaceNetObjectDowntime WHERE HOURDIFF(TOLOCAL(DateTimeFrom),TOLOCAL(GETUTCDATE())) <24 AND DateTimeUntil is not NULL AND EntityID = ' . $interfaceid;
 
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
@@ -1432,7 +1432,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1454,7 +1454,7 @@ class slwnpmController extends Controller
             $eventtypes = array_values( $eventtypesdata )[0];
         }else{
             $eventtypes = null;
-        }        
+        }
 
 
         return view('slwnpm.events',compact('user','slwnpmserver','nodes','eventtypes'));
@@ -1476,7 +1476,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1509,7 +1509,7 @@ class slwnpmController extends Controller
         $todate = date_format(date_create(Request('todate')),"d F, Y");
         $totime = Request('totime');
 
-        $limit = Request('limit');        
+        $limit = Request('limit');
 
         $wherenode = '';
         if($selectednode==''){
@@ -1556,7 +1556,7 @@ class slwnpmController extends Controller
                 $wheretime =' AND ( MONTH(TOLOCAL(EventTime))=MONTH(TOLOCAL(GETUTCDATE())) )';
                 break;
             case 8:
-                $wheretime =' AND ( YEAR(TOLOCAL(EventTime))=YEAR(TOLOCAL(GETUTCDATE())) AND MONTH(TOLOCAL(EventTime))=MONTH(TOLOCAL(GETUTCDATE()))-1 )';    
+                $wheretime =' AND ( YEAR(TOLOCAL(EventTime))=YEAR(TOLOCAL(GETUTCDATE())) AND MONTH(TOLOCAL(EventTime))=MONTH(TOLOCAL(GETUTCDATE()))-1 )';
                 break;
             case 9:
                 $wheretime =' AND ( DAYDIFF(TOLOCAL(EventTime),TOLOCAL(GETUTCDATE())) <30 )';
@@ -1568,16 +1568,16 @@ class slwnpmController extends Controller
                 $wheretime =' AND ( YEAR(TOLOCAL(EventTime))=YEAR(TOLOCAL(GETUTCDATE())) )';
                 break;
             case 12:
-                $wheretime =' AND ( MONTHDIFF(TOLOCAL(EventTime),TOLOCAL(GETUTCDATE())) <12 )';   
+                $wheretime =' AND ( MONTHDIFF(TOLOCAL(EventTime),TOLOCAL(GETUTCDATE())) <12 )';
                 break;
             case 13:
-                //where TOLOCAL(EventTime) > '09/24/2020 03:05 AM' AND EventTime < '07/05/2025 23:00 PM' 
-                //where EventTime > '09/24/2020 00:28:49.259' AND EventTime < '07/05/2025 15:28:50' 
+                //where TOLOCAL(EventTime) > '09/24/2020 03:05 AM' AND EventTime < '07/05/2025 23:00 PM'
+                //where EventTime > '09/24/2020 00:28:49.259' AND EventTime < '07/05/2025 15:28:50'
                 //$wheretime = "AND (TOLOCAL(EventTime)>='". $fromdate. " " . $fromtime . "' AND TOLOCAL(EventTime)<='". $fromdate. " " . $fromtime . "')";
                 $from = date_format(date_create(Request('fromdate')),"m/d/Y ") . ' ' . Request('fromtime');
                 $to = date_format(date_create(Request('todate')),"m/d/Y ") . ' '. Request('totime');
                 $wheretime = " AND (TOLOCAL(EventTime) > '" . $from . "' AND TOLOCAL(EventTime) < '" . $to ."')";
-                break;   
+                break;
             default:
                 $wheretime = ' AND (1=1)';
                 break;
@@ -1617,7 +1617,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1644,15 +1644,15 @@ class slwnpmController extends Controller
     */
     public function getchat(){
 
-        $messages = DB::table('tbl_chat')        
+        $messages = DB::table('tbl_chat')
         ->leftJoin('tbl_accounts', 'tbl_accounts.userid', '=', 'tbl_chat.userid')
         ->where([
             ['tbl_chat.product', '=', 'slwnpm'],
             ['tbl_chat.domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])
         ->orderby('timestamp','DESC')
-        ->take(1000)->get(); 
-        
+        ->take(1000)->get();
+
         $tmpstr = '';
 
         foreach ($messages as $message){
@@ -1718,7 +1718,7 @@ class slwnpmController extends Controller
             ['tbl_accounts.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        $slwnpmserver = DB::table('tbl_slwnpmservers')        
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
         ->where([
             ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
         ])->first();
@@ -1757,6 +1757,64 @@ class slwnpmController extends Controller
         }
 
         return view('slwnpm.search',compact('user','slwnpmserver','nodes','searchtext','searchtype'));
+    }
+
+    public function report(){
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+        $totalNodeUp = 0;
+        $totalNodeDown = 0;
+        $totalIntUp = 0;
+        $totalIntDown = 0;
+        //region total node up
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT+COUNT(NodeId) AS NodesCount+FROM+ORION.Nodes+WHERE+Status=1";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $totalNodeUp = array_values( $data )[0][0]['NodesCount'];
+        //endregion
+
+        //region total node down
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT+COUNT(NodeId) AS NodesCount+FROM+ORION.Nodes+WHERE+Status=2";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $totalNodeDown = array_values( $data )[0][0]['NodesCount'];
+        //end region
+
+        //region int up
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT+COUNT(InterfaceID) AS IntCount+FROM+Orion.NPM.Interfaces+WHERE+OperStatus=1";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $totalIntUp =  array_values( $data )[0][0]['IntCount'];
+        //endregion
+
+        //region int down
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT+COUNT(InterfaceID) AS IntCount+FROM+Orion.NPM.Interfaces+WHERE+OperStatus=0+OR+OperStatus=2";
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+
+        $data = json_decode($response, TRUE);
+        $totalIntDown =  array_values( $data )[0][0]['IntCount'];
+        //endregion
+
+        $result1 = array(
+            array("category"=>"Status","NodeUp"=>$totalNodeUp,"NodeDown"=>$totalNodeDown),
+        );
+
+        $result2 = array(
+            array("category"=>"Status","IntUp"=>$totalIntUp,"IntDown"=>$totalIntDown),
+        );
+
+        return view('slwnpm.report',compact('result1','result2'));
     }
 
 }

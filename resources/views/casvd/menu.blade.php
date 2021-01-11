@@ -60,6 +60,13 @@
 			</ul>
 		</li>
 
+    <!-- Report -->
+    <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-user"></i><span>Report </span><i class="icon-angle-down left-padding"></i></a>
+        <ul class="dropdown-menu pull-right">
+            <li><a href="{{@Config::get('app.url')}}/admin/casvd/report" title=""><i class="icon-reorder"></i>View Report </a></li>
+        </ul>
+    </li>
+
     <!-- Settings menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Settings </span><i class="icon-angle-down left-padding"></i></a>
 			<ul class="dropdown-menu pull-right">

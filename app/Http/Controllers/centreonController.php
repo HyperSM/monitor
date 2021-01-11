@@ -2849,6 +2849,139 @@ class centreonController extends Controller
 
     }
 
+    public function reportdetail(){
+        if (!Session::has('Monitor') || !Session::has('mymonitor_md')) {
+            $url = url('/');
+            return redirect($url);
+        }
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+        $domain = DB::table('tbl_domains')
+            ->where([
+                ['domainid', '=', $dm]
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')]
+            ])->first();
+
+        // get info centreonserver
+        $centreonserver = DB::table('tbl_centreonservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+            ])->first();
+
+        $authen_key = "";
+        $client = new \GuzzleHttp\Client(['cookies' => true]);
+        try {
+            $res = $client->request("POST",  $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                'form_params' => [
+                    'username' => $centreonserver->user,
+                    'password' => $centreonserver->password
+                ],
+                //"verify" => false
+            ]);
+
+            $authen_key = json_decode($res->getBody())->authToken;
+        } catch (RequestException $e) {
+            $authen_key = "";
+        }
+        //endregion
+        if ($authen_key != "") {
+            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
+                "headers" => [
+                    "Content-Type" => "application/json",
+                    "centreon-auth-token" => $authen_key
+                ],
+            ]);
+            $hosts = json_decode($res->getBody());
+            for ($i = 1 ; $i < count($hosts);++$i){
+                if ($hosts[$i]->name == $hosts[$i - 1]->name) {
+                    unset($hosts[$i]);
+                }
+            }
+            // dd($hosts);
+        }
+        return view('centreon.reportdetail',compact('hosts','user','domain'));
+    }
+
+    public function reportdetailbyhost(Request $request){
+        if(!empty($request->host)){
+            $hostname = $request->host;
+            //region auth
+            if (!Session::has('Monitor')) {
+                $url = url('/');
+                return redirect($url);
+            }
+            $dm = Crypt::decryptString(session('mymonitor_md'));
+            $domain = DB::table('tbl_domains')
+                ->where([
+                    ['domainid', '=', $dm]
+                ])->first();
+
+            $user = DB::table('tbl_accounts')
+                ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+                ->where([
+                    ['tbl_accounts.username', '=', session('mymonitor_userid')]
+                ])->first();
+
+            $centreonserver = DB::table('tbl_centreonservers')
+                ->where([
+                    ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+                ])->first();
+
+            $client = new \GuzzleHttp\Client(['cookies' => true]);
+            try {
+                $res = $client->request("POST", $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                    'form_params' => [
+                        'username' => $centreonserver->user,
+                        'password' => $centreonserver->password
+                    ]
+                ]);
+
+                $authen_key = json_decode($res->getBody())->authToken;
+            } catch (RequestException $e) {
+
+            }
+            //endregion
+
+            //region load data
+            if ($authen_key != "") {
+                    $res = $client->request("GET", $centreonserver->hostname . "/centreon/api/index.php?object=centreon_realtime_services&action=list&fields=host_name,host_state,output,description,host_last_check,scheduled_downtime_depth&searchHost=" . $hostname, [
+                        "headers" => [
+                            "Content-Type" => "application/json",
+                            "centreon-auth-token" => $authen_key
+                        ],
+                    ]);
+                    $services = json_decode($res->getBody());
+
+                    // get first
+                    $first = array_slice($services, 0, 1);
+
+                    $data = array();
+                    $month = date('m');
+
+                    //UP
+                    if ($first[0]->host_state == '0') {
+                        array_push($data, array("Host State" => "Host State", "UP" => 100, 'DOWN' => 0, 'UNREACT' => 0));
+                    }
+
+                    //DOWN
+                    if ($first[0]->host_state == '1') {
+                        array_push($data, array("Host State" => "Host State", "UP" => 0, 'DOWN' => 100, 'UNREACT' => 0));
+                    }
+
+                    //UNREACT
+                    if ($first[0]->host_state == '1') {
+                        array_push($data, array("Host State" => "Host State", "UP" => 0, 'DOWN' => 0, 'UNREACT' => 100));
+                    }
+                    return view('centreon.reportbyhost',compact('data','domain','user','hostname'));
+                }
+        }
+        return;
+    }
+
     public function secondsToTime($inputSeconds) {
         $then = new DateTime(date('Y-m-d H:i:s', $inputSeconds));
         $now = new DateTime(date('Y-m-d H:i:s', time()));

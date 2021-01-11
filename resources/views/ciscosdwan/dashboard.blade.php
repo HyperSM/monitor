@@ -9,7 +9,7 @@
 		<h3>Cisco SDWAN</h3>
 		<span>Company: {{$domain->company}} / Domain: {{$domain->domainname}}</span>
 	</div>
-	
+
 </div>
 <!-- /Page Header -->
 
@@ -115,12 +115,12 @@
 				</div>
 			</div>
 			<div class="widget-content" style="height: 350px; vertical-align: middle;">
-				<div class="ct-control-status" style="overflow: overlay; border:none;" align="center">								
+				<div class="ct-control-status" style="overflow: overlay; border:none;" align="center">
             		<!-- <div id="mytree"></div> -->
             		<div id="controlstatus"></div>
           		</div>
 			</div>
-			
+
 		</div>
 	</div>
 
@@ -134,7 +134,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="widget-content">
 				<!--div id="gmap_markers" class="gmaps"></div-->
 				<div id="ciscosdwanmap" style="height: 325px; width: 100%"></div>
@@ -155,7 +155,7 @@
 				</div>
 			</div>
 			<div class="widget-content">
-				<div id="wanedgeinventory" style="height: 150px; width: 100%"></div>								
+				<div id="wanedgeinventory" style="height: 150px; width: 100%"></div>
 			</div>
 		</div>
 	</div>
@@ -173,7 +173,7 @@
 			<div class="widget-content">
             	<div id="sitehealth" style="height: 150px; overflow: overlay; border:none;"></div>
 			</div>
-			
+
 		</div>
 	</div>
 	<div class="col-md-4">
@@ -186,10 +186,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="widget-content">						
+			<div class="widget-content">
             	<div id="transportinterface" style="height: 150px; overflow: overlay; border:none;"></div>
 			</div>
-			
+
 		</div>
 	</div>
 </div>
@@ -208,7 +208,7 @@
 				</div>
 			</div>
 			<div style="height: 100px;"></div>
-			<div class="row" align="center" style="vertical-align: middle;">				
+			<div class="row" align="center" style="vertical-align: middle;">
 				<div class="col-md-4">
 					<h5>Normal</h5>
 					<input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" value="0" data-readOnly="true" id="normal">
@@ -219,10 +219,10 @@
 				</div>
 				<div class="col-md-4">
 					<h5>Error</h5>
-					<input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="red" value="0" data-readOnly="true" id="error">				
+					<input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="red" value="0" data-readOnly="true" id="error">
 				</div>
 			</div>
-		</div>		
+		</div>
 	</div>
 	<div class="col-md-8">
 		<div class="widget box">
@@ -240,10 +240,10 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 
-<div class="row">	
+<div class="row">
 	<div class="col-md-4">
 		<div class="widget box">
 			<div class="widget-header">
@@ -280,7 +280,7 @@
 	<span><img src="{{@Config::get('app.url')}}/images/ajax.jpg" style="width: 70px;" id="ajax"></span><span id="message"></span>
     <table class="table table-hover table-striped table-bordered table-highlight-head" id='showDetailDevices'>
     	<thead>
-    		
+
     	</thead>
     	<tbody>
     	</tbody>
@@ -344,7 +344,7 @@
 
 	    var query = '<?php echo URL::route('ciscosdwan.dashboard.serverdetail') ?>';
 	    $('#serverdetail').load(query);
-	    
+
 	});
 
 	setInterval(function(){
@@ -383,7 +383,7 @@
 
 	    var query = '<?php echo URL::route('ciscosdwan.dashboard.serverdetail') ?>';
 	    $('#serverdetail').load(query);
-	},120000);	
+	},120000);
 
     $(document).ajaxComplete(function(event,xhr,settings){
 	    //console.log("URL",settings.url);
@@ -394,6 +394,7 @@
     			//tmp = tmp.substring(0, tmp.length - 1);
     			//alert(tmp);
     			var devices = JSON.parse(tmp);
+    			console.log(devices);
     			var i;
     			var vmanage = 0;
     			var vsmart = 0;
@@ -482,7 +483,7 @@
 	        	latency.push([date,alldata[i]['latency']]);
 	        	jitter.push([date,alldata[i]['jitter']]);
 	        }
-	        //alert(alldata[0]['OutPercentUtil']);	
+	        //alert(alldata[0]['OutPercentUtil']);
 
 			var series_multiple = [
 				{
@@ -543,12 +544,12 @@
 
 
 	$('#modal').iziModal({
-	    headerColor: '#4d7496', 
-	    width: '70%', 
-	    overlayColor: 'rgba(0, 0, 0, 0.5)', 
-	    fullscreen: true, 
-	    transitionIn: 'fadeInUp', 
-	    transitionOut: 'fadeOutDown', 
+	    headerColor: '#4d7496',
+	    width: '70%',
+	    overlayColor: 'rgba(0, 0, 0, 0.5)',
+	    fullscreen: true,
+	    transitionIn: 'fadeInUp',
+	    transitionOut: 'fadeOutDown',
 	    bodyOverflow: true,
 	    padding: 10
    	});
@@ -575,9 +576,9 @@
 		var devicetype = $(this).attr("id");
 
 		switch(devicetype){
-			case 've': 
-			case 'vb': 
-			case 'vs': 
+			case 've':
+			case 'vb':
+			case 'vs':
 			case 'vm':
 				/*Click vào device*/
 				message.innerText = 'Please be patient while data is loading. Do not close this window.';
@@ -636,14 +637,14 @@
 
 			            }
 			        },
-			        error: function (xhr, textStatus, errorThrown) {  
+			        error: function (xhr, textStatus, errorThrown) {
 
-		         	} 
+		         	}
 			    });
 				/*Kết thúc device*/
 				break;
-			case 'Control up':				
-			case 'Control down':				
+			case 'Control up':
+			case 'Control down':
 			case 'Partial':
 				if (devicetype=='Control up'){
 					$url= '<?php echo URL::route("ciscosdwan.dashboard.ajaxcontrol",["up"]) ?>';
@@ -671,7 +672,7 @@
 
 		        document.getElementById("ajax").style.display = "inline";
 
-		        $.ajax({		        	
+		        $.ajax({
 			        url: $url,
 			        type:"GET",
 			        data:{
@@ -703,7 +704,7 @@
 
 			            }
 			        },
-			        error: function (xhr, textStatus, errorThrown) {  
+			        error: function (xhr, textStatus, errorThrown) {
 
 		         	}
 		        });
@@ -773,7 +774,7 @@
 
 			            }
 			        },
-			        error: function (xhr, textStatus, errorThrown) {  
+			        error: function (xhr, textStatus, errorThrown) {
 
 		         	}
 		        });
@@ -839,7 +840,7 @@
 
 			            }
 			        },
-			        error: function (xhr, textStatus, errorThrown) {  
+			        error: function (xhr, textStatus, errorThrown) {
 
 		         	}
 		        });
@@ -877,7 +878,7 @@
 			        success:function(response){
 			        	//document.getElementById('message').value = "";
 			            if(response) {
-			            	var data = JSON.parse(response);			            	
+			            	var data = JSON.parse(response);
 			                message.innerText ='';
 			                document.getElementById("ajax").style.display = "none";
 			                var html= '';
@@ -895,7 +896,7 @@
 
 			            }
 			        },
-			        error: function (xhr, textStatus, errorThrown) {  
+			        error: function (xhr, textStatus, errorThrown) {
 
 		         	}
 		        });
@@ -905,11 +906,11 @@
 				break;
 		}
 
-		       
-        
+
+
 	});
 
-    
+
 </script>
 @endsection
 
