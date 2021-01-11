@@ -80,7 +80,8 @@ route::post('/sysadmin/billing/detail/{domainid}','sysadminController@billingdet
 route::get('ajaxbillingcasvd/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvd')->name('ajaxbillingcasvd');
 route::get('ajaxbillingcentreon/{domainid}','sysadminController@ajaxbillingcentreon')->name('ajaxbillingcentreon');
 route::get('ajaxbillingslwnpm/{domainid}','sysadminController@ajaxbillingslwnpm')->name('ajaxbillingslwnpm');
-route::get('test1/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvd');
+route::get('ajaxbillingciscosdwan/{domainid}','sysadminController@ajaxbillingciscosdwan')->name('ajaxbillingciscosdwan');
+// route::get('/test1/{domainid}','sysadminController@ajaxbillingciscosdwan');
 // route::get('/sysadmin/ajaxbillingcasvdcount/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvdcount')->name('ajaxbillingcasvdcount');
 // route::get('/sysadmin/ajaxbillingcentreoncount/{domainid}/{start}/{end}','sysadminController@ajaxbillingcentreoncount')->name('ajaxbillingcentreoncount');
 // route::get('/sysadmin/ajaxbillingslwnpmcount/{domainid}/{start}/{end}','sysadminController@ajaxbillingslwnpmcount')->name('ajaxbillingslwnpmcount');

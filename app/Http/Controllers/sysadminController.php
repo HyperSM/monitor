@@ -1396,9 +1396,11 @@ class sysadminController extends Controller
         if ($myJSON!=null){
             $dataArray = $myJSON->data;
             $count=0;
-            for ($i=0; $i < count($dataArray); $i++) { 
-                $count = $count + 1;
-            }
+                foreach ($dataArray as $data) {
+                    if ($data->personality=="vedge") {
+                        $count += 1;
+                    }
+                }
             return $count;
         }else{
             return 0;

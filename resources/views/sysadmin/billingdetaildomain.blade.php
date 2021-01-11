@@ -141,6 +141,16 @@
             $("#slwnpmUP").html(result["up"]);
             $("#slwnpmPrice").html(result["price"]);
         }});
+
+        //Cisco SDWAN
+        var ajaxbillingciscosdwan = "<?php echo @Config::get('app.url') ?>";
+        ajaxbillingciscosdwan += ('/ajaxbillingciscosdwan/' + '{{$domain->domainid}}');
+        $.ajax({url: ajaxbillingciscosdwan, success: function(result){
+            $('.sdwanGIF').hide();
+            $("#sdwanCount").html(result["count"]);
+            $("#sdwanUP").html(result["up"]);
+            $("#sdwanPrice").html(result["price"]);
+        }});
     });
 
     function ajaxcasvdloading() {
@@ -149,7 +159,6 @@
         var ajaxbillingcasvd = "<?php echo @Config::get('app.url') ?>";
         ajaxbillingcasvd += ('/ajaxbillingcasvd/' + '{{$domain->domainid}}' + '/' + rangestart + '/' + rangeend);
         $.ajax({url: ajaxbillingcasvd, success: function(result){
-            console.log(result);
             $('.casvdGIF').hide();
             $("#casvdCount").html(result["count"]);
             $("#casvdUP").html(result["up"]);
