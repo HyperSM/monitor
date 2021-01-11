@@ -1759,6 +1759,10 @@ class slwnpmController extends Controller
         return view('slwnpm.search',compact('user','slwnpmserver','nodes','searchtext','searchtype'));
     }
 
+    /*
+    Page: Report
+    Hiển thị view Report
+    */
     public function report(){
         $slwnpmserver = DB::table('tbl_slwnpmservers')
             ->where([
@@ -1817,4 +1821,43 @@ class slwnpmController extends Controller
         return view('slwnpm.report',compact('result1','result2'));
     }
 
+    /*
+    Page: Notify
+    Hiển thị view Notify
+    */
+    public function notify(){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query= SELECT  ac.Name,  ac.Enabled,  ac.Description,  ac.ObjectType,  a.Title,  ac.CreatedBy 
+        FROM  Orion.AlertConfigurations   ac 
+        join  Orion.ActionsAssignments   aa  on  aa.parentid=ac.alertid 
+        join  Orion.Actions   a  on  a.actionid=aa.ActionID 
+        order by  name,  categorytype  desc,  sortorder";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        dd($data);
+        if (isset(array_values( $data )[0])){
+            $nodes = array_values( $data )[0];
+        }else{
+            $nodes = null;
+        }
+
+        return view('slwnpm.search',compact('user','slwnpmserver','nodes','searchtext','searchtype'));
+    }
 }
