@@ -66,6 +66,26 @@ route::post('/sysadmin/domains/{domainid}/users/delete/{userid}','sysadminContro
 route::get('/sysadmin/domains/{domainid}/users/ena/{userid}','sysadminController@enabledomainuser');
 route::get('/sysadmin/domains/{domainid}/users/disa/{userid}','sysadminController@disabledomainuser');
 
+//System Admin (Sysadmin) - Billing
+route::get('/sysadmin/billing/prices','sysadminController@billingprices');
+route::get('/sysadmin/billing/prices/addprice','sysadminController@addbillingprice');
+route::post('/sysadmin/billing/prices/addprice','sysadminController@addbillingpricesubmit');
+route::get('/sysadmin/billing/prices/edit/{product}','sysadminController@editbillingprice');
+route::post('/sysadmin/billing/prices/edit/{product}','sysadminController@editbillingpricesubmit');
+route::get('/sysadmin/billing/prices/delete/{product}','sysadminController@deletebillingprice');
+route::post('/sysadmin/billing/prices/delete/{product}','sysadminController@deletebillingpricesubmit');
+route::get('/sysadmin/billing/detail','sysadminController@billingdetail');
+route::get('/sysadmin/billing/detail/{domainid}','sysadminController@billingdetaildomain');
+route::post('/sysadmin/billing/detail/{domainid}','sysadminController@billingdetaildomainreload');
+route::get('ajaxbillingcasvd/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvd')->name('ajaxbillingcasvd');
+route::get('ajaxbillingcentreon/{domainid}','sysadminController@ajaxbillingcentreon')->name('ajaxbillingcentreon');
+route::get('ajaxbillingslwnpm/{domainid}','sysadminController@ajaxbillingslwnpm')->name('ajaxbillingslwnpm');
+route::get('ajaxbillingciscosdwan/{domainid}','sysadminController@ajaxbillingciscosdwan')->name('ajaxbillingciscosdwan');
+// route::get('/test1/{domainid}','sysadminController@ajaxbillingciscosdwan');
+// route::get('/sysadmin/ajaxbillingcasvdcount/{domainid}/{start}/{end}','sysadminController@ajaxbillingcasvdcount')->name('ajaxbillingcasvdcount');
+// route::get('/sysadmin/ajaxbillingcentreoncount/{domainid}/{start}/{end}','sysadminController@ajaxbillingcentreoncount')->name('ajaxbillingcentreoncount');
+// route::get('/sysadmin/ajaxbillingslwnpmcount/{domainid}/{start}/{end}','sysadminController@ajaxbillingslwnpmcount')->name('ajaxbillingslwnpmcount');
+// route::get('/sysadmin/ajaxbillingsdwancount/{domainid}/{start}/{end}','sysadminController@ajaxbillingsdwancount')->name('ajaxbillingsdwancount');
 
 //Solarwinds npm controller
 route::get('totalnodesquery','slwnpmController@totalnodesqueryfunction')->name('totalnodesquery');
