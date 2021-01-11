@@ -996,8 +996,9 @@ class sysadminController extends Controller
         ])->first();
 
         $domains = DB::table('tbl_domains')->get();
-
-        return view('sysadmin.billingdetail',compact('user','domains'));
+        $test = json_encode($domains,JSON_UNESCAPED_UNICODE);
+        
+        return view('sysadmin.billingdetail',compact('user','domains','test'));
     }
 
     public function billingdetaildomain($domainid) {
@@ -1068,7 +1069,7 @@ class sysadminController extends Controller
             $unitprice = number_format($unitprice,0,',','.');
             $unitprice = "$".$unitprice;
             $price = number_format($price,0,',','.');
-            $price = "$".$price;
+            // $price = "$".$price;
 
             $result = array('count'=>$count.' ticket(s)','up'=>$unitprice,'price'=>$price);
             
@@ -1108,7 +1109,7 @@ class sysadminController extends Controller
             $unitprice = number_format($unitprice,0,',','.');
             $unitprice = "$".$unitprice;
             $price = number_format($price,0,',','.');
-            $price = "$".$price;
+            // $price = "$".$price;
 
             $result = array('count'=>$count.' host(s)','up'=>$unitprice,'price'=>$price);
             
@@ -1160,7 +1161,7 @@ class sysadminController extends Controller
             $unitprice = number_format($unitprice,0,',','.');
             $unitprice = "$".$unitprice;
             $price = number_format($price,0,',','.');
-            $price = "$".$price;
+            // $price = "$".$price;
 
             $result = array('count'=>$count.' node(s)','up'=>$unitprice,'price'=>$price);
             
@@ -1200,7 +1201,7 @@ class sysadminController extends Controller
             $unitprice = number_format($unitprice,0,',','.');
             $unitprice = "$".$unitprice;
             $price = number_format($price,0,',','.');
-            $price = "$".$price;
+            // $price = "$".$price;
 
             $result = array('count'=>$count.' device(s)','up'=>$unitprice,'price'=>$price);
             
