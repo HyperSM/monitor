@@ -1070,7 +1070,7 @@ class sysadminController extends Controller
             $price = number_format($price,0,',','.');
             $price = "$".$price;
 
-            $result = array('count'=>$count.' tickets','up'=>$unitprice,'price'=>$price);
+            $result = array('count'=>$count.' ticket(s)','up'=>$unitprice,'price'=>$price);
             
             return $result;
         }  
@@ -1110,7 +1110,7 @@ class sysadminController extends Controller
             $price = number_format($price,0,',','.');
             $price = "$".$price;
 
-            $result = array('count'=>$count.' tickets','up'=>$unitprice,'price'=>$price);
+            $result = array('count'=>$count.' host(s)','up'=>$unitprice,'price'=>$price);
             
             return $result;
         }  
@@ -1162,7 +1162,7 @@ class sysadminController extends Controller
             $price = number_format($price,0,',','.');
             $price = "$".$price;
 
-            $result = array('count'=>$count.' tickets','up'=>$unitprice,'price'=>$price);
+            $result = array('count'=>$count.' node(s)','up'=>$unitprice,'price'=>$price);
             
             return $result;
         }  
@@ -1202,7 +1202,7 @@ class sysadminController extends Controller
             $price = number_format($price,0,',','.');
             $price = "$".$price;
 
-            $result = array('count'=>$count.' tickets','up'=>$unitprice,'price'=>$price);
+            $result = array('count'=>$count.' device(s)','up'=>$unitprice,'price'=>$price);
             
             return $result;
         }  
