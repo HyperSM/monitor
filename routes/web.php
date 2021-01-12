@@ -110,6 +110,8 @@ route::get('/admin/slwnpm/configserver','slwnpmController@configserver');
 route::post('/admin/slwnpm/slwnpmserver','slwnpmController@slwnpmserversubmit');
 route::get('/admin/slwnpm/configgroup','slwnpmController@configgroup');
 route::post('/admin/slwnpm/configgroup','slwnpmController@configgroupsubmit');
+route::get('/admin/slwnpm/threshold','slwnpmController@threshold');
+route::get('/admin/slwnpm/notify','slwnpmController@notify');
 
 //node detail
 route::get('/admin/slwnpm/nodedetail/{nodeid}','slwnpmController@slwnpmnodedetail');
