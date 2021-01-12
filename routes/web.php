@@ -111,7 +111,15 @@ route::post('/admin/slwnpm/slwnpmserver','slwnpmController@slwnpmserversubmit');
 route::get('/admin/slwnpm/configgroup','slwnpmController@configgroup');
 route::post('/admin/slwnpm/configgroup','slwnpmController@configgroupsubmit');
 route::get('/admin/slwnpm/threshold','slwnpmController@threshold');
+route::get('/admin/slwnpm/threshold/{AlertID}','slwnpmController@thresholddetail');
+route::post('/admin/slwnpm/threshold/{AlertID}','slwnpmController@thresholddetailsubmit');
+route::get('/admin/slwnpm/threshold/enable/{AlertID}','slwnpmController@thresholdenable');
+route::get('/admin/slwnpm/threshold/disable/{AlertID}','slwnpmController@thresholddisable');
 route::get('/admin/slwnpm/notify','slwnpmController@notify');
+route::get('/admin/slwnpm/notify/{ActionID}','slwnpmController@notifydetail');
+route::post('/admin/slwnpm/notify/{ActionID}','slwnpmController@notifydetailsubmit');
+route::get('/admin/slwnpm/notify/enable/{ActionID}','slwnpmController@notifyenable');
+route::get('/admin/slwnpm/notify/disable/{ActionID}','slwnpmController@notifydisable');
 
 //node detail
 route::get('/admin/slwnpm/nodedetail/{nodeid}','slwnpmController@slwnpmnodedetail');

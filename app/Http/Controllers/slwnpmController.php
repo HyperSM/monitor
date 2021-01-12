@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Crypt;
 use DateTime;
 use DateTimeZone;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 
 class slwnpmController extends Controller
 {
@@ -1822,6 +1824,138 @@ class slwnpmController extends Controller
     }
 
     /*
+    Page: Threshold
+    Hiển thị view Threshold
+    */
+    public function threshold(){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT AC.AlertID, AC.Name,AC.Enabled,AC.Description,AC.ObjectType,AC.CreatedBy FROM Orion.AlertConfigurations AC ORDER BY Name ASC";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $data = $data["results"];
+
+        return view('slwnpm.threshold',compact('user','slwnpmserver','data'));
+    }
+
+    public function thresholdenable($alertid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Enable
+        $URI = $client->request('GET', $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring."query=SELECT Uri FROM Orion.AlertConfigurations WHERE AlertID='".$alertid."'");
+        $URI = json_decode($URI->getBody()->getContents())->results;
+        $URI = $URI[0]->Uri;
+        
+        $client->request('POST', $apihost . $URI, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => ['Enabled' => 'True']
+        ]);
+        
+        return redirect('/admin/slwnpm/threshold');
+    }
+
+    public function thresholddisable($alertid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Enable
+        $URI = $client->request('GET', $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring."query=SELECT Uri FROM Orion.AlertConfigurations WHERE AlertID='".$alertid."'");
+        $URI = json_decode($URI->getBody()->getContents())->results;
+        $URI = $URI[0]->Uri;
+        
+        $client->request('POST', $apihost . $URI, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => ['Enabled' => 'False']
+        ]);
+        
+        return redirect('/admin/slwnpm/threshold');
+    }
+
+    /*
+    Page: Threshold
+    Hiển thị view Threshold
+    */
+    public function thresholddetail($alertid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT AC.Name FROM Orion.AlertConfigurations AC WHERE AC.AlertID='".$alertid."'ORDER BY Name ASC";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $data = $data["results"][0];
+        
+        return view('slwnpm.thresholddetail',compact('user','slwnpmserver','data'));
+    }
+
+    /*
     Page: Notify
     Hiển thị view Notify
     */
@@ -1843,21 +1977,152 @@ class slwnpmController extends Controller
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
-        $query = "query= SELECT  ac.Name,  ac.Enabled,  ac.Description,  ac.ObjectType,  a.Title,  ac.CreatedBy 
-        FROM  Orion.AlertConfigurations   ac 
-        join  Orion.ActionsAssignments   aa  on  aa.parentid=ac.alertid 
-        join  Orion.Actions   a  on  a.actionid=aa.ActionID 
-        order by  name,  categorytype  desc,  sortorder";
+        $query = "query=SELECT A.ActionID, A.ActionTypeID, A.Title, A.Description, A.Enabled, A.SortOrder, AA.CategoryType, AA.EnvironmentType, AC.Name AS [Assigned Alerts], AC.AlertID, AC.Description AS [Assigned Alerts Pop] FROM Orion.Actions A JOIN Orion.ActionsAssignments AA ON AA.ActionID=A.ActionID JOIN Orion.AlertConfigurations AC ON AC.AlertID=AA.ParentID ORDER BY Title ASC, sortorder";
 
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
-        dd($data);
-        if (isset(array_values( $data )[0])){
-            $nodes = array_values( $data )[0];
-        }else{
-            $nodes = null;
+        $data = $data["results"];
+
+        return view('slwnpm.notify',compact('user','slwnpmserver','data'));
+    }
+
+    public function notifyenable($actionid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Enable
+        $URI = $client->request('GET', $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring."query=SELECT Uri FROM Orion.Actions WHERE ActionID='".$actionid."'");
+        $URI = json_decode($URI->getBody()->getContents())->results;
+        $URI = $URI[0]->Uri;
+        
+        $client->request('POST', $apihost . $URI, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => ['Enabled' => 'True']
+        ]);
+        
+        return redirect('/admin/slwnpm/notify');
+    }
+
+    public function notifydisable($actionid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Enable
+        $URI = $client->request('GET', $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring."query=SELECT Uri FROM Orion.Actions WHERE ActionID='".$actionid."'");
+        $URI = json_decode($URI->getBody()->getContents())->results;
+        $URI = $URI[0]->Uri;
+        
+        $client->request('POST', $apihost . $URI, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => ['Enabled' => 'False']
+        ]);
+        
+        return redirect('/admin/slwnpm/notify');
+    }
+
+    /*
+    Page: Notify
+    Hiển thị view Notify
+    */
+    public function notifydetail($actionid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
         }
 
-        return view('slwnpm.search',compact('user','slwnpmserver','nodes','searchtext','searchtype'));
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT A.ActionID, A.Title, P.PropertyValue, P.Uri AS [P URI], A.Uri AS [A URI] FROM Orion.Actions A JOIN Orion.ActionsProperties P ON P.ActionID = A.ActionID WHERE A.ActionID='".$actionid."' AND P.PropertyName='Message'";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $data = $data["results"][0];
+        
+        return view('slwnpm.notifydetail',compact('user','slwnpmserver','data'));
+    }
+
+    public function notifydetailsubmit($actionid){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Update Name
+        $nURI = Request("nURI");
+        $client->request('POST', $apihost . $nURI, [
+            'headers' => ['Content-Type' => 'application/json'],
+             'json' => ['Title' => Request('message')]
+        ]);
+
+        //Update Message
+        $mURI = Request("mURI");
+        $client->request('POST', $apihost . $mURI, [
+            'headers' => ['Content-Type' => 'application/json'],
+             'json' => ['PropertyValue' => Request('message')]
+        ]);
+        
+        return $this->notifydetail($actionid);
     }
 }
