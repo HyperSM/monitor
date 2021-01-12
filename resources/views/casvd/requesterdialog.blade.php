@@ -147,8 +147,9 @@
                     if(name == 'affected_user') {
                         var id = $(this).data('id');
                         window.opener.document.getElementById('affected_user').value = value;
+                        window.opener.document.getElementById('h_affected_user').value = id;
                         localStorage.setItem('h_affected_user',id);
-                        //window.opener.document.getElementById('h_affected_user').value = id;
+
                     }
                     window.close();
             });

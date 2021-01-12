@@ -226,6 +226,10 @@ Route::get('/admin/casvd/allrequests/edit/{refnum}','casvdController@editrequest
 Route::post('/admin/casvd/allrequests/edit/{refnum}','casvdController@editrequestsubmit');
 Route::get('/admin/casvd/allrequests/create','casvdController@createrequest');
 Route::post('/admin/casvd/allrequests/create','casvdController@createrequestsubmit');
+Route::get('/admin/casvd/allincidents/create','casvdController@createincident');
+Route::post('/admin/casvd/allincidents/create','casvdController@createincidentsubmit');
+Route::get('/admin/casvd/allchanges/create','casvdController@createchange');
+Route::post('/admin/casvd/allchanges/create','casvdController@createchangesubmit');
 //Change
 Route::get('/admin/casvd/allchanges','casvdController@allchanges');
 Route::post('ajaxcasvdallchanges','casvdController@ajaxcasvdallchanges')->name('ajaxcasvdallchanges');

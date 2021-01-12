@@ -1256,14 +1256,11 @@ class casvdController extends Controller
         return view('casvd.createrequest',compact('user','droplist_impact','droplist_severity','droplist_status'));
     }
 
+
     public function createrequestsubmit(Request $request){
         $customer = $request->h_affected_user;
         $status = $request->status;
         $priority = $request->priority;
-
-        if(isset($customer) || isset($status) || isset($priority)){
-            return;
-        }
 
         if (!Session::has('Monitor')) {
             $url = url('/');
@@ -1310,6 +1307,161 @@ class casvdController extends Controller
         return view('casvd.createrequest',compact('user','droplist_impact','droplist_severity','droplist_status'));
     }
 
+    public function createincident(){
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
+
+        $droplist_status = $this->droplist('status');
+        $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+        return view('casvd.createincident',compact('user','droplist_impact','droplist_severity','droplist_status'));
+    }
+
+
+    public function createincidentsubmit(Request $request){
+        $customer = $request->h_affected_user;
+        $status = $request->status;
+        $priority = $request->priority;
+        //dd($request->affected_user);
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+        $create_param = array(
+            'sid' => $sid,
+            'attributes' => ['customer','status','priority'],
+            'propertyValues'=>[],
+            'creatorHandle'=>'',
+            'attrVals'=>['customer',$customer,'status',$status,'priority',$priority],
+            'template'=>'',
+            'newIssueHandle'=>'',
+            'newIssueNumber'=>''
+        );
+
+        //dd($create_param);
+
+        $response = $client->__call("createIssue", array($create_param));
+
+        $droplist_status = $this->droplist('status');
+        $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+        return view('casvd.createincident',compact('user','droplist_impact','droplist_severity','droplist_status'));
+    }
+
+    public function createchange(){
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
+
+        $droplist_status = $this->droplist('status');
+        $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+        return view('casvd.createchangeorder',compact('user','droplist_impact','droplist_severity','droplist_status'));
+    }
+
+
+    public function createchangesubmit(Request $request){
+        $customer = $request->h_affected_user;
+        $status = $request->status;
+        $priority = $request->priority;
+        //dd($customer);
+        if (!Session::has('Monitor')) {
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm = Crypt::decryptString(session('mymonitor_md'));
+
+        $user = DB::table('tbl_accounts')
+            ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+            ->where([
+                ['tbl_accounts.username', '=', session('mymonitor_userid')],
+            ])->first();
+
+        $casvdserver = DB::table('tbl_casvdservers')
+            ->where([
+                ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))],
+            ])->first();
+
+        $client = new SoapClient($casvdserver->secures . "://" . $casvdserver->hostname . ":" . $casvdserver->port . $casvdserver->basestring, array('trace' => 1));
+        // Login to CASVD
+        $ap_param = array(
+            'username' => $casvdserver->user,
+            'password' => $casvdserver->password,
+        );
+        $sid = $client->__call("login", array($ap_param))->loginReturn;
+
+        $create_param = array(
+            'sid' => $sid,
+            'attributes' => ['customer','status','priority'],
+            'propertyValues'=>[],
+            'creatorHandle'=>'',
+            'attrVals'=>['customer',$customer,'status',$status,'priority',$priority],
+            'template'=>'',
+            'newChangeHandle'=>'',
+            'newChangeNumber'=>''
+        );
+
+        //dd($create_param);
+
+        $response = $client->__call("createChangeOrder", array($create_param));
+
+        $droplist_status = $this->droplist('status');
+        $droplist_severity = $this->droplist('severity');
+        $droplist_impact = $this->droplist('impact');
+        return view('casvd.createchangeorder',compact('user','droplist_impact','droplist_severity','droplist_status'));
+    }
     /*
     Page: Dashboard -> AllRequests -> Edit Request (Submit)
      */
@@ -3129,7 +3281,6 @@ class casvdController extends Controller
                 );
                 $client->__call("freeListHandles", array($ap_param));
             }
-
 
         $data = array();
         array_push($data, array("Tickets" => "Tickets ", "Incident" => intval($incidentObj), 'Request' => intval($requestObj), 'Change' => intval($changeObj)));

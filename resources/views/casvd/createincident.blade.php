@@ -18,18 +18,18 @@
 <!-- Page header -->
 <div class="page-header">
 	<div class="page-title">
-		<h3>CA Service Desk | <a href="{{@Config::get('app.url')}}/admin/casvd/allrequests">All Request</a> | Create Request</h3>
+		<h3>CA Service Desk | <a href="{{@Config::get('app.url')}}/admin/casvd/allincidents">All Incidents</a> | Create Incident</h3>
 	</div>
 </div>
 
 <!-- Init -->
-<form class="form-vertical row-border" action="{{@Config::get('app.url')}}/admin/casvd/allrequests/create" method="POST" >
+<form class="form-vertical row-border" action="{{@Config::get('app.url')}}/admin/casvd/allincidents/create" method="POST" >
     @csrf
     <input type="hidden" name="h_affected_user" id="h_affected_user">
     <div class="col-md-12">
     <div class="widget box">
         <div class="widget-header">
-            <h4>Create Request</h4>
+            <h4>Create Incident</h4>
         </div>
         <div class="widget-content">
                 <div class="row">
@@ -218,7 +218,7 @@
 </form>
 <script>
     $('#btn_cancel').click(function(){
-        document.location.href="{{@Config::get('app.url')}}/admin/casvd/allrequests"
+        document.location.href="{{@Config::get('app.url')}}/admin/casvd/allincidents"
     });
 
     $(function () {

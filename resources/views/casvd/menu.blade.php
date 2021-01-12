@@ -39,8 +39,8 @@
     <!-- Incident menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-user"></i><span>Incident </span><i class="icon-angle-down left-padding"></i></a>
       <ul class="dropdown-menu pull-right">
-      <li><a href="#" title=""><i class="icon-plus"></i>Add new Incident</a></li>
-      <li><a href="{{@Config::get('app.url')}}/admin/casvd/allincidents" title=""><i class="icon-reorder"></i>All Incidents</a></li>
+          <li><a href="{{@Config::get('app.url')}}/admin/casvd/allincidents/create" title=""><i class="icon-plus"></i>Add new Incident</a></li>
+            <li><a href="{{@Config::get('app.url')}}/admin/casvd/allincidents" title=""><i class="icon-reorder"></i>All Incidents</a></li>
       </ul>
     </li>
 
@@ -55,7 +55,7 @@
     <!-- Change menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-user"></i><span>Change </span><i class="icon-angle-down left-padding"></i></a>
 			<ul class="dropdown-menu pull-right">
-			<li><a href="#" title=""><i class="icon-plus"></i>Add new Change</a></li>
+                <li><a href="{{@Config::get('app.url')}}/admin/casvd/allchanges/create" title=""><i class="icon-plus"></i>Add new Change</a></li>
 			<li><a href="{{@Config::get('app.url')}}/admin/casvd/allchanges" title=""><i class="icon-reorder"></i>All Changes </a></li>
 			</ul>
 		</li>
