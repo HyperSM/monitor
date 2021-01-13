@@ -596,49 +596,49 @@
     }
 
 
-	{{--setInterval(function(){--}}
-	{{--	var query = '<?php echo URL::route('ciscosdwan.dashboard.serverdetail') ?>';--}}
-	{{--    $('#ciscosdwanserverdetail').load(query);--}}
+	setInterval(function(){
+		var query = '<?php echo URL::route('ciscosdwan.dashboard.serverdetail') ?>';
+	    $('#ciscosdwanserverdetail').load(query);
 
-	{{--    var query = '<?php echo URL::route('ciscosdwan.dashboard.alarms') ?>';--}}
-	{{--    $('#ciscosdwanalarms').load(query);--}}
+	    var query = '<?php echo URL::route('ciscosdwan.dashboard.alarms') ?>';
+	    $('#ciscosdwanalarms').load(query);
 
-	{{--    var ajaxnpmeventsum = '<?php echo URL::route('ajaxnpmeventsum') ?>';--}}
-	{{--    $('#slwnpmajaxnpmeventsum').load(ajaxnpmeventsum).fadeIn("slow");--}}
+	    var ajaxnpmeventsum = '<?php echo URL::route('ajaxnpmeventsum') ?>';
+	    $('#slwnpmajaxnpmeventsum').load(ajaxnpmeventsum).fadeIn("slow");
 
-	{{--    var ajaxnpmlast10event = '<?php echo URL::route('ajaxnpmlast10event') ?>';--}}
-	{{--    $('#slwnpmajaxnpmlast10event').load(ajaxnpmlast10event).fadeIn("slow");--}}
+	    var ajaxnpmlast10event = '<?php echo URL::route('ajaxnpmlast10event') ?>';
+	    $('#slwnpmajaxnpmlast10event').load(ajaxnpmlast10event).fadeIn("slow");
 
-	{{--    var ajaxnpmunack = '<?php echo URL::route('ajaxnpmunack') ?>';--}}
-	{{--    $('#slwnpmajaxnpmunack').load(ajaxnpmunack).fadeIn("slow");--}}
+	    var ajaxnpmunack = '<?php echo URL::route('ajaxnpmunack') ?>';
+	    $('#slwnpmajaxnpmunack').load(ajaxnpmunack).fadeIn("slow");
 
-    {{--    var query = '<?php echo URL::route('ciscosdwan.dashboard.sitehealth') ?>';--}}
-    {{--    $('#sitehealth').load(query).fadeIn("slow");--}}
+        var query = '<?php echo URL::route('ciscosdwan.dashboard.sitehealth') ?>';
+        $('#sitehealth').load(query).fadeIn("slow");
 
-    {{--    <!--Service Desk-->--}}
-    {{--    var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';--}}
-    {{--    ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);--}}
-    {{--    $('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {--}}
-    {{--        $('.loading-gif-incident').hide();--}}
-    {{--    }).fadeIn("slow");--}}
+        <!--Service Desk-->
+        var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
+        ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
+        $('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {
+            $('.loading-gif-incident').hide();
+        }).fadeIn("slow");
 
-    {{--    var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';--}}
-    {{--    ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);--}}
-    {{--    $('#requestcount').load(ajaxcasvddashboardtotalrequests, function() {--}}
-    {{--        $('.loading-gif-request').hide();--}}
-    {{--    }).fadeIn("slow");--}}
+        var ajaxcasvddashboardtotalrequests = '<?php echo @Config::get('app.url') ?>';
+        ajaxcasvddashboardtotalrequests += ('/ajaxcasvddashboardtotalrequests/' + start + "/" + end);
+        $('#requestcount').load(ajaxcasvddashboardtotalrequests, function() {
+            $('.loading-gif-request').hide();
+        }).fadeIn("slow");
 
-    {{--    var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';--}}
-    {{--    ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);--}}
-    {{--    $('#changecount').load(ajaxcasvddashboardtotalchanges, function() {--}}
-    {{--        $('.loading-gif-change').hide();--}}
-    {{--    }).fadeIn("slow");--}}
+        var ajaxcasvddashboardtotalchanges = '<?php echo @Config::get('app.url') ?>';
+        ajaxcasvddashboardtotalchanges += ('/ajaxcasvddashboardtotalchanges/' + start + "/" + end);
+        $('#changecount').load(ajaxcasvddashboardtotalchanges, function() {
+            $('.loading-gif-change').hide();
+        }).fadeIn("slow");
 
-    {{--    loadChartCASVR();--}}
+        loadChartCASVR();
 
-    {{--    <!--Centreon-->--}}
-    {{--    getservices();--}}
-	{{--});--}}
+        <!--Centreon-->
+        getservices();
+	});
 
     // $(document).ajaxComplete(function(event,xhr,settings){
     //     //console.log("URL",settings.url);

@@ -1366,18 +1366,18 @@ class casvdController extends Controller
 
         $create_param = array(
             'sid' => $sid,
-            'attributes' => ['customer','status','priority'],
+            'attributes' => ['type','customer','status','priority'],
             'propertyValues'=>[],
             'creatorHandle'=>'',
-            'attrVals'=>['customer',$customer,'status',$status,'priority',$priority],
+            'attrVals'=>['type', 'crt:182','customer',$customer,'status',$status,'priority',$priority],
             'template'=>'',
-            'newIssueHandle'=>'',
-            'newIssueNumber'=>''
+            'newRequestHandle'=>'',
+            'newRequestNumber'=>''
         );
 
         //dd($create_param);
 
-        $response = $client->__call("createIssue", array($create_param));
+        $response = $client->__call("createRequest", array($create_param));
 
         $droplist_status = $this->droplist('status');
         $droplist_severity = $this->droplist('severity');
@@ -1444,16 +1444,14 @@ class casvdController extends Controller
 
         $create_param = array(
             'sid' => $sid,
-            'attributes' => ['customer','status','priority'],
+            'attributes' => ['requestor','affected_contact','status','priority'],
             'propertyValues'=>[],
             'creatorHandle'=>'',
-            'attrVals'=>['customer',$customer,'status',$status,'priority',$priority],
+            'attrVals'=>['requestor',$customer,'affected_contact',$customer,'status',$status,'priority',$priority],
             'template'=>'',
             'newChangeHandle'=>'',
             'newChangeNumber'=>''
         );
-
-        //dd($create_param);
 
         $response = $client->__call("createChangeOrder", array($create_param));
 
