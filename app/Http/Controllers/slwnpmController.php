@@ -1845,7 +1845,7 @@ class slwnpmController extends Controller
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
-        $query = "query=SELECT AC.AlertID, AC.Name,AC.Enabled,AC.Description,AC.ObjectType,AC.CreatedBy FROM Orion.AlertConfigurations AC ORDER BY Name ASC";
+        $query = "query=SELECT AC.AlertID, AC.Name,AC.Enabled,AC.Description,AC.ObjectType,AC.CreatedBy,AC.Canned FROM Orion.AlertConfigurations AC ORDER BY Name ASC";
 
         $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
         $data = json_decode($response, TRUE);
@@ -1946,13 +1946,20 @@ class slwnpmController extends Controller
         ])->first();
 
         $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
-        $query = "query=SELECT AC.Name FROM Orion.AlertConfigurations AC WHERE AC.AlertID='".$alertid."'ORDER BY Name ASC";
 
-        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
-        $data = json_decode($response, TRUE);
-        $data = $data["results"][0];
-        
-        return view('slwnpm.thresholddetail',compact('user','slwnpmserver','data'));
+        //Properties
+        $query = "query=SELECT AC.Name, AC.Description FROM Orion.AlertConfigurations AC WHERE AC.AlertID='".$alertid."'ORDER BY Name ASC";
+        $properties = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $properties = json_decode($properties, TRUE);
+        $properties = $properties["results"][0];
+
+        //Trigger Condition
+        $query = "query=SELECT E.Fullname, E.DisplayName FROM Metadata.Entity E WHERE E.Metadata.Name='alertingSource' AND E.Metadata.Value='true' ORDER BY DisplayName ASC";
+        $trigger = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $trigger = json_decode($trigger, TRUE);
+        $trigger = $trigger["results"];
+
+        return view('slwnpm.thresholddetail',compact('user','slwnpmserver','properties','trigger'));
     }
 
     /*

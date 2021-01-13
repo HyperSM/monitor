@@ -2,18 +2,9 @@
 @section('content')
 @include('slwnpm.menu')
 
-<style>
-    div #tab_1_1, div #tab_1_2, div #tab_1_3 {
-        -webkit-user-select: none;
-        -moz-user-select: -moz-none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-</style>
-
 <div style="height: 10px;"></div>
 	<h4>
-		Notify detail
+		Threshold detail
 	</h4>
 <div style="height: 20px;"></div>
 
@@ -22,7 +13,7 @@
     <div class="col-md-12">
         <div class="widget box">
             <div class="widget-header">
-                <h4><i class="icon-reorder"></i> Edit Notify</h4> <span id="notify"></span>
+                <h4><i class="icon-reorder"></i> Edit Alerts</h4> <span id="notify"></span>
                 <div class="toolbar no-padding">
                     <div class="btn-group">
                         <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
@@ -35,8 +26,8 @@
                         <!-- Tabs-->
                         <div class="tabbable tabbable-custom">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a href="#tab_1_1" data-toggle="tab">Properties</a></li>
-                                <li><a href="#tab_1_2" data-toggle="tab">Trigger Condition</a></li>
+                                <li><a href="#tab_1_1" data-toggle="tab">Properties</a></li>
+                                <li class="active"><a href="#tab_1_2" data-toggle="tab">Trigger Condition</a></li>
                                 <li><a href="#tab_1_3" data-toggle="tab">Reset Condition</a></li>
                                 <li><a href="#tab_1_4" data-toggle="tab">Time of Day</a></li>
                                 <li><a href="#tab_1_5" data-toggle="tab">Trigger Actions</a></li>
@@ -45,30 +36,75 @@
                             </ul>
 
                             <div class="tab-content">
-                                <div class="tab-pane active" id="tab_1_1">
+                                <!-- 1. Properties -->
+                                <div class="tab-pane" id="tab_1_1">
                                     <div style="height: 20px;"></div>
                                     <h3><b>1. Properties</b></h3>
                                     <div style="height: 10px;"></div>
                                     <div class="form-group">
 										<label class="col-md-12 control-label"><b>Name of alert definition (required)</b></label>
-                                        <div class="col-md-5"><input type="text" class="form-control" value="{{$data['Name']}}"></div>
+                                        <div class="col-md-5"><input type="text" class="form-control" value="{{$properties['Name']}}"></div>
                                     </div>
                                     <div style="height: 70px;"></div>
                                     <div class="form-group">
 										<label class="col-md-12 control-label"><b>Description of alert definition</b></label>
-                                        <div class="col-md-5"><input type="text" class="form-control" value="{{$data['Name']}}"></div>
+                                        <div class="col-md-5"><input type="text" class="form-control" value="{{$properties['Description']}}"></div>
                                     </div>
                                 </div>
 
-                                <div class="tab-pane" id="tab_1_2">
+                                <!-- 2. Trigger Condition -->
+                                <div class="tab-pane active" id="tab_1_2">
                                     <div style="height: 20px;"></div>
-                                    <h3>2. Trigger Condition</h3>
+                                    <h3><b>2. Trigger Condition</b></h3>
+                                    <h5>Trigger condition is simple condition or set of multiple nested conditions which must be met before the alert is triggered.</h5>
                                     <div style="height: 10px;"></div>
-                                    <h5><b>&emsp;Name of alert definition (required)</b></h5>
-                                    <h5>&emsp;Name</h5>
-                                    <div style="height: 10px;"></div>
-                                    <h5><b>&emsp;Description of alert definition</b></h5>
-                                    <h5>&emsp;Paging</h5>
+                                    <table style="border: 0px;">
+                                        <tr>
+                                            <td><h5><b>&emsp;I want to alert on:&emsp;</b></h5></td>
+                                            <td>
+                                                <select name="objecttype" id="objecttype">
+                                                    @foreach ($trigger as $item)
+                                                        <option value="{{$item['Fullname']}}">{{$item['DisplayName']}}</option>
+                                                    @endforeach
+                                                    <option value="customsql">Custom SQL Alert (Advanced)</option>
+                                                    <option value="customswql">Custom SWQL Alert (Advanced)</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <div style="height: 30px;"></div>
+                                    <div class="widget box">
+                                        <div class="widget-header">
+                                            <h5><i class="icon-reorder"></i><b> The scope of alert: </b></h5>
+                                        </div>
+                                        <div class="widget-content">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="radio"><input type="radio" name="scope" checked> All objects in my environment</label>
+                                                        <label class="radio"><input type="radio" name="scope" disabled> Only following set of objects</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="height: 30px;"></div>
+                                    <div class="widget box">
+                                        <div class="widget-header">
+                                            <h5><i class="icon-reorder"></i><b> The actual trigger condition: </b></h5>
+                                        </div>
+                                        <div class="widget-content">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="tab-pane" id="tab_1_3">

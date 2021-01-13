@@ -43,7 +43,7 @@
                                             </a>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         @if (isset($item['Enabled']))
                                             <ul class="table-controls">
                                                 @if ($item['Enabled'] == 'True')
@@ -75,7 +75,13 @@
                                         @endif
                                     </td>
                                     <td>
-                                            Out-of-the-box
+                                        @if (isset($item['Canned']))
+                                            @if ($item['Canned']=='True')
+                                                Out-of-the-box
+                                            @else
+                                                User-defined
+                                            @endif
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
