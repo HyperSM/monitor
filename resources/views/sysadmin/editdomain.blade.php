@@ -20,22 +20,22 @@
         <form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/sysadmin/domains/edit/{{$selecteddomain->domainid}}" method="POST">
           @csrf
           <div class="form-group">
-            <label class="col-md-5 control-label">Username:</label>
+            <label class="col-md-5 control-label">Domain name:</label>
             <div class="col-md-2"><input type="text" name="domainname" id="domainname" class="form-control" value="{{$selecteddomain->domainname}}" required></div>
           </div>
 
           <div class="form-group">
-            <label class="col-md-5 control-label">Full name:</label>
+            <label class="col-md-5 control-label">Company:</label>
             <div class="col-md-3"><input type="text" name="company" class="form-control" value="{{$selecteddomain->company}}"></div>
           </div>
 
           <div class="form-group">
-            <label class="col-md-5 control-label">Full name:</label>
+            <label class="col-md-5 control-label">Address:</label>
             <div class="col-md-3"><input type="text" name="address" class="form-control" value="{{$selecteddomain->address}}"></div>
           </div>
 
           <div class="form-group">
-            <label class="col-md-5 control-label">Full name:</label>
+            <label class="col-md-5 control-label">Telephone:</label>
             <div class="col-md-3"><input type="text" name="tel" class="form-control" value="{{$selecteddomain->tel}}"></div>
           </div>
 

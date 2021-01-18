@@ -25,13 +25,13 @@
         <form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/sysadmin/domains/delete/{{$selecteddomain->domainid}}" method="POST">
           @csrf
           <div class="form-group">
-            <label class="col-md-9 control-label">Are you sure you want to delete this user? This action CANNOT be undone. This will permanently delete the user <font size="+0.5"><b>{{$selecteddomain->domainname}}</b></font>.</label>
-            <label class="col-md-7 control-label"><br>Please type the username to confirm:&nbsp;&nbsp;</label>
+            <label class="col-md-9 control-label">Are you sure you want to delete this domain? This action CANNOT be undone. This will permanently delete the domain <font size="+0.5"><b>{{$selecteddomain->domainname}}</b></font>.</label>
+            <label class="col-md-7 control-label"><br>Please type domain name to confirm:&nbsp;&nbsp;</label>
           </div>
 
           <div class="form-group">
             <label class="col-md-5 control-label"> </label>
-            <div class="col-md-2"><input type="text" name="domainname" class="form-control" placeholder="Type the username" required></div>
+            <div class="col-md-2"><input type="text" name="domainname" class="form-control" placeholder="Type the domain name" required></div>
           </div>
 
           <div class="form-actions align-center">

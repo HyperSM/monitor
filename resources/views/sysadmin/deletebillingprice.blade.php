@@ -21,8 +21,8 @@
         <form class="form-horizontal row-border" action="{{@Config::get('app.url')}}/sysadmin/billing/prices/delete/{{$selectedprice->product}}" method="POST">
           @csrf
           <div class="form-group">
-            <label class="col-md-9 control-label">Are you sure you want to delete this user? This action CANNOT be undone. This will permanently delete the user <font size="+0.5"><b>{{$selectedprice->product}}</b></font>.</label>
-            <label class="col-md-7 control-label"><br>Please type the username to confirm:&nbsp;&nbsp;</label>
+            <label class="col-md-9 control-label">Are you sure you want to delete this product price? This action CANNOT be undone. This will permanently delete the product <font size="+0.5"><b>{{$selectedprice->product}}</b></font> price.</label>
+            <label class="col-md-7 control-label"><br>Please type the product name to confirm:&nbsp;&nbsp;</label>
           </div>
 
           <div class="form-group">
