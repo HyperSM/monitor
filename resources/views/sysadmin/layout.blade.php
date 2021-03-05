@@ -233,13 +233,13 @@
 					</li>
 					<li>
 						<a href="{{@Config::get('app.url')}}/sysadmin/domains">
-							<i class="icon-usd"></i>
+							<i class="icon-group"></i>
 							DOMAIN MANAGEMENT
 						</a>
 					</li>
 					<li>
 						<a href="javascript:void(0);">
-							<i class="icon-user-md"></i>
+							<i class="icon-usd"></i>
 							BILLING
 						</a>
 						<ul class="sub-menu">

@@ -106,6 +106,13 @@ route::get('ajaxnpmunack','slwnpmController@ajaxnpmunack')->name('ajaxnpmunack')
 route::get('npmnodejstree','slwnpmController@npmnodejstree')->name('npmnodejstree');
 
 route::get('/admin/slwnpm','slwnpmController@dashboard');
+route::get('/admin/slwnpm/nodes','slwnpmController@nodes');
+route::get('/admin/slwnpm/addnode','slwnpmController@addnode');
+route::post('/admin/slwnpm/addnode','slwnpmController@addnodesubmit');
+route::get('/admin/slwnpm/deletenode/{NodeID}','slwnpmController@deletenode');
+route::post('/admin/slwnpm/deletenode/{NodeID}','slwnpmController@deletenodesubmit');
+route::get('/admin/slwnpm/unmanage/{NodeID}','slwnpmController@unmanage');
+route::get('/admin/slwnpm/manage/{NodeID}','slwnpmController@manage');
 route::get('/admin/slwnpm/configserver','slwnpmController@configserver');
 route::post('/admin/slwnpm/slwnpmserver','slwnpmController@slwnpmserversubmit');
 route::get('/admin/slwnpm/configgroup','slwnpmController@configgroup');

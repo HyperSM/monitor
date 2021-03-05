@@ -8,6 +8,7 @@
 	</ul>
 
 	<ul class="crumb-buttons">
+		<li><a href="{{@Config::get('app.url')}}/admin/slwnpm/nodes" title="">All Nodes</a></li>
 		<li><a href="{{@Config::get('app.url')}}/admin/slwnpm/threshold" title="">Threshold</a></li>
 		<li><a href="{{@Config::get('app.url')}}/admin/slwnpm/notify" title="">Notify</a></li>
 		<li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-exclamation-triangle"></i><span>Alerts & Activity</span><i class="icon-angle-down left-padding"></i></a>

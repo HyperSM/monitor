@@ -532,6 +532,197 @@ class slwnpmController extends Controller
     }
 
     /*
+    Page: All Nodes
+    */
+    public function nodes(){
+
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm=Crypt::decryptString(session('mymonitor_md'));
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', $dm]
+        ])->first();
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT NodeID, DisplayName, IPAddress, StatusDescription, Unmanaged, UnmanageUntil, URI FROM Orion.Nodes ORDER BY DisplayName ASC";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $data = json_decode($response, TRUE);
+        $data = $data["results"];
+
+        return view('slwnpm.nodes',compact('user','slwnpmserver','data'));
+    }
+
+    /*
+    Page: Add Node
+    */
+    public function addnode(){
+
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $dm=Crypt::decryptString(session('mymonitor_md'));
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', $dm]
+        ])->first();
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        return view('slwnpm.addnode',compact('user','slwnpmserver'));
+    }
+
+    /*
+    Page: Add Node Submit
+    */
+    public function addnodesubmit(){
+        $url = url('/');
+
+        if (!Session::has('Monitor')){
+            return redirect($url);
+        }
+
+        $dm=Crypt::decryptString(session('mymonitor_md'));
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', $dm]
+        ])->first();
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/Create/Orion.Nodes";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        $client->request('POST', $apihost, [
+            'headers' => ['Content-Type' => 'application/json'],
+             'json' => [
+                'ObjectSubType' => 'SNMP',
+                'IPAddress' => Request('ipaddress'),
+                'DynamicIP' => 'False',
+                'Caption' => Request('nodename'),
+                'NodeDescription' => '',
+                'SysName' => Request('nodename'),
+                'Location' => '',
+                'Contact' => '',
+                'IOSImage' => '',
+                'IOSVersion' => '',
+                'UnManaged' => 'False',
+                'Allow64BitCounters' => 'True',
+                'Community' => '',
+                'Status' => 0,
+                'EngineID' => 1,
+                'SNMPVersion' => 2,
+                'EntityType' => 'Orion.Nodes'
+             ]
+        ]);
+
+        return redirect('/admin/slwnpm/nodes');
+    }
+
+    /*
+    Page: Delete Node
+    */
+    public function deletenode($nodeid){
+
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+
+        $err_msg = '';
+        $dm=Crypt::decryptString(session('mymonitor_md'));
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', $dm]
+        ])->first();
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT NodeID, DisplayName, URI FROM Orion.Nodes WHERE NodeID='".$nodeid."'";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $selectednode = json_decode($response, TRUE);
+        $selectednode = $selectednode["results"][0];
+            
+        return view('slwnpm.deletenode',compact('user','selectednode','err_msg'));
+    }
+
+    /*
+    Page: Delete Node Submit
+    */
+    public function deletenodesubmit($nodeid){
+        $url = url('/');
+
+        if (!Session::has('Monitor')){
+            return redirect($url);
+        }
+
+        $err_msg = '';
+        $dm=Crypt::decryptString(session('mymonitor_md'));
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', $dm]
+        ])->first();
+
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+            
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring;
+        $query = "query=SELECT NodeID, DisplayName, URI FROM Orion.Nodes WHERE NodeID='".$nodeid."'";
+
+        $response = Http::withBasicAuth($slwnpmserver->user,$slwnpmserver->password)->Get($apihost . $query);
+        $selectednode = json_decode($response, TRUE);
+        $selectednode = $selectednode["results"][0];
+
+        if ($selectednode["DisplayName"]==Request('nodename')) {
+            $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/".$selectednode["URI"];
+            $client = new \GuzzleHttp\Client([
+                'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+            ]);
+            $client->request('DELETE', $apihost);
+            return redirect('/admin/slwnpm/nodes');
+        }else {
+            $err_msg ='Wrong username! User was not deleted.';
+            return view('slwnpm.deletenode',compact('user','selectednode','err_msg'));
+        }
+    }
+
+    /*
     Page: Config server
     Section: Main view
     */
@@ -2131,5 +2322,81 @@ class slwnpmController extends Controller
         ]);
         
         return $this->notifydetail($actionid);
+    }
+
+    public function unmanage($NodeID){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/Invoke/Orion.Nodes/Unmanage";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Enable
+        $res = $client->request('GET', $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring."query=SELECT Uri, DetailsUrl FROM Orion.Nodes WHERE NodeID='".$NodeID."'");
+        $res = json_decode($res->getBody()->getContents())->results;
+        $URI = $res[0]->Uri;
+        $netObjectID = $res[0]->DetailsUrl;
+        $temparr = explode("=",$netObjectID);
+        $netObjectID = $temparr[1];
+        
+        $client->request('POST', $apihost, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => [$netObjectID,"01-01-1899","01-01-9999","false"]
+        ]);
+        
+        return redirect('/admin/slwnpm/nodes');
+    }
+
+    public function manage($NodeID){
+        if (!Session::has('Monitor')){
+            $url = url('/');
+            return redirect($url);
+        }
+        
+        $user = DB::table('tbl_accounts')
+        ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
+        ->where([
+            ['tbl_accounts.username', '=', session('mymonitor_userid')]
+        ])->first();
+
+        $slwnpmserver = DB::table('tbl_slwnpmservers')
+        ->where([
+            ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+        ])->first();
+
+        $apihost = $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port."/SolarWinds/InformationService/v3/Json/Invoke/Orion.Nodes/Remanage";
+        $client = new \GuzzleHttp\Client([
+            'auth' => [$slwnpmserver->user,$slwnpmserver->password]
+        ]);
+        
+        //Enable
+        $res = $client->request('GET', $slwnpmserver->secures."://". $slwnpmserver->hostname.":". $slwnpmserver->port. $slwnpmserver->basestring."query=SELECT Uri, DetailsUrl FROM Orion.Nodes WHERE NodeID='".$NodeID."'");
+        $res = json_decode($res->getBody()->getContents())->results;
+        $URI = $res[0]->Uri;
+        $netObjectID = $res[0]->DetailsUrl;
+        $temparr = explode("=",$netObjectID);
+        $netObjectID = $temparr[1];
+        
+        $client->request('POST', $apihost, [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => [$netObjectID]
+        ]);
+        
+        return redirect('/admin/slwnpm/nodes');
     }
 }

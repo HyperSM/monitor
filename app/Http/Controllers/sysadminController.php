@@ -84,7 +84,16 @@ class sysadminController extends Controller
             ['tbl_admins.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        return view('sysadmin.dashboard', compact('user'));
+        // Admin users
+        $users = DB::table('tbl_admins')->get();
+
+        // Domain
+        $domains = DB::table('tbl_domains')->get();
+
+        // Price 
+        $prices = DB::table('tbl_billingprices')->get();
+
+        return view('sysadmin.dashboard', compact('user','users','domains','prices'));
     }
 
     public function users() {
