@@ -161,9 +161,11 @@
             <div class="widget-content" style="position: relative">
                 <div style="margin:0 0 20px 0;width: 100%">
                     <select class="form-control" id="hosts">
-                        @foreach($hosts as $host)
-                            <option value="{{$host->id}}">{{$host->name}}</option>
-                        @endforeach
+                        @if (isset($hosts))
+                            @foreach($hosts as $host)
+                                <option value="{{$host->id}}">{{$host->name}}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="loading-gif-change gif-loading">

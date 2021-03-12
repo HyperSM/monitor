@@ -36,41 +36,45 @@ class adminController extends Controller
             ->where([
                 ['domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
             ])->first();
-
-        $authen_key = "";
-        $client = new \GuzzleHttp\Client(['cookies' => true]);
-        try {
-            $res = $client->request("POST",  $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
-                'form_params' => [
-                    'username' => $centreonserver->user,
-                    'password' => $centreonserver->password
-                ],
-                //"verify" => false
-            ]);
-
-            $authen_key = json_decode($res->getBody())->authToken;
-        } catch (RequestException $e) {
+        
+        if (isset($centreonserver)) {
             $authen_key = "";
-        }
-        //endregion
+            $client = new \GuzzleHttp\Client(['cookies' => true]);
+            try {
+                $res = $client->request("POST",  $centreonserver->hostname."/centreon/api/index.php?action=authenticate", [
+                    'form_params' => [
+                        'username' => $centreonserver->user,
+                        'password' => $centreonserver->password
+                    ],
+                    //"verify" => false
+                ]);
 
-        //region get hosts centreon
-        if ($authen_key != "") {
-            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
-                "headers" => [
-                    "Content-Type" => "application/json",
-                    "centreon-auth-token" => $authen_key
-                ],
-            ]);
-            $hosts = json_decode($res->getBody());
-            for ($i = 1 ; $i < count($hosts);++$i){
-                if ($hosts[$i]->name == $hosts[$i - 1]->name) {
-                    unset($hosts[$i]);
-                }
+                $authen_key = json_decode($res->getBody())->authToken;
+            } catch (RequestException $e) {
+                $authen_key = "";
             }
-            // dd($hosts);
+            //endregion
+
+            //region get hosts centreon
+            if ($authen_key != "") {
+                $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
+                    "headers" => [
+                        "Content-Type" => "application/json",
+                        "centreon-auth-token" => $authen_key
+                    ],
+                ]);
+                $hosts = json_decode($res->getBody());
+                for ($i = 1 ; $i < count($hosts);++$i){
+                    if ($hosts[$i]->name == $hosts[$i - 1]->name) {
+                        unset($hosts[$i]);
+                    }
+                }
+                // dd($hosts);
+            }
+            //endregion
+        } else {
+            $hosts = NULL;
         }
-        //endregion
 
         return view('admin.dashboard',compact('err_msg','domain','user','hosts'));
     }
@@ -241,6 +245,12 @@ class adminController extends Controller
           ['tbl_accounts.username', '=', session('mymonitor_userid')]
       ])->first();
 
+      $domainname = DB::table('tbl_accounts')
+      ->leftJoin('tbl_domains', 'tbl_accounts.domainid', '=', 'tbl_domains.domainid')
+      ->where([
+          ['tbl_domains.domainid', '=', Crypt::decryptString(session('mymonitor_md'))]
+      ])->first()->domainname;
+
       $selecteduser = DB::table('tbl_accounts')
       ->where([
           ['tbl_accounts.username', '=', Request('username')]
@@ -255,7 +265,7 @@ class adminController extends Controller
         $id=DB::table('tbl_accounts')
             ->insertGetId([
                 'domainid' => Crypt::decryptString(session('mymonitor_md')),
-                'username' => Request('username'),
+                'username' => Request('username').'@'.$domainname,
                 'fullname' => Request('fullname'),
                 'email'    => Request('email'),
                 'password' => md5(Request('password')),

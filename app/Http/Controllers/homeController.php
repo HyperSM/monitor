@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Session;
 use DB;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
 
 class homeController extends Controller
 {
@@ -84,8 +85,12 @@ class homeController extends Controller
 
 
     //logout
-    public function doLogout(){
-        Session()->flush();
+    public function doLogout(){   
+        Auth::logout();
+
+        Session()->invalidate();
+        Session()->regenerateToken();
+
         return redirect('/');
     }
 }

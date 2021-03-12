@@ -480,12 +480,13 @@
 	});
 
     function addMonthChart(source){
-         var outputArr= [];
-         var date = new Date();
+        var tmpArr = source.split(",");
+        var outputArr= [];
+        var date = new Date();
         var start = date.getMonth();
         for(var i = 1 ;i<=12;i++){
-            if((start+1) == i){
-                outputArr.push(parseInt(source))
+            if((start+1) >= i){
+                outputArr.push(parseInt(tmpArr[i-1]))
             }else{
                 outputArr.push(null);
             }

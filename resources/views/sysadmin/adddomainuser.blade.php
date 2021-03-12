@@ -24,6 +24,11 @@
           </div>
 
           <div class="form-group">
+            <label class="col-md-5 control-label">Domain:</label>
+            <div class="col-md-2"><input type="text" name="domain" id="domain" class="form-control" value="{{$domainname}}" readonly></div>
+          </div>
+
+          <div class="form-group">
             <label class="col-md-5 control-label">Full name:</label>
             <div class="col-md-3"><input type="text" name="fullname" class="form-control" required></div>
           </div>

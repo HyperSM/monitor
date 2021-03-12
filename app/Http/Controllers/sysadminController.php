@@ -512,7 +512,12 @@ class sysadminController extends Controller
             ['tbl_admins.username', '=', session('mymonitor_userid')]
         ])->first();
 
-        return view('sysadmin.adddomainuser',compact('user','err_msg','domainid'));
+        $domainname = DB::table('tbl_domains')
+        ->where([
+            ['tbl_domains.domainid', '=', $domainid]
+        ])->first()->domainname;
+
+        return view('sysadmin.adddomainuser',compact('user','err_msg','domainid','domainname'));
     }
 
     public function adddomainusersubmit($domainid) {
@@ -547,7 +552,7 @@ class sysadminController extends Controller
             $id=DB::table('tbl_accounts')
                 ->insertGetId([
                     'domainid' => $domainid,
-                    'username' => Request('username'),
+                    'username' => Request('username').'@'.Request('domain'),
                     'fullname' => Request('fullname'),
                     'email'    => Request('email'),
                     'password' => md5(Request('password')),

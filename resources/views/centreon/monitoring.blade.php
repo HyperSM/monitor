@@ -111,76 +111,76 @@
 
 
 <script>
-$(document).ready(function() {
-    var refresherate = {{$refreshrate}}
-    setInterval(function () {
+    $(document).ready(function() {
+        // var refresherate = {{$refreshrate}}
+        // setInterval(function () {
+        //     loadpage();
+        // }, refresherate);
+    
+        // var loadpage = function () {
+            var table = $('.display');
+    
+            jQuery.ajax({
+                headers: {},
+                url: '<?php echo URL::route("ajaxmonitors") ?>',
+                method: 'GET',
+                beforeSend(){
+                    var strCircle = "<div  class='circle'>";
+                    strCircle    +=    "<img src='{{@Config::get('app.url')}}/images/casvd/loading.gif' style='width: 30px;height: 30px;margin:0 auto'>"
+                    strCircle    += "</div>";
+                    $('.display tbody').html(strCircle);
+                },
+                data: {},
+                success: function (result, status, xhr) {
+                    //console.log(result);
+    
+                    $.each(result, function (a, b) {
+                        var classname = "",status = "";
+                        var row = "";
+                        row += "<tr><td>"+b.name+"</td>";
+                        row += "<td>"+  b.description + "</td>";
+                        var output = b.output.toString().toLowerCase();
+                       // console.log(output);
+                        if(output.includes("warning")){
+                            classname = "label label-warning";
+                            status = "WARNING";
+                        }
+                        else if(output.includes("critical")){
+                            classname = "label label-danger";
+                            status = "CRITICAL";
+                        }
+                        else if(output.includes("unknown")){
+                            classname = "label label-default";
+                            status = "UNKNOWN";
+                        }
+                        else if(output.includes("pending")){
+                            classname = "label label-default";
+                            status = "PENDING";
+                        }
+                        else{
+                            classname = "label label-success";
+                            status = "OK";
+                        }
+                        row += "<td><span class='"+ classname +"'>" + status + "</td>";
+                        row += "<td>" + b.last_hard_state_change + "</td>" ;
+                        row += "<td>" + b.host_last_check + "</td>" ;
+                        row +="<td>" + b.tries + "</td>" ;
+                        row += "<td>" + b.output + "</td></tr>";
+                        table.append(row);
+                    });
+                    $('.circle').remove();
+                    $('.display').DataTable();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                }
+            });
+    
+        // }
+    
         loadpage();
-    }, refresherate);
-
-    var loadpage = function () {
-        var table = $('.display');
-
-        jQuery.ajax({
-            headers: {},
-            url: '<?php echo URL::route("ajaxmonitors") ?>',
-            method: 'GET',
-            beforeSend(){
-                var strCircle = "<div  class='circle'>";
-                strCircle    +=    "<img src='{{@Config::get('app.url')}}/images/casvd/loading.gif' style='width: 30px;height: 30px;margin:0 auto'>"
-                strCircle    += "</div>";
-                $('.display tbody').html(strCircle);
-            },
-            data: {},
-            success: function (result, status, xhr) {
-                //console.log(result);
-
-                $.each(result, function (a, b) {
-                    var classname = "",status = "";
-                    var row = "";
-                    row += "<tr><td>"+b.name+"</td>";
-                    row += "<td>"+  b.description + "</td>";
-                    var output = b.output.toString().toLowerCase();
-                   // console.log(output);
-                    if(output.includes("warning")){
-                        classname = "label label-warning";
-                        status = "WARNING";
-                    }
-                    else if(output.includes("critical")){
-                        classname = "label label-danger";
-                        status = "CRITICAL";
-                    }
-                    else if(output.includes("unknown")){
-                        classname = "label label-default";
-                        status = "UNKNOWN";
-                    }
-                    else if(output.includes("pending")){
-                        classname = "label label-default";
-                        status = "PENDING";
-                    }
-                    else{
-                        classname = "label label-success";
-                        status = "OK";
-                    }
-                    row += "<td><span class='"+ classname +"'>" + status + "</td>";
-                    row += "<td>" + b.last_hard_state_change + "</td>" ;
-                    row += "<td>" + b.host_last_check + "</td>" ;
-                    row +="<td>" + b.tries + "</td>" ;
-                    row += "<td>" + b.output + "</td></tr>";
-                    table.append(row);
-                });
-                $('.circle').remove();
-                $('.display').DataTable();
-            },
-            error: function (xhr, textStatus, errorThrown) {
-            }
-        });
-
-    }
-
-    loadpage();
-
-
-});
-</script>
+    
+    
+    });
+    </script>
 
 @endsection

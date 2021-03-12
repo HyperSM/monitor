@@ -51,30 +51,36 @@
 						</tr>
 					</thead>
 					<tbody>
-                <tr>
-                    <td>CA Service Desk</td>
-                    <td><span style="display: inline;" id="casvdCount"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="casvdUP"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="casvdPrice"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                </tr>
-				<tr>
-                    <td>Centreon</td>
-                    <td><span style="display: inline;" id="centreonCount"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="centreonUP"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-					<td><span style="display: inline;" id="centreonPrice"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                </tr>
-				<tr>
-                    <td>Solarwinds NPM</td>
-                    <td><span style="display: inline;" id="slwnpmCount"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="slwnpmUP"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="slwnpmPrice"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                </tr>
-				<tr>
-                    <td>Cisco SDWAN</td>
-                    <td><span style="display: inline;" id="sdwanCount"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="sdwanUP"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                    <td><span style="display: inline;" id="sdwanPrice"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
-                </tr>
+                        <tr>
+                            <td>CA Service Desk</td>
+                            <td><span style="display: inline;" id="casvdCount"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="casvdUP"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="casvdPrice"></span><span class="casvdGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Centreon</td>
+                            <td><span style="display: inline;" id="centreonCount"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="centreonUP"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="centreonPrice"></span><span class="centreonGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Solarwinds NPM</td>
+                            <td><span style="display: inline;" id="slwnpmCount"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="slwnpmUP"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="slwnpmPrice"></span><span class="slwnpmGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Cisco SDWAN</td>
+                            <td><span style="display: inline;" id="sdwanCount"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="sdwanUP"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td><span style="display: inline;" id="sdwanPrice"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td><span style="display: inline;" id="total"></span><span class="sdwanGIF"><img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;"></span></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
 					</tbody>
 				</table>
 			</div>
@@ -122,6 +128,7 @@
     });
 
     $(document).ready(function () {
+        var centreon = 0;
         //Centreon
         var ajaxbillingcentreon = "<?php echo @Config::get('app.url') ?>";
         ajaxbillingcentreon += ('/ajaxbillingcentreon/' + '{{$domain->domainid}}');
@@ -130,6 +137,7 @@
             $("#centreonCount").html(result["count"]);
             $("#centreonUP").html(result["up"]);
             $("#centreonPrice").html(result["price"]);
+            centreon = result["price"];
         }});
 
         //Solarwinds NPM
@@ -151,6 +159,8 @@
             $("#sdwanUP").html(result["up"]);
             $("#sdwanPrice").html(result["price"]);
         }});
+
+        $("#total").html(centreon);
     });
 
     function ajaxcasvdloading() {
