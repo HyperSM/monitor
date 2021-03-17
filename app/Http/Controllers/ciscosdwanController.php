@@ -164,7 +164,6 @@ class ciscosdwanController extends Controller
             if ($myJSON!=null){
                 $dataArray = $myJSON->data;
                 echo(json_encode($dataArray));
-                dd($dataArray);
             }else{
                 echo('');
             }

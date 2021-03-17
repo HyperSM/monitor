@@ -93,65 +93,6 @@
 
 
 <div class="row">
-	<div class="col-md-4">
-		<div class="widget box">
-			<div class="widget-header">
-				<h4><i class="icon-reorder"></i>Cisco SDWAN Server Detail</h4>
-				<div class="toolbar no-padding">
-					<div class="btn-group">
-						<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-					</div>
-				</div>
-			</div>
-			<div class="widget-content">
-				<div id="ciscosdwanserverdetail" style="overflow: overlay; border:none;"></div>
-			</div>
-		</div>
-	</div>
-{{--	<div class="col-md-4">--}}
-{{--        <div class="widget box">--}}
-{{--            <div class="widget-header">--}}
-{{--                <h4>Cisco SDWAN Last 10 Alarms in 24 hours</h4>--}}
-{{--                <div class="toolbar no-padding">--}}
-{{--                    <div class="btn-group">--}}
-{{--                        <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            <div class="widget-content">--}}
-{{--                <div id="ciscosdwanalarms" style="overflow: overlay; border:none;"></div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <div class="col-md-4">--}}
-{{--        <div class="widget box">--}}
-{{--            <div class="widget-header">--}}
-{{--                <h4><i class="icon-reorder"></i>WAN Edge Health</h4>--}}
-{{--                <div class="toolbar no-padding">--}}
-{{--                    <div class="btn-group">--}}
-{{--                        <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            <div style="height: 100px;"></div>--}}
-{{--            <div class="row" align="center" style="vertical-align: middle;">--}}
-{{--                <div class="col-md-4">--}}
-{{--                    <h5>Normal</h5>--}}
-{{--                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" value="0" data-readOnly="true" id="normal">--}}
-{{--                </div>--}}
-{{--                <div class="col-md-4">--}}
-{{--                    <h5>Warning</h5>--}}
-{{--                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="#eb7d34" value="0" data-readOnly="true" id="warning">--}}
-{{--                </div>--}}
-{{--                <div class="col-md-4">--}}
-{{--                    <h5>Error</h5>--}}
-{{--                    <input class="knob" data-width="100" data-angleOffset="-90" data-angleArc="360" data-fgColor="red" value="0" data-readOnly="true" id="error">--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
     <div class="col-md-4">
         <div class="widget box">
             <div class="widget-header">
@@ -176,7 +117,86 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-8">
+        <div class="widget box">
+            <div class="widget-header">
+                <h4><i class="icon-reorder"></i>State Breakdowns For Host Services </h4>&nbsp;&nbsp;
+            </div>
+            <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover table-checkable table-responsive"
+                        data-display-length="25" id="services">
+                    <thead>
+                    <tr>
+                        <th data-class="expand">Service</th>
+                        <th> OK</th>
+                        <th> Warning</th>
+                        <th> Critical</th>
+                        <th> Unknown</th>
+                        <th> Scheduled downtime</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<div class="row">
+    <!-- Incident chart -->
+    <div class="col-md-3">
+        <div class="widget box" >
+            <div class="widget-header">
+                <h4>Monthly Incident Tickets</h4>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="widget-content no-padding" align="center" style="position:relative;">
+                <div class="loading-gif-request gif-loading" >
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+                </div>
+                <div id="incident-chart" class="chart" style="width:95%; height: 421px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request chart -->
+    <div class="col-md-3">
+        <div class="widget box">
+            <div class="widget-header">
+                <h4>Monthly Request Tickets</h4>
+            </div>
+            <div style="height: 10px;">
+            </div>
+            <div class="widget-content no-padding" align="center" style="position: relative">
+                <div class="loading-gif-request gif-loading" >
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+                </div>
+                <div id="request-chart" class="chart" style="width:95%; height: 421px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change chart -->
+    <div class="col-md-3">
+        <div class="widget box">
+            <div class="widget-header">
+                <h4>Monthly Change Tickets</h4>
+            </div>
+            <div style="height: 10px;">
+            </div>
+            <div class="widget-content no-padding" align="center" style="position:relative;">
+                <div class="loading-gif-request gif-loading" >
+                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
+                </div>
+                <div id="change-chart" class="chart" style="width:95%; height: 421px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
         <div class="widget box">
             <div class="widget-header">
                 <h4>Today Ticket CA SVD</h4>
@@ -240,55 +260,41 @@
 </div>
 
 <div class="row">
-    <!-- Incident chart -->
-    <div class="col-md-4">
-        <div class="widget box" >
-            <div class="widget-header">
-                <h4>Monthly Incident Tickets</h4>
-            </div>
-            <div style="height: 10px;"></div>
-            <div class="widget-content no-padding" align="center" style="position:relative;">
-                <div class="loading-gif-request gif-loading" >
-                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
-                </div>
-                <div id="incident-chart" class="chart" style="width:95%; height: 320px;"></div>
-            </div>
-        </div>
-    </div>
+    <div class="col-md-6">
+		<div class="widget box">
+			<div class="widget-header">
+				<h4><i class="icon-reorder"></i>Cisco SDWAN Server Detail</h4>
+				<div class="toolbar no-padding">
+					<div class="btn-group">
+						<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
+					</div>
+				</div>
+			</div>
+			<div class="widget-content" style="height: 200px;">
+				<div id="ciscosdwanserverdetail" style="overflow: overlay; border:none;"></div>
+			</div>
+		</div>
+	</div>
 
-    <!-- Request chart -->
-    <div class="col-md-4">
-        <div class="widget box">
-            <div class="widget-header">
-                <h4>Monthly Request Tickets</h4>
-            </div>
-            <div style="height: 10px;">
-            </div>
-            <div class="widget-content no-padding" align="center" style="position: relative">
-                <div class="loading-gif-request gif-loading" >
-                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
-                </div>
-                <div id="request-chart" class="chart" style="width:95%; height: 320px;"></div>
-            </div>
-        </div>
-    </div>
+    <div class="col-md-6">
+		<div class="widget box">
+			<div class="widget-header">
+				<h4><i class="icon-reorder"></i>Control status</h4>
+				<div class="toolbar no-padding">
+					<div class="btn-group">
+						<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
+					</div>
+				</div>
+			</div>
+			<div class="widget-content" style="height: 200px; vertical-align: middle;">
+				<div class="ct-control-status" style="overflow: overlay; border:none;" align="center">
+            		<!-- <div id="mytree"></div> -->
+            		<div id="controlstatus"></div>
+          		</div>
+			</div>
 
-    <!-- Change chart -->
-    <div class="col-md-4">
-        <div class="widget box">
-            <div class="widget-header">
-                <h4>Monthly Change Tickets</h4>
-            </div>
-            <div style="height: 10px;">
-            </div>
-            <div class="widget-content no-padding" align="center" style="position:relative;">
-                <div class="loading-gif-request gif-loading" >
-                    <img src="{{@Config::get('app.url')}}/images/casvd/loading.gif" style="width: 30px;">
-                </div>
-                <div id="change-chart" class="chart" style="width:95%; height: 320px;"></div>
-            </div>
-        </div>
-    </div>
+		</div>
+	</div>
 </div>
 
 <div class="row">
@@ -370,9 +376,13 @@
         var query = '<?php echo URL::route('ciscosdwan.dashboard.sitehealth') ?>';
         $('#sitehealth').load(query).fadeIn("slow");
 
+        var query = '<?php echo URL::route('ciscosdwan.dashboard.controlstatus') ?>';
+	    $('#controlstatus').load(query);
+
 	    // CA Service Desk counting
-        var start= moment().unix();
-        var end= moment().unix();
+        var start= moment().startOf("day").unix();
+        var end= moment().endOf("day").unix();
+        
         var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
         ajaxcasvddashboardtotalincidents += ('/ajaxcasvddashboardtotalincidents/' + start + "/" + end);
         $('#incidentcount').load(ajaxcasvddashboardtotalincidents, function() {
@@ -502,12 +512,13 @@
     }
 
     function addMonthChart(source){
-        var outputArr= [];
+        var tmpArr = source.split(",");
+        var outputArr = [];
         var date = new Date();
         var start = date.getMonth();
         for(var i = 1 ;i<=12;i++){
-            if((start+1) == i){
-                outputArr.push(parseInt(source))
+            if((start+1) >= i){
+                outputArr.push(parseInt(tmpArr[i-1]))
             }else{
                 outputArr.push(null);
             }
@@ -590,6 +601,7 @@
                     drawchart(dt);
                 }
                 $('body').removeClass('css-loading');
+                formatservices(result);
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log(errorThrown)
@@ -597,8 +609,54 @@
         });
     }
 
+    function formatservices(result) {
+                //console.log(result);
+                var html  = "";
+                var services = result.services;
+                for(var i = 0; i<services.length;i++)
+                {
+                    html += "<tr>";
+                    html += "<td>"+ services[i].description + "</td>";
+                    var output = services[i].output.toLocaleString().toLowerCase();
+                    if (output.indexOf("OK".toLowerCase()) != -1) {
+                        html += "<td>100%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>"+services[i].service_downtimes+"%</td>";
+                    }
+                    if (output.indexOf("WARNING".toLowerCase())!= -1) {
+                        html += "<td>0%</td>";
+                        html += "<td>100%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>"+services[i].service_downtimes+"%</td>";
+                    }
+                    if (output.indexOf("CRITICAL".toLowerCase())!= -1) {
+                        html += "<td>0%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>100%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>"+ services[i].service_downtimes +"%</td>";
+                    }
+                    if (output.indexOf("UNKNOWN".toLowerCase())!= -1) {
+                        html += "<td>0%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>0%</td>";
+                        html += "<td>100%</td>";
+                        html += "<td>"+ services[i].service_downtimes +"%</td>";
+                    }
+
+                    html += "</tr>";
+                }
+                $('#services tbody').html(html);
+            }
+
 
 	setInterval(function(){
+        var start= moment().startOf("day").unix();
+        var end= moment().endOf("day").unix();
+
 		var query = '<?php echo URL::route('ciscosdwan.dashboard.serverdetail') ?>';
 	    $('#ciscosdwanserverdetail').load(query);
 
@@ -616,6 +674,9 @@
 
         var query = '<?php echo URL::route('ciscosdwan.dashboard.sitehealth') ?>';
         $('#sitehealth').load(query).fadeIn("slow");
+
+        var query = '<?php echo URL::route('ciscosdwan.dashboard.controlstatus') ?>';
+	    $('#controlstatus').load(query);
 
         <!--Service Desk-->
         var ajaxcasvddashboardtotalincidents = '<?php echo @Config::get('app.url') ?>';
@@ -641,25 +702,6 @@
         <!--Centreon-->
         getservices();
 	});
-
-    // $(document).ajaxComplete(function(event,xhr,settings){
-    //     //console.log("URL",settings.url);
-    //     if(settings.url.indexOf('ciscosdwan.dashboard.wanedgehealth')>0){
-    //         if(wanedgehealthdiv.innerText!=''){
-    //             var datas = JSON.parse(wanedgehealthdiv.innerText);
-    //             var i;
-    //             for (i=0;i<datas.length;i++){
-    //                 if(datas[i]['name']=='normal'){
-    //                     $('#normal').val(datas[i]['count']).trigger('change');
-    //                 }else if(datas[i]['name']=='warning'){
-    //                     $('#warning').val(datas[i]['count']).trigger('change');
-    //                 }else if(datas[i]['name']=='error'){
-    //                     $('#error').val(datas[i]['count']).trigger('change');
-    //                 }
-    //             }
-    //         }
-    //     }
-    //         //End of display chart
-    // });
+    
 </script>
 @endsection
