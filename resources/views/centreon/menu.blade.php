@@ -37,7 +37,13 @@
 		</li>
 
     <!-- Monitoring menu -->
-    <li><a href="{{@Config::get('app.url')}}/admin/centreon/monitoring" title="">Monitoring</a></li>
+    <li class="dropdown">
+        <a href="{{@Config::get('app.url')}}/admin/centreon/monitoring" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Monitoring</span></a>
+        <!-- <ul class="dropdown-menu pull-right">
+            <li><a href="{{@Config::get('app.url')}}/admin/centreon/monitoring" title=""></i>Status</a></li>
+            <li><a href="{{@Config::get('app.url')}}/admin/centreon/monitoring" title=""></i>Details</a></li>
+        </ul> -->
+    </li>
     <!-- Host menu -->
     <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-cog"></i><span>Hosts</span><i class="icon-angle-down left-padding"></i></a>
       <ul class="dropdown-menu pull-right">

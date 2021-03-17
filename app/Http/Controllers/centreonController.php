@@ -61,33 +61,19 @@ class centreonController extends Controller
         }
         //endregion
         if ($authen_key != "") {
-            $json = [
-                "action" => "show",
-                "object" => "host"
-            ];
-            $res = $client->request("POST", $centreonserver->hostname . "/centreon/api/index.php?action=action&object=centreon_clapi", [
+            $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
                 "headers" => [
                     "Content-Type" => "application/json",
                     "centreon-auth-token" => $authen_key
                 ],
-                'json' => $json,
-                "verify" => false
             ]);
-
             $hosts = json_decode($res->getBody());
-            $hosts = $hosts->result;
-            // $res = $client->request("GET", $centreonserver->hostname."/centreon/api/index.php?object=centreon_realtime_hosts&action=list", [
-            //     "headers" => [
-            //         "Content-Type" => "application/json",
-            //         "centreon-auth-token" => $authen_key
-            //     ],
-            // ]);
-            // $hosts = json_decode($res->getBody());
-            // for ($i = 1 ; $i < count($hosts);++$i){
-            //     if ($hosts[$i]->name == $hosts[$i - 1]->name) {
-            //         unset($hosts[$i]);
-            //     }
-            // }
+            for ($i = 1 ; $i < count($hosts);++$i){
+                if ($hosts[$i]->name == $hosts[$i - 1]->name) {
+                    unset($hosts[$i]);
+                }
+            }
+          // dd($hosts);
         }
 
 
