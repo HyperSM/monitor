@@ -390,11 +390,7 @@
 	    if(settings.url.indexOf('ciscosdwan.dashboard.alldevices')>0){
 	    	var tmp = alldevicesdiv.textContent;
 	    	if (tmp!=''){
-	    		//tmp = tmp.substring(1,tmp.length-1);
-    			//tmp = tmp.substring(0, tmp.length - 1);
-    			//alert(tmp);
     			var devices = JSON.parse(tmp);
-    			console.log(devices);
     			var i;
     			var vmanage = 0;
     			var vsmart = 0;
