@@ -701,7 +701,7 @@
 
         <!--Centreon-->
         getservices();
-	});
+	},10000);
     
 </script>
 @endsection

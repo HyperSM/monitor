@@ -277,8 +277,6 @@
             //console.log(refresherate);
             setInterval(function () {
                 getservices();
-                setDefaultHost();
-                loadURL();
             },refresherate);
 
         });

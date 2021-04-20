@@ -3032,7 +3032,7 @@ class centreonController extends Controller
     }
 
 
-    public function setrefreshrate($value) {
+    public function setrefreshrate(Request $request) {
         $user = DB::table('tbl_accounts')
             ->leftJoin('tbl_rights', 'tbl_accounts.userid', '=', 'tbl_rights.userid')
             ->where([
@@ -3055,7 +3055,7 @@ class centreonController extends Controller
                     [
                         'userid' => $userid,
                         'product' => 'centreon',
-                        'refreshrate' => intval($value)
+                        'refreshrate' => $request->refreshrate
                     ]
                 );
         } else {
@@ -3066,7 +3066,7 @@ class centreonController extends Controller
                     ['product', '=', 'centreon']
                 ])
                 ->update([
-                    'refreshrate' => intval($value)
+                    'refreshrate' => $request->refreshrate
                 ]);
         }
     }
