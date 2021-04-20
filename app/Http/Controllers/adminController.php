@@ -89,7 +89,7 @@ class adminController extends Controller
         } else {
             $hosts = NULL;
         }
-
+        
         return view('admin.dashboard',compact('err_msg','domain','user','hosts'));
     }
 

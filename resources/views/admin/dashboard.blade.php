@@ -51,15 +51,16 @@
 		</li>
 	</ul>
 
-	<ul class="crumb-buttons">
-		<li><a href="#" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
-		<li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-user"></i><span>Users <strong>(+3)</strong></span><i class="icon-angle-down left-padding"></i></a>
-			<ul class="dropdown-menu pull-right">
-			<li><a href="{{@Config::get('app.url')}}/admin/dashboard/users/adduser" title=""><i class="icon-plus"></i>Add new user</a></li>
-			<li><a href="{{@Config::get('app.url')}}/admin/dashboard/users" title=""><i class="icon-reorder"></i>All users</a></li>
-			</ul>
-		</li>
-	</ul>
+    @if ($user->accountconfig == 1)
+        <ul class="crumb-buttons">
+            <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-user"></i><span>User management</span><i class="icon-angle-down left-padding"></i></a>
+                <ul class="dropdown-menu pull-right">
+                <li><a href="{{@Config::get('app.url')}}/admin/dashboard/users/adduser" title=""><i class="icon-plus"></i>Add new user</a></li>
+                <li><a href="{{@Config::get('app.url')}}/admin/dashboard/users" title=""><i class="icon-reorder"></i>All users</a></li>
+                </ul>
+            </li>
+        </ul>
+    @endif
 </div>
 <!-- /End of menu -->
 
