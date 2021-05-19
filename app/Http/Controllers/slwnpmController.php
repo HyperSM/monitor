@@ -518,8 +518,8 @@ class slwnpmController extends Controller
             //$tmpstr = $tmpstr. '<img src="'.url('/images/slwnpm/info.gif'). '" style="width:14px;"></img>';
             $tmpstr = $tmpstr.
                         '</td>
-                        <td style="vertical-align: middle; text-align: center;"><a href="#" style="text-decoration:none;">'.$item['Total'].'</a></td>
-                        <td style="vertical-align: middle;"><a href="#" style="text-decoration:none;">'.$item['Name'].'</a></td>
+                        <td style="vertical-align: middle; text-align: center;"><style="text-decoration:none;">'.$item['Total'].'</style=></td>
+                        <td style="vertical-align: middle;"><style="text-decoration:none;">'.$item['Name'].'</style=></td>
                 </tr>';
         }
 

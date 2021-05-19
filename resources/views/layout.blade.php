@@ -192,7 +192,6 @@
 						<i class="icon-caret-down small"></i>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="pages_user_profile.html"><i class="icon-user"></i> My Profile</a></li>
 						<li class="divider"></li>
 						<li><a href="{{@Config::get('app.url')}}/admin/logout"><i class="icon-key"></i> Log Out</a></li>
 					</ul>

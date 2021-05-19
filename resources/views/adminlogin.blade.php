@@ -116,8 +116,7 @@
 
 				<!-- Form Actions -->
 				<div class="form-actions">
-					<label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Remember me</label>
-					<button type="submit" class="submit btn btn-primary pull-right">
+					<button type="submit" class="submit btn btn-primary" style="margin: 0; left: 50%; -ms-transform: translate(-50%); transform: translate(-50%);">
 						Sign In <i class="icon-angle-right"></i>
 					</button>
 				</div>
