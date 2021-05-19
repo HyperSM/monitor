@@ -23,7 +23,7 @@
             </div>
             <div class="widget-content no-padding" id="divMonitor">
                 <table class="table table-striped table-bordered table-hover table-checkable table-responsive display"
-                    data-display-length="25" id="monitor">
+                    data-display-length="10" id="monitor">
                     <thead>
                         <tr>
                             <th data-class="expand">Host</th>

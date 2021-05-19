@@ -36,8 +36,8 @@
 <!--=== Statboxes ===-->
 <div class="row row-bg"> <!-- .row-bg -->
 
-	<div class="col-md-2">
-		<div class="statbox widget box box-shadow">
+	<div class="col-md-2" style="height: 117px;">
+		<div class="statbox widget box box-shadow" style="height: 90px;">
 			<div class="widget-content">
 				<div class="visual cyan">
 					<div><i class="fas fa-server"></i></div>
@@ -48,8 +48,8 @@
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
 
-	<div class="col-md-2">
-		<div class="statbox widget box box-shadow">
+	<div class="col-md-2"  style="height: 117px;">
+		<div class="statbox widget box box-shadow"  style="height: 90px;">
 			<div class="widget-content">
 				<div class="visual red">
 					<div><i class="fas fa-server"></i></div>
@@ -60,8 +60,8 @@
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
 
-	<div class="col-md-2 hidden-xs">
-		<div class="statbox widget box box-shadow">
+	<div class="col-md-2 hidden-xs"  style="height: 117px;">
+		<div class="statbox widget box box-shadow"  style="height: 90px;">
 			<div class="widget-content">
 				<div class="visual cyan">
 					<i class="fas fa-ethernet"></i>
@@ -72,8 +72,8 @@
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
 
-	<div class="col-md-2">
-		<div class="statbox widget box box-shadow">
+	<div class="col-md-2"  style="height: 117px;">
+		<div class="statbox widget box box-shadow"  style="height: 90px;">
 			<div class="widget-content">
 				<div class="visual red">
 					<i class="fas fa-ethernet"></i>
