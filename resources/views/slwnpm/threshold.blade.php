@@ -38,9 +38,7 @@
                                 <tr>
                                     <td>
                                         @if (isset($item['Name']))
-                                            <a href="{{@Config::get('app.url')}}/admin/slwnpm/threshold/{{$item['AlertID']}}" style="text-decoration: none;">
-                                                {{$item['Name']}}
-                                            </a>
+                                            {{$item['Name']}}
                                         @endif
                                     </td>
                                     <td style="text-align: center;">

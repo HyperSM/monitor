@@ -44,7 +44,6 @@
 				</div>
 				<div class="title">Nodes Up</div>
 				<div class="value" id="ajaxnodeup">N/A</div>
-				<a class="more" href="javascript:void(0);">View More <i class="pull-right icon-angle-right"></i></a>
 			</div>
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
@@ -57,7 +56,6 @@
 				</div>
 				<div class="title">Nodes Down</div>
 				<div class="value" id="ajaxnodedown">N/A</div>
-				<a class="more" href="javascript:void(0);">View More <i class="pull-right icon-angle-right"></i></a>
 			</div>
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
@@ -70,7 +68,6 @@
 				</div>
 				<div class="title">Interfaces Up</div>
 				<div class="value" id="ajaxintup">N/A</div>
-				<a class="more" href="javascript:void(0);">View More <i class="pull-right icon-angle-right"></i></a>
 			</div>
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
@@ -83,7 +80,6 @@
 				</div>
 				<div class="title">Interfaces Down</div>
 				<div class="value" id="ajaxintdown">N/A</div>
-				<a class="more" href="javascript:void(0);">View More <i class="pull-right icon-angle-right"></i></a>
 			</div>
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-3 -->
