@@ -67,7 +67,7 @@
                                     </td>
                                     <td>
                                         @if (isset($item['Assigned Alerts']))
-                                            <a href="{{@Config::get('app.url')}}/admin/slwnpm/threshold/{{$item['AlertID']}}" class="bs-popover" data-trigger="hover" data-placement="bottom" data-content="{{$item['Assigned Alerts Pop']}}" data-original-title="{{$item['Assigned Alerts']}}" style="text-decoration: none;">
+                                            <a href="#" class="bs-popover" data-trigger="hover" data-placement="bottom" data-content="{{$item['Assigned Alerts Pop']}}" data-original-title="{{$item['Assigned Alerts']}}" style="text-decoration: none;">
                                                 {{$item['Assigned Alerts']}}
                                             </a>
                                         @endif
