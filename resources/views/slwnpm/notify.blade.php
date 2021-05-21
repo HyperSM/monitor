@@ -37,9 +37,9 @@
                                 <tr>
                                     <td>
                                         @if (isset($item['Title']))
-                                            <a href="{{@Config::get('app.url')}}/admin/slwnpm/notify/{{$item['ActionID']}}" style="text-decoration: none;">
+                                            <!-- <a href="{{@Config::get('app.url')}}/admin/slwnpm/notify/{{$item['ActionID']}}" style="text-decoration: none;"> -->
                                                 {{$item['Title']}}
-                                            </a>
+                                            <!-- </a> -->
                                         @endif
                                     </td>
                                     <td style="text-align: center;">
