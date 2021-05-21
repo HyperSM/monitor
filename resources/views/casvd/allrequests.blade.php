@@ -98,7 +98,7 @@
                             "render": function (data,type,row) {
                                 var url = '<?php echo \config('app.url').'/admin/casvd/allrequests/edit/'; ?>';
                                 url+= data;
-                                return "<a href='"+url+"'>"+ data +"</a>";
+                                return data;
                             }
                         },
                         {"data": "summary"},

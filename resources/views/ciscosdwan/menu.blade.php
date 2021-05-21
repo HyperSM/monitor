@@ -35,7 +35,7 @@
 		<li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="fas fa-tachometer-alt"></i><span>Bandwidth</span><i class="icon-angle-down left-padding"></i></a>
 			<ul class="dropdown-menu pull-right">
 			<li><a href="{{@Config::get('app.url')}}/admin/ciscosdwan/bandwidth/forecast" title="">Forecast</a></li>
-			<li><a href="#" title="">Settings</a></li>
+			<!-- <li><a href="#" title="">Settings</a></li> -->
 			</ul>
 		</li>
 

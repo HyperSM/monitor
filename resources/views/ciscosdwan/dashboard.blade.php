@@ -74,27 +74,27 @@
 	</div> <!-- /.col-md-2 -->
 
 	<div class="col-md-2">
-		<div class="statbox widget box box-shadow">
-			<div class="widget-content">
+		<div class="statbox widget box box-shadow" style="height: 90px;">
+			<div class="widget-content" style="height: 65px;">
 				<div class="visual" style="padding: 0px; margin: 0px;">
 					<img src="{{@Config::get('app.url')}}/images/ciscosdwan/reboot.png" style="width: 50px;">
 				</div>
 				<div class="title">Last 24h</div>
 				<div class="value" id="rebootcount">N/A</div>
-				<a class="more" href="javascript:void(0);">REBOOT <i class="pull-right icon-angle-right"></i></a>
+				<!-- <a class="more" href="javascript:void(0);">REBOOT <i class="pull-right icon-angle-right"></i></a> -->
 			</div>
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-2 -->
 
 	<div class="col-md-2">
-		<div class="statbox widget box box-shadow">
-			<div class="widget-content" style="height: 90px;">
+		<div class="statbox widget box box-shadow" style="height: 90px;">
+			<div class="widget-content" style="height: 65px;">
 				<div class="visual" style="padding: 0px; margin: 0px; height: 55px;">
 					<img src="{{@Config::get('app.url')}}/images/ciscosdwan/certificates.png" style="width: 50px;">
 				</div>
 				<div class="title" id="warningcount">Warning</div>
 				<div class="title" id="invalidcount">Invalid</div>
-				<a class="more" href="javascript:void(0);">CERTIFICATES <i class="pull-right icon-angle-right"></i></a>
+				<!-- <a class="more" href="javascript:void(0);">CERTIFICATES <i class="pull-right icon-angle-right"></i></a> -->
 			</div>
 		</div> <!-- /.smallstat -->
 	</div> <!-- /.col-md-2 -->

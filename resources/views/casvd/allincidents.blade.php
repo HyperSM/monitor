@@ -101,7 +101,7 @@
                     {
                         "data": "ref_num",
                         "render": function (data,type,row) {
-                            return "<a href='#'>"+ data +"</a>";
+                            return data;
                         }
                     },
                     {"data": "summary"},
