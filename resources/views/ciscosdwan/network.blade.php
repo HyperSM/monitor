@@ -34,7 +34,6 @@
 							<th>Reachability</th>
 							<th>Site ID</th>
 							<th>BFD</th>
-							<th>Control</th>
 							<th>Version</th>
 						</tr>
 					</thead>
@@ -85,9 +84,6 @@
 									<?php
 										if (isset($device->bfdSessions)){echo $device->bfdSessions;}
 									?>
-								</td>
-								<td>
-									{{$device->controlConnections}}
 								</td>
 								<td>
 									{{$device->version}}
