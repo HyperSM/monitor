@@ -436,9 +436,14 @@ class ciscosdwanController extends Controller
                 foreach($dataArray as $data){
                     $total = $total + $data->count;
                 }
-
+                
                 foreach($dataArray as $data){
-                    $tmp = ($data->count/$total) * 100;
+                    if ($total == 0) {
+                        $tmp = 0;
+                    } else {
+                        $tmp = ($data->count/$total) * 100;
+                    }
+                    
                     ////
                     $tmpstr = $tmpstr .
                         '<tr>
