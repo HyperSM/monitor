@@ -29,7 +29,7 @@
 			<ul class="dropdown-menu pull-right">
 			@if ($user->slwnpmconfig==1)
 			<li><a href="{{@Config::get('app.url')}}/admin/slwnpm/configserver" title="">Solarwinds Servers</a></li>
-			<li><a href="{{@Config::get('app.url')}}/admin/slwnpm/configgroup" title="">View By Group</a></li>
+			<!-- <li><a href="{{@Config::get('app.url')}}/admin/slwnpm/configgroup" title="">View By Group</a></li> -->
 			@endif
 			</ul>
 		</li>

@@ -54,7 +54,7 @@
                                         @else
                                             <li><a href="{{@Config::get('app.url')}}/admin/slwnpm/manage/{{$item['NodeID']}}" class="bs-tooltip" title="Manage again"><i class="icon-bell-alt"></i></a> </li>
                                         @endif
-                                        <li><a href="{{@Config::get('app.url')}}/admin/slwnpm/nodesummary/{{$item['NodeID']}}" id="edit" class="bs-tooltip" title="Edit" style="text-decoration: none;"><i class="icon-edit"></i></a> </li>
+                                        <li><a href="{{@Config::get('app.url')}}/admin/slwnpm/nodesummary/{{$item['NodeID']}}" id="edit" class="bs-tooltip" title="Detail" style="text-decoration: none;"><i class="icon-edit"></i></a> </li>
                                         <li><a href="{{@Config::get('app.url')}}/admin/slwnpm/deletenode/{{$item['NodeID']}}" id="delete" class="bs-tooltip" title="Delete" style="text-decoration: none;"><i class="icon-trash"></i></a> </li>
                                 </ul>
                             </td>

@@ -55,7 +55,7 @@
                                     </td>
                                     <td>
                                         @if (isset($item['ActionTypeID']))
-                                            <a href="#" class="bs-popover" data-trigger="hover" data-placement="bottom" data-content="{{$item['Description']}}" data-original-title="{{$item['Assigned Alerts']}}" style="text-decoration: none;">
+                                            <a class="bs-popover" data-trigger="hover" data-placement="bottom" data-content="{{$item['Description']}}" data-original-title="{{$item['Assigned Alerts']}}" style="text-decoration: none;">
                                                 {{$item['ActionTypeID']}}
                                             </a>
                                         @endif
@@ -67,7 +67,7 @@
                                     </td>
                                     <td>
                                         @if (isset($item['Assigned Alerts']))
-                                            <a href="#" class="bs-popover" data-trigger="hover" data-placement="bottom" data-content="{{$item['Assigned Alerts Pop']}}" data-original-title="{{$item['Assigned Alerts']}}" style="text-decoration: none;">
+                                            <a class="bs-popover" data-trigger="hover" data-placement="bottom" data-content="{{$item['Assigned Alerts Pop']}}" data-original-title="{{$item['Assigned Alerts']}}" style="text-decoration: none;">
                                                 {{$item['Assigned Alerts']}}
                                             </a>
                                         @endif
