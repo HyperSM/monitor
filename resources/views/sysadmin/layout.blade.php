@@ -168,7 +168,7 @@
 			</ul>
 
 			<!-- Logo -->
-			<a class="navbar-brand" href="{{@Config::get('app.url')}}/admin/dashboard">
+			<a class="navbar-brand" href="{{@Config::get('app.url')}}/sysadmin/dashboard">
 				<img src="{{@Config::get('app.url')}}/template/assets/img/logo.png" style="width: 24px;" alt="logo" />
 				<strong>HYPERSM</strong>
 			</a>
@@ -193,7 +193,7 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li class="divider"></li>
-						<li><a href="{{@Config::get('app.url')}}/admin/logout"><i class="icon-key"></i> Log Out</a></li>
+						<li><a href="{{@Config::get('app.url')}}/sysadmin/logout"><i class="icon-key"></i> Log Out</a></li>
 					</ul>
 				</li>
 				<!-- /user login dropdown -->
@@ -210,81 +210,54 @@
 				<!--=== Navigation ===-->
 				<ul id="nav">
 					<li class="current">
-						<a href="{{@Config::get('app.url')}}/admin/dashboard">
+						<a href="{{@Config::get('app.url')}}/sysadmin/dashboard">
 							<i class="icon-dashboard"></i>
 							Dashboard
 						</a>
 					</li>
 					<li>
-						<a href="javascript:void(0);">
-							<i class="fas fa-network-wired"></i>
-							NETWORK
+						<!-- <a href="javascript:void(0);"> -->
+						<a href="{{@Config::get('app.url')}}/sysadmin/users">
+							<i class="icon-user-md"></i>
+							USER MANAGEMENT
 						</a>
-						<ul class="sub-menu">
-							@if ($user->slwnpmuse==1)
+						<!-- <ul class="sub-menu">
 							<li>
 								<a href="{{@Config::get('app.url')}}/admin/slwnpm">
 								<i class="icon-angle-right"></i>
 								Solarwinds NPM
 								</a>
 							</li>
-							@endif
-						</ul>
+						</ul> -->
 					</li>
-
+					<li>
+						<a href="{{@Config::get('app.url')}}/sysadmin/domains">
+							<i class="icon-group"></i>
+							DOMAIN MANAGEMENT
+						</a>
+					</li>
 					<li>
 						<a href="javascript:void(0);">
-							<i class="fas fa-th-large"></i>
-							APPLICATION
+							<i class="icon-usd"></i>
+							BILLING
 						</a>
 						<ul class="sub-menu">
-                            @if ($user->centreonuse==1)
 							<li>
-								<a href="{{@Config::get('app.url')}}/admin/centreon">
+								<a href="{{@Config::get('app.url')}}/sysadmin/billing/prices">
 								<i class="icon-angle-right"></i>
-								Centreon
+								Price Management
 								</a>
 							</li>
-                            @endif
-						</ul>
-					</li>
-
-					<li>
-						<a href="javascript:void(0);">
-							<i class="fas fa-recycle"></i>
-							SERVICE DESK
-						</a>
-						<ul class="sub-menu">
-							@if ($user->casvduse==1)
 							<li>
-								<a href="{{@Config::get('app.url')}}/admin/casvd">
+								<a href="{{@Config::get('app.url')}}/sysadmin/billing/detail">
 								<i class="icon-angle-right"></i>
-								CA Service Desk
+								Billing Detail
 								</a>
 							</li>
-							@endif
-						</ul>
-					</li>
-
-					<li>
-						<a href="javascript:void(0);">
-							<i class="fas fa-random"></i>
-							SDWAN
-						</a>
-						<ul class="sub-menu">
-							@if ($user->ciscosdwanuse==1)
-							<li>
-								<a href="{{@Config::get('app.url')}}/admin/ciscosdwan">
-								<i class="icon-angle-right"></i>
-								Cisco SDWAN
-								</a>
-							</li>
-							@endif
 						</ul>
 					</li>
 				</ul>
 
-				<!-- /Navigation -->
 				<div class="sidebar-widget align-center">
 					<div class="btn-group" data-toggle="buttons" id="theme-switcher">
 						<label class="btn active">

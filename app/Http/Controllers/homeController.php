@@ -18,7 +18,7 @@ class homeController extends Controller
         //Nếu chưa thì redirect sang trang đăng nhập
         switch (session('Monitor')) {
             case md5('admin'):
-                return redirect("/admin/ciscosdwan");
+                return redirect("/admin/dashboard");
                 break;
             default:
                 $err_msg = '';
@@ -65,7 +65,7 @@ class homeController extends Controller
                     session(['Monitor' => md5('admin')]);
                     session(['mymonitor_userid' => $username]);
                     session(['mymonitor_md' => Crypt::encryptString($user->domainid)]);                    
-                    return redirect("/admin/ciscosdwan");                            
+                    return redirect("/admin/dashboard");                            
 
                 }else{
                     $err_msg = 'Error: Wrong password';
